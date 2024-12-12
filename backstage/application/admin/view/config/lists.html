@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">配置管理</a>        
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+       
+      <table class="layui-table">
+       
+        <tbody>
+						<form class="layui-form" action="{:url('nandu_save')}" method="post">
+						
+						<tr>
+							<td colspan="3" class="layui-bg-green" >
+								难度设置 
+								<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formNandu">修改</button> 
+								庄子大小难度设置 1简单-10难
+								庄子数量 1-35
+							</td>
+						</tr>
+						<tr><td>关卡</td><td>庄子大小难度设置</td><td>庄子数量</td></tr>
+						{for start="1" end="11"}
+						<tr> 
+							<td>第{$i}关</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="number" name="nandu[{$i}][big]" value="{$nandu[$i]['big']}" class="layui-input">
+									</div>
+								</div>									
+							</td> 
+							<td>
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="number" name="nandu[{$i}][num]" value="{$nandu[$i]['num']}" class="layui-input">
+									</div>
+								</div>	
+							</td> 
+						</tr>						
+						{/for}
+						</form>
+						
+						<form class="layui-form" action="{:url('quan_save')}" method="post">						
+						<tr>
+							<td colspan="3" class="layui-bg-green" >
+								关卡送优惠券设置 
+								<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formQuan">修改</button> 
+							</td>
+						</tr>
+						<tr><td>关卡</td><td>优惠券ID</td></tr>
+						{for start="1" end="11"}
+						<tr> 
+							<td>第{$i}关</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" name="quan[{$i}]" value="{$quan[$i]}" class="layui-input">
+									</div>
+								</div>									
+							</td> 							
+						</tr>						
+						{/for}
+						</form>
+						
+						
+						<form class="layui-form" action="{:url('jifen_save')}" method="post">						
+						<tr>
+							<td colspan="3" class="layui-bg-green" >
+								积分设置
+								<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formJifen">修改</button>
+							</td>
+						</tr>
+						<tr><td>关卡</td><td>每关消耗积分</td><td>每关产出积分</td></tr>
+						{for start="1" end="11"}
+						<tr> 
+							<td>第{$i}关</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="number" name="jifen[{$i}][xiaohao]" value="{$jifen[$i]['xiaohao']}" class="layui-input">
+									</div>
+								</div>									
+							</td> 
+							<td>
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="number" name="jifen[{$i}][huodelv]" value="{$jifen[$i]['huodelv']}" class="layui-input">
+									</div>
+								</div>	
+							</td> 
+						</tr>						
+						{/for}
+						</form>
+						
+						<form class="layui-form" action="{:url('deng_save')}" method="post">
+						<tr><td colspan="3" class="layui-bg-green" >跑马灯：首页
+						<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formDeng">修改</button>
+						频率:秒
+						有效期：2019-6-21 16:57:24格式
+						</td></tr>
+						<tr><td>文本</td><td>频率</td><td>有效期</td></tr>
+						{for start="1" end="8"}
+						<tr><td><div class="layui-inline">
+										<div class="layui-input-inline">
+											<input type="text" name="deng[{$i}][text]" value="{$deng[$i]['text']}" class="layui-input">
+										</div>
+									</div></td><td><div class="layui-inline">
+										<div class="layui-input-inline">
+											<input type="text" name="deng[{$i}][lv]" value="{$deng[$i]['lv']}" class="layui-input">
+										</div>
+									</div></td><td><div class="layui-inline">
+										<div class="layui-input-inline">
+											<input type="text" name="deng[{$i}][ex]" value="{$deng[$i]['ex']}" class="layui-input">
+										</div>
+									</div></td></tr>
+						{/for}
+						</form>
+						
+						<form class="layui-form" action="{:url('txt_save')}" method="post">
+						<tr><td colspan="3" class="layui-bg-green" >公告文本
+						<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formTxt">修改</button>
+						</td></tr>
+						<tr><td colspan="3">
+						<textarea style="width: 100%;height: 5em;" name="txt">{$txt}</textarea>
+						</td></tr>
+						</form>
+				
+        </tbody>
+      </table>
+      
+    </div>
+    
+  </body>
+
+</html>
+
+<script>
+layui.use(['form','jquery'], function(){
+  var form = layui.form;
+  var $ = layui.$;
+  
+});
+</script>

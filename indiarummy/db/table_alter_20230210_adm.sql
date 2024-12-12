@@ -1,0 +1,1 @@
+insert into s_config(k,v,memo) value('login_ban_params', '{"bundleid_flag":1,"bundleid":["com.yono.games.free"],"phone_model_pattern_flag":1,"phone_model_pattern_list":["^%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w_%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w","^%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w_%w%w%w%w%w%w%w%w%w%w%w%w%w%w%w"]}', '登录注册设备限制');

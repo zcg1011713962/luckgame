@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form" method="post" action="">
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  账号
+              </label>
+              <div class="layui-input-inline" style="width: 300px;">
+                  <input type="text" disabled="disabled" value="{$info.Account}" class="layui-input">
+				  <input type="hidden" name="uid" value="{$info.Id}" />
+              </div>
+          </div>          
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  金币
+              </label>
+              <div class="layui-input-inline">
+                <input type="text" disabled="disabled" value="{$realnum.score|showGold}" class="layui-input">
+              </div>
+              
+          </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+                 房卡
+              </label>
+              <div class="layui-input-inline">
+                <input type="text" disabled="disabled" value="{$realnum.diamond}" class="layui-input">
+              </div>
+          </div>
+          
+      </form>
+    </div>
+    <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+              var form = layui.form
+              ,layer = layui.layer;
+                 
+            });
+        </script>
+
+  </body>
+
+</html>

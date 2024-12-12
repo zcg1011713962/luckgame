@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">推荐管理</a>
+        <a><cite>{$breadcrumb_name}</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+         ID&nbsp;/&nbsp;账户:
+          <input type="text" name="searchstr"  placeholder="ID/账号" value="" autocomplete="off" class="layui-input searchstr" style="width: 400px;">
+          <br/><br/>
+          注册时间:
+            <input type="text" id="begin_time" name="reg_begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 190px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="reg_end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 190px; display: inline-block;">
+	   <br/><br/>
+           推&nbsp;广&nbsp;码&nbsp;: <input type="text" name="invite_code"  placeholder="推广码" value="" autocomplete="off" class="layui-input invite_code" id='invite_code'  style="width: 400px;">
+           <br/><br/>	 
+           <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+                <span class="x-left" id="number_count" style="line-height:40px"></span>
+	        <span class="x-left" id="gold_count" style="line-height:40px"></span>
+      </div>
+      <xblock style="display: none;">
+        <span class="x-right" style="line-height:40px">123123</span>
+      </xblock>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+				,width: '100%'
+                ,url: "{:url('promotion/getcodelists',  ['robot' => $robot])}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'userId', title: 'ID', fixed: 'left', width:'80'}
+                ,{field: 'nickname',  title: '昵称', fixed: 'left', width:'150'}
+                ,{field: 'invite_code', title: '推广码', sort:true, width: '150'}
+                ,{field: 'number', title: '推广数', width: '150'}
+                ,{field: 'gold', title: '金币数', width: '150'}
+                 
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                    $('#number_count').html('总人数：'+res.numbers+'人');
+                    $('#gold_count').html('总盈利：'+res.golds+'金币');
+
+                }
+            });
+
+            $('#search').on('click',function() {
+                tableId.reload({
+                    url: "{:url('promotion/getcodelists')}?robot={$robot}&searchstr="+$('.searchstr').val()+"&begin_time="+$('#begin_time').val()+"&end_time="+$("#end_time").val()+"&invite_code="+$('#invite_code').val()
+                });
+				return false;
+            });
+
+        });
+	</script>
+    <script>
+
+    </script>
+
+  </body>
+
+</html>

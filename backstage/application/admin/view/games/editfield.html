@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>元数据
+              </label>
+              <div class="layui-input-inline">
+                  <select name="parent_id" id="parent_id">
+                     <option value="0">请选择</option>
+                    {foreach $root_fields as $k => $v}
+                    <option value="{$v['id']}" {if $field['parent_id'] == $v['id']} selected {/if}>{$v['name']}</option>
+                    {/foreach}
+                 </select> 
+		 <input type="hidden" name="id" id='field_id' value="{$field.id|default='-1'}" />
+              </div>              
+          </div>
+
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>名称
+		      </label>
+		      <div class="layui-input-inline">
+                  <div style="margin-bottom: 20px; width: 300px;">
+                     <input type="text" id="field_name" name="field_name" value="{$field['name']|default=''}" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>备注
+		      </label>
+		      <div class="layui-input-inline">
+                  <div style="margin-bottom: 20px; width: 300px;">
+                     <input type="text" id="field_remark" name="field_remark" value="{$field['remark']|default=''}" autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+		  </div>
+                 
+          
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  保存
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+    
+        layui.use(['form','layer' , 'upload' , 'layedit'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer,upload = layui.upload,layedit = layui.layedit;
+          //监听提交
+          form.on('submit(add)', function(data){
+            var html = document.getElementById('field_remark').value;
+           data.field.parent_id=document.getElementById('parent_id').value;
+    
+            data.field.remark = html; // 原生API;
+            data.field.name = document.getElementById('field_name').value;
+            data.field.id = document.getElementById('field_id').value;
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('games/doeditfield')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+                                              
+							window.parent.location.href = "{:url('fieldlists')}";
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+<!--  
+   function fieldAdd(){
+         var parent_id=document.getElemetById('parent_id').value;
+         var remark = document.getElmentById('field_remark').value;
+         var name = document.getElementById('field_name').value;
+         var id = document.getElementById('field_id').value;
+         $.ajax({type:"POST",
+           url:"{:url('games/doEditField')}",
+           data:{"id":id,"name":name,"remark":remark,"parent_id":parent_id},
+           success: function(msg){
+              if(msg=='success'){
+               layer.alert("修改成功",{icon:6},function(){
+                     window.parent.location.href="{:url('fieldlists')}";
+                });
+              }else{
+                    layer.msg(msg);
+              } 
+            }
+         });
+         return false; 
+     }
+ -->
+
+  </body>
+
+</html>

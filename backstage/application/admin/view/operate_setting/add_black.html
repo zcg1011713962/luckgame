@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    <style>
+      .label-note {
+        width: 100px;
+        padding: 9px 10px;
+      }
+      .layui-input-block {
+        margin-left: 130px !important;
+      }
+      .layui-form-select dl dd.layui-this {
+          background-color: #393D49;
+          color: #fff;
+      }
+    </style>
+    <style>
+        .imageBox {width: 120px; height: auto; padding: 0 10px; float: left;}
+        .imageBox-top {width: 100%; height: 155px;}
+        .imageBox-bottom {width: 100%;}
+        .image {width: 100%; height: 120px; float: left; border: 1px dashed #ddd; position: relative;}
+        .button {color: #ccc; position: relative; cursor: pointer; text-align: center; position: absolute; top: 0; width: 120px; height: 120px; line-height: 120px;}
+        .uploadFile {opacity: 0; position: absolute; left: 0; width: 100%; height: 120px; cursor: pointer;}
+    </style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="label-note layui-form-label">
+                    子运营商
+                </label>
+                <div class="layui-input-block">
+                  <select name="agent_id" id="agent_id" lay-verify="required">
+                    <option value="0">代理</option>
+                  </select>
+                </div>		      
+            </div>
+            <div class="layui-form-item">
+                <label  class="label-note layui-form-label">
+                    IP
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="ip" name="ip" lay-verify="required" autocomplete="off" class="layui-input">
+                </div>      
+            </div>
+          <div class="layui-form-item">
+            <label for="activity_sort" class="label-note  layui-form-label">
+               备注
+            </label>
+            <div class="layui-input-block">
+                <textarea name="note" placeholder="请输入备注信息" class="layui-textarea"></textarea>
+            </div>
+          </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+
+    <script>
+        layui.use(['form','layer','laydate'], function(){
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer,
+                laydate = layui.laydate;
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            $.post("{:url('save_black')}",data.field,function(data){
+                if (data.status == 0) {
+                    layer.alert(data.message, {icon: 6},function () {
+					    var index = parent.layer.getFrameIndex(window.name);
+						parent.layer.close(index);
+						parent.location.reload();
+					});
+                } else {
+                    layer.msg(data.message);
+                }
+            },'Json');
+            return false;
+          });
+        });
+    </script>
+
+  </body>
+
+</html>

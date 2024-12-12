@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+	<style>
+		.layui-form-label{ width: 110px; }
+	</style>
+
+  <body>
+	  <div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">代理管理</a>
+	      <a>
+	        <cite>新增代理</cite></a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	  </div>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  昵称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" name="username" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          选择代理等级
+		      </label>
+		      <div class="layui-input-inline">
+		         <select name="level" lay-verify="required" disabled="disabled">
+					<option value=""></option>
+					<option value="2" selected="selected">二级代理</option>
+					<option value="3">三级代理</option>
+				  </select>
+		      </div>
+		  </div>
+		  <div class="layui-form-item">
+		      <label for="username" class="layui-form-label">
+		          选择上级代理
+		      </label>
+		      <div class="layui-input-inline">
+		        <select name="pid" disabled="disabled">
+					<option value=""></option>
+					{foreach $agents as $k=>$v}
+						<option value="{$v.aid}" selected="selected">{$v.username}</option>
+					{/foreach}
+		  		</select>
+		      </div>
+		  </div>
+         
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  手机号
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" name="mobile" autocomplete="off" class="layui-input">
+              </div>
+          </div>
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  密码
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" name="repass" required lay-verify="repass" autocomplete="off" class="layui-input">
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          玩家ID
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" name="uid" required autocomplete="off" class="layui-input">
+		      </div>
+		  </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doAdd')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+							location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

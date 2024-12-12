@@ -1,0 +1,283 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+    <link rel="stylesheet" href="assets/css/withdraw.css">
+{{/block}}
+{{block 'content'}}
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="#" class=""></a>
+            <h1 class="biaoti">{{L('Withdraw')}}</h1>
+            <a href="#" class=""></a>
+        </header>
+        <div class="balance">
+            <span class="balance-label">{{L('Withdraw Balance')}}</span>
+            <div class="jine">
+                <span class="balance-amount">₫ {{userInfo.dcoin}}</span>
+            </div>
+        </div>
+        <div class="bank-card-biaoti">
+            <span>{{L('Choose a Withdrawal Method')}}</span>
+        </div>
+        <div class="bank-card-xuanze">
+            {{each drawType item}}
+            <div class="card add-card bank-type {{if $index == 0}}selected{{/if}}">
+                <div class="bank-type-info">
+                    <img src="assets/images/kapian2.png" alt="">
+                    <span>{{item.title}}</span>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        <div class="bank-card-biaoti">
+            <span>{{L('Select Payment Method')}}</span>
+        </div>
+        <div class="bank-card-xuanze">
+            {{each drawCom item}}
+            <div class="card add-card bank-type draw-com-list draw-com-list-id-{{item.id}} {{if item.selected == 1}}selected{{/if}}"
+                 data="{{item.id}}" min-data="{{item.mincoin}}" max-data="{{item.maxcoin}}">
+                <div class="bank-type-info">
+                    <img src="assets/images/kapian2.png" alt="">
+                    <span>{{item.title}}</span>
+                </div>
+            </div>
+            {{/each}}
+            <input type="hidden" value="{{drawComId}}" id="selected-draw-com-id">
+        </div>
+        <div class="bank-card-biaoti">
+            <span>{{L('Choose a Bank Card')}}</span>
+        </div>
+        <div >
+            {{each drawCom item1}}
+                <div class="bank-card-xuanze draw-com-id draw-com-id-{{item1.id}}">
+                    {{each item1.user_bank item}}
+                    <div class="card bank-card bank_card_item {{if item.selected == 1}}selected{{/if}}">
+                        <div class="bank-name">{{item.bankname}}</div>
+                        <div class="card-number">{{item.account}}</div>
+                        <input type="hidden" value="{{item.id}}" class="bank_item_id">
+                    </div>
+                    {{/each}}
+                    <div class="card add-card" {{if item1.user_bank.length % 2 !== 0}}style="margin-left:1.8vw;"{{/if}}>
+                        <div class="add-text">
+                            <span>{{L('Add Bank Card')}}</span>
+                            <img src="assets/images/tianjia.png" class="addBankModalBtn" alt="">
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+            <input type="hidden" value="" name="bankid" class="selected_bank_id">
+
+        </div>
+        <div class="bank-card-biaoti">
+            <span>{{L('Withdrawal Amount')}}</span>
+        </div>
+        <div class="withdraw-tips">
+            ₫ <span class="minWithdraw"></span> - ₫ <span class="maxWithdraw"></span>VND
+        </div>
+        <div class="deposit-input">
+            <input type="number" name="amount" class="withdraw_amount" id="withdraw_amount" value="0">
+            <img class="clear-btn" src="assets/images/guanbi2.png" alt="">
+        </div>
+        <div class="fengexian"></div>
+        <div class="deposit-button">
+            <button class="withdraw-button">{{L('Withdraw')}}</button>
+        </div>
+    </div>
+    <!--    modal    -->
+    <div id="addBankModal" class="modal">
+        <div class="modal-content">
+            <img class="close-btn" src="assets/images/guanbi.png" alt="">
+            <div class="modal-header">
+                <h2>{{L('Add a New Card')}}</h2>
+            </div>
+            <div class="fengexian" style="margin: 0 auto;"></div>
+            <div class="modal-body">
+                <label for="account_name">{{L('First And Last Name')}}</label>
+                <div class="form-group">
+                    <input type="text" name="amount" id="account_name" placeholder="{{L('Please enter your first and last name')}}">
+                </div>
+                <label for="bankid">{{L('Bank Name')}}</label>
+                <div class="form-group">
+                    <select name="bankid" id="bankid">
+
+                    </select>
+                </div>
+                <label for="account_no">{{L('Bank Account')}}</label>
+                <div class="form-group">
+                    <input type="text" name="account" id="account_no" placeholder="{{L('Please enter your bank account number')}}">
+                </div>
+                <label for="email">E-MAIL</label>
+                <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder="{{L('Please enter email')}}">
+                </div>
+                <label for="phone">{{L('Phone Number')}}</label>
+                <div class="form-group">
+                    <input type="number" name="phone" id="phone" placeholder="{{L('Enter your phone number')}}">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="deposit-button">
+                    <button class="submit_bank_button" style="width: 80%;font-size: 4.98vw;margin-top: 1vw;">{{L('Add Bank Card')}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var uid = "{{userInfo.uid}}";
+    var token = "{{token}}";
+    $('.bank_card_item').click(function () {
+        $('.bank_card_item').removeClass('selected');
+        $(this).addClass('selected');
+        $('.selected_bank_id').val($(this).find('.bank_item_id').val());
+    });
+    $('.withdraw-button').click(function () {
+        var index = layer.load();
+        var amount = $('.withdraw_amount').val();
+        var bankid = $('.selected_bank_id').val();
+        $.ajax({
+            url: "/withdraw/order",
+            type: 'POST',
+            data: {
+                uid, dcoin: amount, token, bankid
+            },
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return alert_msg(data.msg);
+                }
+                alert_msg(data.msg);
+                setTimeout(function () {
+                    window.location.reload();
+                }, 2000);
+            }
+        });
+    });
+    document.getElementById('withdraw_amount').addEventListener('input', function() {
+        var inputValue = this.value;
+        if (!/^\d*$/.test(inputValue)) {
+            // 如果不是整数，清除输入框内容
+            this.value = inputValue.replace(/[^\d]/g, '');
+        } else if (inputValue < 0) {
+            this.value = Math.abs(inputValue);
+        }
+    });
+    $('.clear-btn').click(function () {
+        $('.withdraw_amount').val('0');
+    });
+
+    // modal
+    $('.addBankModalBtn').click(function () {
+        $('#bankid').find('option:selected').prop('selected', false);
+        $('#addBankModal').css('display', 'flex');
+    });
+    $('.close-btn').click(function () {
+        $('#addBankModal').css('display', 'none');
+    });
+    // document.addEventListener('DOMContentLoaded', () => {
+    //     const modal = document.getElementById('addBankModal');
+    //     const openModalBtn = document.getElementById('addBankModalBtn');
+    //     const closeBtn = document.querySelector('.close-btn');
+    //
+    //     openModalBtn.addEventListener('click', () => {
+    //         modal.style.display = 'flex';
+    //     });
+    //
+    //     closeBtn.addEventListener('click', () => {
+    //         modal.style.display = 'none';
+    //     });
+    //
+    //     window.addEventListener('click', (event) => {
+    //         if (event.target === modal) {
+    //             modal.style.display = 'none';
+    //         }
+    //     });
+    // });
+    /**
+     * edit bank
+     */
+    $('.submit_bank_button').click(function () {
+        var index = layer.load();
+        var bankid = $('#bankid').val();
+        var name = $('#account_name').val();
+        var account = $('#account_no').val();
+        var email = $('#email').val();
+        var phone = $('#phone').val();
+        var selectDrawId = $('#selected-draw-com-id').val();
+        if (!name) {
+            layer.close(index);
+            return alert_msg("{{L('Please fill in your Name')}}");
+        }
+        if (!bankid) {
+            layer.close(index);
+            return alert_msg("{{L('Please select a bank')}}");
+        }
+        if (!account) {
+            layer.close(index);
+            return alert_msg("{{L('Please fill in your Bank Account')}}");
+        }
+        $.ajax({
+            url: "/bank/add",
+            type: 'POST',
+            data: {
+                uid, token, bankid, name, account, email, phone
+            },
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return alert_msg(data.msg);
+                }
+                window.location.href = '/withdraw?uid='+uid+'&token='+token+'&draw_com_id='+selectDrawId;
+            }
+        });
+    });
+    var bankList = [];
+    $(function () {
+        var drawComId = "{{drawComId}}";
+        $('.draw-com-id').hide();
+        $('.draw-com-id-' + drawComId).show();
+
+        // $('.bank-draw-com').hide();
+        // $('.bank-draw-com-' + drawComId).show();
+
+        $('.minWithdraw').text($('.draw-com-list-id-'+drawComId).attr('min-data'));
+        $('.maxWithdraw').text($('.draw-com-list-id-'+drawComId).attr('max-data'));
+        $.ajax({
+            url: "/bank/list",
+            type: 'POST',
+            data: {uid, token},
+            success: function (data) {
+                if (data.length > 0) {
+                    bankList = data;
+                    addBankOption(bankList, drawComId);
+                }
+            }
+        });
+    });
+    $('.draw-com-list').click(function () {
+        var drawid = $(this).attr('data');
+        $('#selected-draw-com-id').val(drawid);
+        $('.draw-com-list').removeClass('selected');
+        $(this).addClass('selected');
+        $('.draw-com-id').hide();
+        $('.draw-com-id-' + drawid).show();
+
+        // $('.bank-draw-com').hide();
+        // $('.bank-draw-com-' + drawid).show();
+        addBankOption(bankList, drawid);
+        $('.minWithdraw').text($('.draw-com-list-id-'+drawid).attr('min-data'));
+        $('.maxWithdraw').text($('.draw-com-list-id-'+drawid).attr('max-data'));
+    });
+    function addBankOption(list, draw_id) {
+        var html = '<option value="">' + "{{L('Please select a bank')}}" + '</option>';
+        $.each(list, function (k, v) {
+            if (v.draw_com_id == draw_id) {
+                html += '<option value="'+ v.id +'">'+ v.title +'</option>';
+            }
+        })
+        $('#bankid').html(html);
+    }
+</script>
+{{/block}}

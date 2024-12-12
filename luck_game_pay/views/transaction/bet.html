@@ -1,0 +1,166 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/transaction.css">
+<link rel="stylesheet" href="/assets/css/icon.css">
+<style>
+    .filter button {
+        font-size: 2.3vw;
+    }
+</style>
+{{/block}}
+{{block 'content'}}
+<body>
+<div class="container">
+    <header class="header">
+        <a href="#" class=""></a>
+        <h1 class="biaoti">{{L('My Transactions')}}</h1>
+        <a href="#" class="close-btn"></a>
+    </header>
+    <div class="tab">
+        <a href="/transaction?uid={{uid}}&token={{token}}">{{L('Deposits')}}</a>
+        <a href="/transaction/withdraw?uid={{uid}}&token={{token}}">{{L('Withdraw')}}</a>
+        <a href="#" class="active">{{L('Bets')}}</a>
+<!--        <a href="/transaction/bonus?uid={{uid}}&token={{token}}">{{L('Bonus')}}</a>-->
+    </div>
+    <div class="filter">
+        <button data="-1" class="un_selected selected">{{L('All')}}</button>
+        <button data="1" class="un_selected">{{L('Win')}}</button>
+        <button data="0" class="un_selected">{{L('Lose')}}</button>
+        <input type="hidden" value="-1" id="recharge_status">
+    </div>
+    <div class="notice">{{L('All your betting records are displayed here')}}</div>
+    <div class="transaction" style="overflow-y: auto">
+
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var uid = "{{uid}}";
+    var token = "{{token}}";
+    var isLoading = false;
+    var page = 1;
+    var dataEmpty = false;
+
+    $(function () {
+        loadInfo(1);
+    });
+
+    $('.filter button').click(function () {
+        $('#recharge_status').val($(this).attr('data'));
+        $('.filter button').removeClass('selected');
+        $(this).addClass('selected');
+        $('.transaction').html('');
+        page = 1;
+        dataEmpty = false;
+        pageArr = [1]; // 重置页面数组
+        loadInfo(1);
+    });
+
+    function loadInfo(num, is_scroll) {
+        if (isLoading) return;
+        isLoading = true;
+        var status = $('#recharge_status').val();
+        var index = layer.load();
+        $.ajax({
+            url: "/transaction/bet",
+            type: 'POST',
+            data: {
+                uid: uid,
+                token: token,
+                num: num,
+                status: status,
+            },
+            success: function (data) {
+                layer.close(index);
+                isLoading = false;
+                if (data.code < 0) {
+                    return alert_msg(data.msg);
+                }
+                if (is_scroll) {
+                    page++;
+                }
+                var html = '';
+                if (data.data.length > 0) {
+                    $.each(data.data, function (k, v) {
+                        html += '<div class="details">';
+                        if (v.status == 2) {
+                            html += '<i class="iconfont icon-paysuccess" style="color: green"></i>';
+                        } else if (v.status == 3) {
+                            html += '<i class="iconfont icon-shibai" style="color: red"></i>';
+                        } else {
+                            html += '<i class="iconfont icon-shizhong"></i>';
+                        }
+                        html += '<div class="info">' +
+                            '<div>' + v.orderid + '</div>' +
+                            '<div class="status">' + "{{L('Amount')}}: " + v.bet + '</div>' +
+                            '<div>' + v.time + '</div>' +
+                            '</div>' +
+                            '<div class="amount">' + "{{L('Win')}}:"  + v.wincoin + '</div>' +
+                            '</div>';
+                    });
+                } else {
+                    dataEmpty = true;
+                    if (num == 1) {
+                        var noneHtml = '<div class="none-div">' +
+                            '            <div class="none-img">' +
+                            '                <img src="/assets/images/logo.png" alt="">' +
+                            '            </div>' +
+                            '            <div class="none-text1">' +
+                            "                {{L('You just need a game app')}}" +
+                            '            </div>' +
+                            '            <div class="none-text2">' +
+                            "                {{L('You have not made any transactions until now')}}" +
+                            '            </div>' +
+                            '        </div>'
+                        $('.transaction').html(noneHtml);
+                    }
+                }
+                $('.transaction').append(html);
+            }
+        });
+    }
+
+    var pageArr = [1];
+
+    // 监听滚动事件，触发加载下一页
+    window.addEventListener('scroll', function () {
+        // 获取视窗的高度和页面的总高度
+        var windowHeight = window.innerHeight;
+        var docHeight = document.body.scrollHeight;
+
+        // 计算滚动条位置
+        var scrollTop = window.scrollY;
+
+        // 当滚动到底部时，加载下一页
+        if (windowHeight + scrollTop >= docHeight - 5) { // 减5是为了避免精确计算误差
+            var nextPage = page + 1;
+            console.log('nextPage：', nextPage);
+            console.log('dataEmpty：', dataEmpty);
+            if (pageArr.indexOf(nextPage) === -1 && !dataEmpty) {
+                pageArr.push(nextPage);
+                loadInfo(nextPage, true);
+            }
+        }
+    });
+
+    // 监听触摸事件，触发下拉刷新
+    var touchStartY = 0;
+    var touchEndY = 0;
+
+    window.addEventListener('touchstart', function (e) {
+        touchStartY = e.touches[0].clientY;
+    });
+
+    window.addEventListener('touchmove', function (e) {
+        touchEndY = e.touches[0].clientY;
+        if (touchEndY - touchStartY > 50 && window.scrollY === 0) {
+            layer.load();
+            window.location.reload();
+        }
+    });
+
+
+</script>
+{{/block}}

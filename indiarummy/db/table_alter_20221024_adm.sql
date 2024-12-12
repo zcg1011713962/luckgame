@@ -1,0 +1,1 @@
+update s_config set v ='{"invite":{"coin1":0,"rate1":"0:0:0","coin2":0,"rate2":"0:0:0"},"recharge":{"rrate1":0.05,"rate1":"0.2:0:0.8","rrate2":0.02,"rate2":"0.2:0:0.8"},"bet":{"rrate1":0.05,"rate1":"0.2:0:0.8","rrate2":0.02,"rate2":"0.2:0:0.8"}}' where k='invite';

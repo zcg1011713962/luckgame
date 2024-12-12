@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn-success {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+		.layui-btn-group .layui-btn-primary:hover {
+			border-color: #d2d2d2;
+    		color: #555;
+		}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏记录</a>
+        <a><cite>游戏税收记录</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right; background-color:#222d32;" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+          <input type="text" name="searchstr"  placeholder="玩家ID" value="" autocomplete="off" class="layui-input searchstr" style="width: 200px;">
+		  <div class="layui-inline">
+			<label class="layui-form-label">数据时间</label>
+			<div class="layui-input-inline" style="width: 300px;">
+				<input type="text" style="width: 100%" readonly name="map[time]" value="{$map.time|default=''}" id="start" placeholder="请选择数据时间" autocomplete="off" class="layui-input layui-date">
+			</div>
+		</div>
+		<input type="hidden" name="page" value="1">
+		<div class="layui-inline">
+			<div class="layui-btn-group times">
+				<button type="button" class="layui-btn layui-btn-primary" data-type="1">今天</button>
+				<button type="button" class="layui-btn layui-btn-primary" data-type="4">近7天</button>
+				<button type="button" class="layui-btn layui-btn-primary" data-type="5">近30天</button>
+				<button type="button" class="layui-btn layui-btn-primary" data-type="0">不限</button>
+			</div>
+		</div>
+		  <button class="layui-btn" style="background-color:#222d32; margin-left: 10px;" id="search"><i class="layui-icon">&#xe615;</i></button>
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,url: "{:url('agent/countTax')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'userId', title: '玩家ID'}
+				 ,{field: 'nickname', title: '玩家昵称'}
+                ,{field: 'winCoin',  title: '赢得筹码'}
+				,{field: 'tax', title: '税金'}
+				,{field: 'name', title: '游戏名'}
+				,{field: 'serverId', title: '服务器'}
+				,{field: 'balanceTime', title: '投注时间'}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            $('#search').on('click',function() {
+				var time = $('#start').val().split('~');
+                var data = {};
+					data.begin_time = $.trim(time[0]);
+					data.end_time = $.trim(time[1]);
+                    data.searchstr  = $('.searchstr').val();
+                tableId.reload({
+                    url: "{:url('agent/countTax')}?begin_time="+data.begin_time+"&end_time="+data.end_time+"&searchstr="+data.searchstr
+                });
+				return false;
+            });
+
+        });
+	</script>
+	<script>
+        function getFullDate(time) {
+            var month = time.getMonth() + 1, day = time.getDate();
+            if (month < 10) {
+                month = "0" + month;
+            }
+            if (day < 10) {
+                day = "0" + day;
+            }
+            return time.getFullYear() + '-' + month + '-' + day;
+        }
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem : '#start' ,
+                type : 'datetime' ,
+                range: '~',
+            });
+
+            $('.times button').on('click', function (e) {
+                let type               = parseInt(e.currentTarget.dataset.type);
+                let dates              = new Date();
+                let startTime, endTime = getFullDate(new Date()) + ' 23:59:59';
+                $($(this).siblings()).removeClass('layui-btn-success').addClass('layui-btn-primary')
+                $(this).removeClass('layui-btn-primary').addClass('layui-btn-success');
+                switch (type) {
+                    case 0 :
+                        // 不限
+                        $('.layui-date').val('');
+                        return;
+                        break;
+                    case 1 :
+                        // 今天
+
+                        break;
+                    case 2 :
+                        // 昨天
+                        dates.setDate(dates.getDate() - 1);
+                        endTime = getFullDate(dates) + ' 23:59:59';
+                        break;
+                    case 3 :
+                        // 近三天
+                        dates.setDate(dates.getDate() - 2);
+                        break;
+                    case 4 :
+                        // 近一周
+                        dates.setDate(dates.getDate() - 6);
+                        break;
+                    case 5 :
+                        // 近一月
+                        dates.setDate(dates.getDate() - 29);
+                        break;
+                }
+                startTime = getFullDate(dates) + ' 00:00:00';
+                $('.layui-date').val(startTime + ' ~ ' + endTime);
+            })
+        });
+    </script>
+  </body>
+
+</html>

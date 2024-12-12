@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .info {
+            text-decoration: underline;
+            color: blue;
+        }
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">代理管理</a>
+        <a><cite>直营数据</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <fieldset class="layui-elem-field" style="width:45%; float:left;">
+            <legend>个人信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="user_info">
+                    <tr>
+                        <th>子運營商</th>
+                        <td class="username">代理</td>
+                    </tr>
+                    <tr>
+                        <th>用戶ID</th>
+                        <td class="Id"></td>
+                    </tr>
+                    <tr>
+                        <th>暱稱</th>
+                        <td class="nickname"></td>
+                    </tr>
+                    <tr>
+                        <th>上級ID</th>
+                        <td class="ChannelType"></td>
+                    </tr>
+                    <tr>
+                        <th>綁定手機號</th>
+                        <td class="phoneNo"></td>
+                    </tr>
+                    <tr>
+                        <th>郵箱</th>
+                        <td class="email"></td>
+                    </tr>
+                    <tr>
+                        <th>歷史總傭金</th>
+                        <td class="history_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>已領傭金</th>
+                        <td class="draw_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>剩餘可領傭金</th>
+                        <td class="surplus_commission"></td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:right;">
+            <legend>业绩数据</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="performance_info">
+                    <tr>
+                        <th>本週業績</th>
+                        <td class="week_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>本週傭金</th>
+                        <td class="week_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>上週業績</th>
+                        <td class="lask_week_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>上週傭金</th>
+                        <td class="lask_week_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>本月業績</th>
+                        <td class="month_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>本月傭金</th>
+                        <td class="month_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>團隊總人數</th>
+                        <td class="team_size"></td>
+                    </tr>
+                    <tr>
+                        <th>今日團隊新增</th>
+                        <td class="new_today_team_num"></td>
+                    </tr>
+                    <tr>
+                        <th>昨日團隊新增</th>
+                        <td class="new_yesterday_team_num"></td>
+                    </tr>
+                    <tr>
+                        <th>直營人數</th>
+                        <td class="sub_size"></td>
+                    </tr>
+                    <tr>
+                        <th>直屬代理</th>
+                        <td class="parent_name"></td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:left;">
+            <legend>今日数据</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="today_info">
+                    <tr>
+                        <th>團隊業績</th>
+                        <td class="team_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>團隊傭金</th>
+                        <td class="team_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>代理業績</th>
+                        <td class="agent_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>代理傭金</th>
+                        <td class="agent_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>直營流水</th>
+                        <td class="sub_running_account"></td>
+                    </tr>
+                    <tr>
+                        <th>直營業績</th>
+                        <td class="sub_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>我的傭金</th>
+                        <td class="my_commission"></td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:right;">
+            <legend>昨日数据</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="yesterday_info">
+                    <tr>
+                        <th>團隊業績</th>
+                        <td class="team_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>團隊傭金</th>
+                        <td class="team_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>代理業績</th>
+                        <td class="agent_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>代理傭金</th>
+                        <td class="agent_commission"></td>
+                    </tr>
+                    <tr>
+                        <th>直營流水</th>
+                        <td class="sub_running_account"></td>
+                    </tr>
+                    <tr>
+                        <th>直營業績</th>
+                        <td class="sub_performance"></td>
+                    </tr>
+                    <tr>
+                        <th>我的傭金</th>
+                        <td class="my_commission"></td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+      <div class="layui-row">
+        <div>
+            用户ID：<input type="text" class="layui-input searchstr" style="width: 200px; display: inline-block;" placeholder="userid" id="uid" value="" />
+            &nbsp;&nbsp;
+            昵称：<input type="text" class="layui-input searchstr" style="width: 200px; display: inline-block;" placeholder="nickname" id="nickname" value="" />
+            &nbsp;&nbsp;
+            <button class="layui-btn" id="search">搜索</button>
+        </div>
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,url: "{:url('agents/getList1')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                {field: 'id', title: '用户ID', fixed: 'left'}
+                ,{field: 'Account',  title: '昵称', fixed: 'left'}
+				,{field: 'agent_register', title: '今日流水'}
+                ,{field: 'platform_profit', title: '本周流水', templet: function(d) {
+                    return '<a href="#" class="info">详情</a>';
+                }}
+                ,{field: 'team_number', title: '注册日期'}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            $('#search').on('click',function() {
+                var agent_id = $('#agent_id').val();
+                var uid = $('#uid').val();
+                var begin_time = $('#begin_time').val();
+                var end_time = $('#end_time').val();
+                tableId.reload({
+                    url: "{:url('agents/getList')}?agent_id="+agent_id+"&uid="+uid+"&begin_time="+begin_time+"&end_time="+end_time
+                });
+				return false;
+            });
+
+            // 通过id 加载详情
+            $.post("{:url('agents/getInfo')}",{id:'{$id}'}, function(data){
+                $.each(data, function(item){
+                    $.each(data[item], function(value){
+                        $('#'+item).find('.'+value).text(data[item][value]);
+                    });
+                });
+            },'Json');
+        });
+	</script>
+    <script>
+    </script>
+  </body>
+</html>

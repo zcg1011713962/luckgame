@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">兑换管理</a>
+        <a><cite>{$title}列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <style>
+        .layui-form-select{width: 150px;display: inline-block}
+    </style>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="" method="post">
+            <input type="text" name="map[id]"  placeholder="ID" value="{$map.id|default=''}" autocomplete="off" class="layui-input" style="width: 150px;">
+            <input type="text" name="map[userId]"  placeholder="用户ID或用户账号" value="{$map.userId|default=''}" autocomplete="off" class="layui-input" style="width: 150px;">
+            <div class="layui-inline">
+                <label class="layui-form-label">数据时间</label>
+                <div class="layui-input-inline" style="width: 300px;">
+                    <input type="text" style="width: 100%" readonly name="map[time]" value="{$map.time|default=''}" id="start" placeholder="请选择数据时间" autocomplete="off" class="layui-input layui-date">
+                </div>
+            </div>
+            <input type="hidden" name="page" value="1">
+            <div class="layui-inline">
+                <div class="layui-btn-group times">
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="1">今天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="2">昨天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="3">近3天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="4">近7天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="5">近30天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="0">不限</button>
+                </div>
+            </div>
+
+		  <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+		</form>
+      </div>
+      <xblock style="display: none;">
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$count} 条</span>
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th style="display: none;">
+              <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>ID</th>
+            <th>流水号</th>
+            <th>用户ID</th>
+            <th>银行卡号</th>
+            <th>开户行</th>
+            <th>真实姓名</th>
+            <th>
+                {if $status == 0}
+                金额
+                {/if}
+                {if $status == 1}
+                已兑换金额
+                {/if}
+                {if $status == 2}
+                拒绝金额
+                {/if}
+            </th>
+            <th>创建时间</th>
+            {if $status == 2}
+              <th>操作人</th>
+              <th>操作时间</th>
+            {/if}
+            {if $status == 0}<th>操作</th>{/if}
+		  </tr>
+        </thead>
+        <tbody>
+		{foreach $list as $key=>$vo }
+		<tr>
+		  <td style="display: none;">
+			<div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$vo.id}'><i class="layui-icon">&#xe605;</i></div>
+		  </td>
+		  <td>{$vo.id}</td>
+		  <td>{$vo.order_number}</td>
+		  <td>{$vo.user_id} {$vo.nickname}</td>
+		  <td>{$vo.bank_number}</td>
+		  <td>{$vo.bank_open}</td>
+		  <td>{$vo.real_name}</td>
+		  <td>{$vo.money|showGold}</td>
+		  <td>{$vo.created_at}</td>
+            {if $status == 2}
+            <th>{$vo.admin_username} {$vo.created_uid}</th>
+            <th>{$vo.updated_at}</th>
+            {/if}
+            {if $status == 0}
+            <td class="td-manage">
+                <a title="完成" class="layui-btn layui-btn-primary" onclick="change_status(this,'{$vo.id}','确认要完成吗？',1)" href="javascript:;">
+                    完成
+                </a>
+                <a title="拒绝" class="layui-btn layui-btn-danger" onclick="change_status(this,'{$vo.id}','确认要拒绝吗？',2)" href="javascript:;">
+                    拒绝
+                </a>
+            </td>
+            {/if}
+		</tr>
+		{/foreach}
+          
+        </tbody>
+      </table>
+      <div class="page">        
+		{$page|raw}
+      </div>
+
+    </div>
+    <script>
+        /*同意或完成*/
+        function change_status(obj,id , tips , status){
+            layer.confirm(tips,function(index){
+                //发异步删除数据
+                $.post("{:url('UserExchange/changeStatus')}" , {status : status , id : id} , function(res){
+                    if (res.status == 0) {
+                        $(obj).parents("tr").remove();
+                        layer.msg(res.message,{icon:1,time:1000});
+                    }
+                    if (res.status == 1) {
+                        layer.msg(res.message,{icon:5,time:1000});
+                        console.log(res);
+                    }
+                },'Json');
+            });
+        }
+        function getFullDate(time) {
+            var month = time.getMonth() + 1, day = time.getDate();
+            if (month < 10) {
+                month = "0" + month;
+            }
+            if (day < 10) {
+                day = "0" + day;
+            }
+            return time.getFullYear() + '-' + month + '-' + day;
+        }
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem : '#start' ,
+                type : 'datetime' ,
+                range: '~',
+            });
+
+            $('.times button').on('click', function (e) {
+                let type               = parseInt(e.currentTarget.dataset.type);
+                let dates              = new Date();
+                let startTime, endTime = getFullDate(new Date()) + ' 23:59:59';
+                $($(this).siblings()).removeClass('layui-btn-success').addClass('layui-btn-primary')
+                $(this).removeClass('layui-btn-primary').addClass('layui-btn-success');
+                switch (type) {
+                    case 0 :
+                        // 不限
+                        $('.layui-date').val('');
+                        return;
+                        break;
+                    case 1 :
+                        // 今天
+
+                        break;
+                    case 2 :
+                        // 昨天
+                        dates.setDate(dates.getDate() - 1);
+                        endTime = getFullDate(dates) + ' 23:59:59';
+                        break;
+                    case 3 :
+                        // 近三天
+                        dates.setDate(dates.getDate() - 2);
+                        break;
+                    case 4 :
+                        // 近一周
+                        dates.setDate(dates.getDate() - 6);
+                        break;
+                    case 5 :
+                        // 近一月
+                        dates.setDate(dates.getDate() - 29);
+                        break;
+                }
+                startTime = getFullDate(dates) + ' 00:00:00';
+                $('.layui-date').val(startTime + ' ~ ' + endTime);
+            })
+        });
+    </script>
+
+  </body>
+
+</html>

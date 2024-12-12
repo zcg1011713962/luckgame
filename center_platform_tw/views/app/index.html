@@ -1,0 +1,462 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/view.css"/>
+<style>
+    .layui-form-label {
+        width: 120px;
+    }
+    .layui-input-block {
+        margin-left: 150px;
+    }
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-page-header">
+        <div class="pagewrap">
+            <h2 class="title">应用管理</h2>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-form layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-form-mid">名称:</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" name="name" autocomplete="off" class="layui-input query_name">
+                            </div>
+                            <button class="layui-btn layui-btn-primary item-query-info">查询</button>
+                            <button class="layui-btn layui-btn-blue add-item-info"><i class="layui-icon">&#xe654;</i>新增
+                            </button>
+                        </div>
+                    </div>
+
+                    <table id="itemList" lay-filter="itemList">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-top: -5000px;">
+    <div id="model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body edit-item-info" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" value="" placeholder="名称" autocomplete="off"
+                           class="layui-input item_name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">货币</label>
+                <div class="layui-input-block">
+                    <select name="currency" class="item_currency">
+                        {{each currencyList item}}
+                        <option value="{{item.currency}}">{{item.name_cn}}({{item.currency}})</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">ad应用识别码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ad_app_token" value="" placeholder="ad应用识别码" autocomplete="off"
+                           class="layui-input item_ad_app_token">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">S2S认证附加码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="ad_identity_token" value="" placeholder="S2S认证附加码" autocomplete="off"
+                           class="layui-input item_ad_identity_token">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea name="remark" placeholder="备注" class="layui-textarea item_remark" cols="10"
+                              rows="5"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div style="margin-top: -10000px;">
+    <div id="channel-model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body" action="">
+            {{each channelList item}}
+            <div style="border: 1px dashed #ddd;margin-bottom: 5px;padding-right: 20px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="channel_id" title="{{item.name}}" value="{{item.id}}" class="channel_item_{{item.id}} channel_item_id" lay-skin="primary">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">权重</label>
+                    <div class="layui-input-block">
+                        <select name="weight" class="channel_weight_{{item.id}}" style="width: 50px">
+                            {{each percentList item1}}
+                            <option value="{{item1}}">{{item1}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div style="margin-top: -10000px;">
+    <div id="event-model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body" action="">
+            {{each eventList item}}
+            <div style="border: 1px dashed #ddd;margin-bottom: 5px;padding-right: 20px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="event_id" title="{{item.event_name}}" value="{{item.id}}" class="event_item_{{item.id}} event_item_id" lay-skin="primary">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">事件识别码</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="event_token" value="" placeholder="事件识别码" autocomplete="off"
+                               class="layui-input event_token_{{item.id}}">
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    $('.item-query-info').click(function () {
+        var name = $('.query_name').val();
+        showList({name});
+    });
+
+    function showList(param) {
+        table.render({
+            elem: '#itemList'
+            , url: '/backend/app'
+            , method: 'POST'
+            , totalRow: true
+            , cols: [[ //标题栏
+                {field: 'id', title: 'ID', width: 60, sort: true}
+                , {field: 'create_time', title: '创建时间', minWidth: 50}
+                , {field: 'name', title: '名称', minWidth: 50}
+                , {field: 'currency', title: '币种', minWidth: 50}
+                , {field: 'app_token', title: 'Token', minWidth: 50}
+                , {field: 'ad_app_token', title: 'ad应用识别码', minWidth: 50}
+                , {field: 'ad_identity_token', title: 'S2S认证附加码', minWidth: 50}
+                , {
+                    field: '', title: '操作', width: 240, templet: function (d) {
+                        return '' +
+                            '<a class="layui-btn layui-btn-sm" lay-event="show_item_info">查看</a>' +
+                            '<a class="layui-btn layui-btn-sm" style="background-color: green" lay-event="bind_channel">支付渠道</a>' +
+                            '<a class="layui-btn layui-btn-sm" style="background-color: orange" lay-event="bind_event">埋点事件</a>' +
+                            '';
+                    }
+                }
+
+            ]]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limit: 20
+            , limits: [10, 20, 50, 100]
+            , where: param
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+        });
+    }
+
+    $(function () {
+        showList({});
+    });
+    //新增
+    $('.add-item-info').click(function () {
+        $('.item_id').val('');
+        $('.item_name').val('');
+        $('.item_ad_app_token').val('');
+        $('.item_ad_identity_token').val('');
+        $('.item_remark').val('');
+        form.render();
+        var type = 'offset';
+        layer.open({
+            type: 1
+            , offset: '10px'
+            , id: 'layerDemo' + type //防止重复弹出
+            , title: '新增'
+            , content: $('#model')
+            , btn: ['保存']
+            , area: ['1200px', '720px']//定义宽和高
+            , btnAlign: 'c' //按钮居中
+            , shade: 0 //不显示遮罩
+            , btn1: function () {
+                console.log(123);
+            }
+            , yes: function () {
+                saveAddDate();
+                // layer.closeAll();
+            }
+        });
+    });
+
+    //查看
+    function showItemInfo(id) {
+        var index2 = layer.load();
+        $.ajax({
+            url: "/backend/app/info",
+            type: 'POST',
+            data: {id},
+            success: function (data) {
+                layer.close(index2);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                console.log(data.data);
+                $('.item_id').val(id);
+                $('.item_name').val(data.data.name);
+                $('.item_ad_app_token').val(data.data.ad_app_token);
+                $('.item_ad_identity_token').val(data.data.ad_identity_token);
+                $('.item_remark').val(data.data.remark);
+                $('.item_currency').val(data.data.currency);
+                form.render()
+                var type = 'offset' + id;
+                layer.open({
+                    type: 1
+                    , offset: '10px'
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , title: '查看'
+                    , content: $('#model')
+                    , btn: ['保存']
+                    , area: ['1200px', '480px']//定义宽和高
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , btn1: function () {
+                        console.log(123);
+                    }
+                    , yes: function () {
+                        saveAddDate();
+                        // layer.closeAll();
+                    }
+                });
+            }
+        });
+    }
+
+    //新增或编辑保存数据
+    function saveAddDate() {
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            name: $('.item_name').val(),
+            ad_app_token: $('.item_ad_app_token').val(),
+            ad_identity_token: $('.item_ad_identity_token').val(),
+            currency: $('.item_currency').val(),
+            remark: $('.item_remark').val(),
+        };
+        $.ajax({
+            url: "/backend/app/addEdit",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+                layer.closeAll();
+                window.location.reload()
+            }
+        });
+    }
+
+    //监听操作栏
+    table.on('tool(itemList)', function (obj) {
+        var data = obj.data;
+        console.log(data);
+        var id = data.id;
+        var layEvent = obj.event;
+        if (layEvent === 'show_item_info') {
+            showItemInfo(id);
+        } else if (layEvent === 'bind_channel') {
+            var index3 = layer.load();
+            $.ajax({
+                url: "/backend/app/appChannel",
+                type: 'POST',
+                data: {id},
+                success: function (data) {
+                    layer.close(index3);
+                    console.log(data.data);
+                    if (data.code < 0) {
+                        return layer.msg(data.msg);
+                    }
+                    $('.item_id').val(id);
+                    $('.channel_item_id:checked').removeAttr('checked');
+                    if (data.data.length > 0) {
+                        for (var i = 0; i < data.data.length; i++) {
+                            $('.channel_item_' + data.data[i].channel_id).prop('checked', 'checked');
+                            $('.channel_weight_' + data.data[i].channel_id).val(data.data[i].weight);
+                        }
+                    }
+                    form.render();
+                    var type = 'offset2' + id;
+                    layer.open({
+                        type: 1
+                        , offset: '10px'
+                        , id: 'layerDemo' + type //防止重复弹出
+                        , title: '绑定支付渠道'
+                        , content: $('#channel-model')
+                        , btn: ['保存']
+                        , area: ['800px', '600px']//定义宽和高
+                        , btnAlign: 'c' //按钮居中
+                        , shade: 0 //不显示遮罩
+                        , btn1: function () {
+                            console.log(123);
+                        }
+                        , yes: function () {
+                            saveBindChannel();
+                            // layer.closeAll();
+                        }
+                    });
+                }
+            });
+        } else if (layEvent === 'bind_event') {
+            var index4 = layer.load();
+            $.ajax({
+                url: "/backend/app/appEvent",
+                type: 'POST',
+                data: {id},
+                success: function (data) {
+                    layer.close(index4);
+                    console.log(data.data);
+                    if (data.code < 0) {
+                        return layer.msg(data.msg);
+                    }
+                    $('.item_id').val(id);
+                    $('.event_item_id:checked').removeAttr('checked');
+                    if (data.data.length > 0) {
+                        for (var i = 0; i < data.data.length; i++) {
+                            if (data.data[i].status == 0) {
+                                $('.event_item_' + data.data[i].event_id).prop('checked', 'checked');
+                            }
+                            $('.event_token_' + data.data[i].event_id).val(data.data[i].event_token);
+                        }
+                    }
+                    form.render();
+                    var type = 'offset3_' + id;
+                    layer.open({
+                        type: 1
+                        , offset: '10px'
+                        , id: 'layerDemo' + type //防止重复弹出
+                        , title: '绑定埋点事件'
+                        , content: $('#event-model')
+                        , btn: ['保存']
+                        , area: ['800px', '600px']//定义宽和高
+                        , btnAlign: 'c' //按钮居中
+                        , shade: 0 //不显示遮罩
+                        , btn1: function () {
+                            console.log(123);
+                        }
+                        , yes: function () {
+                            saveBindEvent();
+                        }
+                    });
+                }
+            });
+        }
+    });
+    //绑定支付渠道
+    function saveBindChannel() {
+        var channel_id_weight = [];
+        $('.channel_item_id:checked').each(function() {
+            let channel_id = $(this).val();
+            channel_id_weight.push({channel_id, weight: $('.channel_weight_' + channel_id).val()});
+        });
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            id_weight: JSON.stringify(channel_id_weight),
+        };
+        $.ajax({
+            url: "/backend/app/bindChannel",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+                setTimeout(function () {
+                    layer.closeAll();
+                }, 1000);
+                // window.location.reload()
+            }
+        });
+    }
+    //绑定埋点事件
+    function saveBindEvent() {
+        var event_id_token = [];
+        $('.event_item_id:checked').each(function() {
+            let event_id = $(this).val();
+            event_id_token.push({event_id, event_token: $('.event_token_' + event_id).val()});
+        });
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            id_token: JSON.stringify(event_id_token),
+        };
+        $.ajax({
+            url: "/backend/app/bindEvent",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+                setTimeout(function () {
+                    layer.closeAll();
+                }, 1000);
+            }
+        });
+    }
+</script>
+{{/block}}

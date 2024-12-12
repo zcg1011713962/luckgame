@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image:width" content="600"/>
+    <meta property="og:image:height" content="314"/>
+    <meta property="og:title" content="Join now Luck Games and win free cash."/>
+    <meta property="og:description"
+          content="Play Luck Games. Enjoy the fine of Rummy,Teenpatti,Ludo,Poker,Slots,Arcade,Spin,Aviator,Mines and all the other cash games.Enjoy free welcome bonus,daily promo code,daily leader board,jackpot,VIP level up bonus,VIP weekly bonus,VIP monthly bonus and other free cash."/>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <meta property="type" content="website">
+    <meta property="title" content="Join in Luck Games!">
+    <meta property="description"
+          content="Play Luck Games. Enjoy the fine of Rummy,Teenpatti,Ludo,Poker,Slots,Arcade,Spin,Aviator,Mines and all the other cash games.Enjoy free welcome bonus,daily promo code,daily leader board,jackpot,VIP level up bonus,VIP weekly bonus,VIP monthly bonus and other free cash.">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=720, user-scalable=no">
+    <title>Join in Luck Games!</title>
+    <link rel="icon" href="vn_static/img/favicon.ico">
+    <link rel="shortcut icon" href="vn_static/img/favicon.ico">
+    <script type="text/javascript" src="vn_static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="vn_static/js/index.js?t=2342342"></script>
+    <script src="vn_static/js/index.umd.js?t=1232"></script>
+    <script src="vn_static/js/js.js?id=G-446CK6GJ13"></script>
+    <script src="vn_static/js/adjustscript.js"></script>
+    <script>
+        // get query string, and parse it with URLSearchParams
+        const urlParams = new URLSearchParams(window.location.search);
+        //p0 = urlParams.get("p0") and fallback to "default"
+        p0 = urlParams.get("p0");
+        p1 = urlParams.get("p1");
+        p2 = urlParams.get("p2");
+        p3 = urlParams.get("p3");
+        p4 = urlParams.get("p4");
+        p5 = urlParams.get("p5");
+        p6 = urlParams.get("p6");
+        code = urlParams.get("code");
+        fbPid = getFbPid();
+        fbClickId = urlParams.get("fbclid");
+        const redurl = "https://www.luckgameapp.com/apk/luck_game.apk";
+        url = buildURL(p0, p1, p2, p3, p4, p5, p6, fbClickId, fbPid, redurl);
+
+        document.addEventListener("click", function () {
+            console.log("click install", url);
+            if (code) {
+                var copy_code = 'code=' + code;
+                navigator.clipboard.writeText(copy_code).then(() => {
+                    console.log('Text copied to clipboard: ' + copy_code);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            }
+            window.location.href = url;
+        })
+    </script>
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '396127886661807');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+             src="https://www.facebook.com/tr?id=396127886661807&ev=PageView&noscript=1"/>
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            background-size: 100% 100%;
+            position: absolute;
+            background-color: #0C0C0C;
+            overflow-x: hidden;
+        }
+
+        .contain {
+            width: 100%;
+            height: 165vw;
+            display: block;
+            position: relative;
+            background-image: url(vn_static/img/H52.jpg);
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .downloadimg {
+            width: 100%;
+            height: 10vw;
+            clear: both;
+            text-align: center;
+            margin-top: 106vw;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .mid {
+            width: 100%;
+            margin-top: 8vw;
+            position: relative;
+        }
+
+        .header {
+            width: 100%;
+            height: 22vw;
+        }
+
+        .header .logo {
+            float: left;
+            margin: 3.65vw 0 0 3vw;
+            width: 16vw;
+        }
+
+        .header .logotxt {
+            float: left;
+            margin: 4.5vw 0 0 0;
+        }
+
+        .header100 {
+            float: right;
+            margin: 4vw 0 0 0;
+        }
+
+        .midtxt {
+            clear: both;
+            text-align: center;
+            padding-top: 2.8vw;
+        }
+
+        .games {
+            margin: 3.5vw 1.5vw 4vw;
+            width: 96%;
+            background: #222;
+            border-radius: 2.5vw;
+            position: relative;
+            padding: 0.32vw;
+        }
+
+        .icon {
+            margin: 0 auto;
+            width: 80%;
+            color: #5FBB92;
+        }
+
+        .icon li {
+            list-style: none;
+        }
+
+        .icon span {
+            font-size: 25px;
+            color: #5FBB92;
+        }
+
+        .gamestopul {
+            margin: 2.6vw 0;
+        }
+
+        .gameul {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .gameul li {
+            list-style: none;
+            float: left;
+        }
+
+        .midtop {
+            width: 100%;
+            margin: 2vw auto;
+            text-align: center;
+            top: 3vw;
+            position: absolute;
+        }
+
+        .midtips {
+            margin-top: 3vw;
+            position: absolute;
+            top: 13vw;
+            width: 100%;
+            text-align: center;
+        }
+
+        .midtipstxt {
+            width: 100%;
+            color: white;
+            position: absolute;
+            top: 35vw;
+            font-size: 3.8vw;
+            text-align: center;
+        }
+
+        .bottom {
+            position: fixed;
+            bottom: 0;
+            background-image: url('vn_static/img/bottom.png');
+            width: 100%;
+            height: 28vw;
+            text-align: center;
+        }
+
+        .getbonus {
+            width: 100%;
+            text-align: center;
+            margin-top: 7vw;
+            margin-bottom: 0.8vw;
+            background-image: url('vn_static/img/getbonus.png');
+            background-repeat: no-repeat;
+            background-size: 60%;
+            background-position: center;
+        }
+        .getbonus span {
+            font-size: 2.8vw;
+            color: #fce854;
+        }
+        .getbonustxt {
+            font-size: 3vw;
+            font-weight: bold;
+            color: white;
+        }
+
+        .downloadbottom {
+            width: 100%;
+            text-align: center;
+            margin-top: -5vw;
+        }
+
+        .renzheng {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5vw 3vw 1vw;
+        }
+        .renzheng img {
+            width: 25vw;
+        }
+    </style>
+    <script>
+        var source = getURLParameter('src');
+        if (source == undefined) {
+            source = 0
+        }
+        var ua = navigator.userAgent || '';
+        var isChrome = /Chrome/i.test(ua);
+        window.dataLayer = window.dataLayer || [];
+    </script>
+</head>
+<body>
+<div class="contain">
+    <div class="header">
+        <div class="logo"><img src="vn_static/img/logo.png" width="80%" border="0"></div>
+        <div class="logotxt"><img src="vn_static/img/yono.png" width="40%" border=""/><br/>
+            <img src="vn_static/img/ten.png?v=1" width="80%" border="0"/>
+        </div>
+        <div class="header100"><img src="vn_static/img/100.png" width="70%" border="0"></div>
+    </div>
+    <div class="downloadimg">
+        <img src="vn_static/img/logo3.png" style="position: relative;bottom: 20vw;" border="0" width="45%">
+    </div>
+    <div class="mid">
+        <div class="midtxt">
+            <div><img src="vn_static/img/midtop.png?v=1" border="0" width="60%"/></div>
+            <div><img src="vn_static/img/midten.png?v=1" border="0" width="60%"/></div>
+        </div>
+    </div>
+</div>
+<div class="games">
+    <div class="gamestopul sp-slides">
+        <div class="sp-slide" style="width: 100%;">
+            <ul class="gameul">
+                <li><img src="vn_static/img/01.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/02.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/03.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/04.png" width="150" border="0"/></li>
+            </ul>
+            <ul class="gameul">
+                <li><img src="vn_static/img/05.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/06.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/07.png" width="150" border="0"/></li>
+                <li><img src="vn_static/img/08.png" width="150" border="0"/></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="renzheng">
+    <img src="vn_static/img/renzheng1.png" class="renzheng1" alt="">
+    <img src="vn_static/img/renzheng2.png" class="renzheng2" alt="">
+    <img src="vn_static/img/renzheng3.png" class="renzheng3" alt="">
+</div>
+<div class="games" style="margin-top:5vw;height: 44vw;">
+    <div class="midtop">
+        <img src="vn_static/img/midtop.png?v=1" width="50%"/>
+    </div>
+    <div class="midtips">
+        <ul class="icon">
+            <li style="width: 25%;float:left;">
+                <img src="vn_static/img/1.png" width="50%" border="0"/><br/>
+                <span><img src="vn_static/img/a1.png" width="60%" border="0" alt=""></span>
+            </li>
+            <li style="width: 25%;float:left;">
+                <img src="vn_static/img/2.png" width="50%"/><br/>
+                <span><img src="vn_static/img/a2.png" width="30%" border="0" alt=""></span>
+            </li>
+            <li style="width: 25%;float:left;">
+                <img src="vn_static/img/3.png" width="50%"/><br/>
+                <span><img src="vn_static/img/a3.png" width="30%" border="0" alt=""></span>
+            </li>
+            <li style="width: 25%;float:left;">
+                <img src="vn_static/img/4.png" width="50%"/><br/>
+                <span><img src="vn_static/img/a4.png" width="50%" border="0" alt=""></span>
+            </li>
+        </ul>
+    </div>
+    <div class="midtipstxt">
+        <img src="vn_static/img/lvzixia.png" alt="" width="85%">
+    </div>
+</div>
+<div style="height: 30vw;"></div>
+<div class="bottom">
+    <div style="margin:0 auto;">
+        <div class="getbonus">
+            <span class="getbonustxt">Nhận được tiền thưởng lên đến 20000</span>
+        </div>
+        <div class="downloadbottom">
+            <a href="javascript:;" id="down_apk_2">
+                <img src="vn_static/img/bdownload.png" width="70%" border="0" />
+            </a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

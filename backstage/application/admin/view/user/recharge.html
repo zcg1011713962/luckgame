@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+  
+  <body>
+	<div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">会员管理</a>
+	      <a><cite>会员充值</cite></a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	</div>
+    <div class="x-body layui-anim layui-anim-up">
+		<div class="layui-btn-group">
+			<div class="layui-btn layui-btn-primary batAdd">
+				批量增加
+			</div>
+			<div class="layui-btn layui-btn-danger batClear">
+				批量清零
+			</div>
+		</div>
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+			<li>充值</li>
+			<li class="layui-this">金币记录</li>
+			<li>房卡记录</li>
+		  </ul>
+		  <div class="layui-tab-content">
+			  
+			<div class="layui-tab-item">
+				<form class="layui-form" action="" method="post" >
+				    <div class="layui-form-item">
+				        <label for="account" class="layui-form-label">
+				            <span class="x-red">*</span>充值ID
+				        </label>
+				        <div class="layui-input-inline">
+				            <input type="text" id="account" name="account" required="" autocomplete="off" class="layui-input" style="width: 400px;">
+				        </div>              
+				    </div>
+				    <div class="layui-form-item">
+				        <label for="fee" class="layui-form-label">
+				            <span class="x-red">*</span>充值金额
+				        </label>
+				        <div class="layui-input-inline">
+				            <input type="text" id="fee" name="fee" required="" autocomplete="off" class="layui-input gold-input">
+				        </div>
+					  <div class="layui-form-mid layui-word-aux">
+						  <span class="x-red">*</span> 单位：元，不加符号为正 前面加-为扣点
+					  </div>
+				    </div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">
+							<span class="x-red">*</span>充值类型
+						</label>
+						<div class="layui-input-inline">
+							<input type="radio" name="type" value="金币" title="金币" checked>
+							<input type="radio" name="type" value="房卡" title="房卡" >
+						</div>		
+						<div class="layui-form-mid layui-word-aux">
+							<span class="x-red">*</span> 注：金币1：100 房卡1：1
+						</div>
+					</div>
+				    
+				    <div class="layui-form-item">
+				        <label for="L_repass" class="layui-form-label">
+				        </label>
+				        <button  class="layui-btn" lay-filter="add" lay-submit="">
+				            增加
+				        </button>
+				    </div>
+				</form>
+			</div>
+			
+			<div class="layui-tab-item layui-show">
+				<span class="x-left" style="line-height:40px">共有数据：{$count} 条</span>
+				<table class="layui-table">
+				  <thead>
+				    <tr>				     
+				      <th>操作人ID</th>
+				      <th>账号ID</th>
+				      <th>变动金额</th>
+				      <th>原有金额</th>
+				      <th>最新金额</th>
+				      <th>类型</th>
+				      <th>操作时间</th>
+					</tr>
+				  </thead>
+				  <tbody>
+						{foreach $list as $key=>$vo } 							
+								<tr>
+								  <td>{$vo.adminid}</td>
+								  <td>{$vo.userid}</td>
+								  <td>{$vo.czfee|showGold}</td>
+								  <td>{$vo.oldfee|showGold}</td>
+								  <td>{$vo.newfee|showGold}</td>
+								  <td>
+									  {if  $vo.type == '1' } <span style="color:red;">充值</span> {/if}
+									  {if  $vo.type == '0' } <span style="color:green;">扣除</span> {/if}
+								  </td>
+								  <td>{:date('Y-m-d H:i',$vo.createtime)}</td>								  
+								</tr>
+						{/foreach}
+				    
+				  </tbody>
+				</table>
+				<div class="page">        
+					{$page|raw}
+				</div>
+			</div>
+			
+			<div class="layui-tab-item">
+				<span class="x-left" style="line-height:40px">共有数据：{$count1} 条</span>
+				<table class="layui-table">
+				  <thead>
+				    <tr>				     
+				      <th>操作人ID</th>
+				      <th>账号ID</th>
+				      <th>变动金额</th>
+				      <th>原有金额</th>
+				      <th>最新金额</th>
+				      <th>类型</th>
+				      <th>操作时间</th>
+					</tr>
+				  </thead>
+				  <tbody>
+						{foreach $list1 as $key=>$vo } 							
+								<tr>
+								  <td>{$vo.adminid}</td>
+								  <td>{$vo.userid}</td>
+								  <td>{$vo.czfee}</td>
+								  <td>{$vo.oldfee}</td>								  
+								  <td>{$vo.newfee}</td>
+								  <td>
+									  {if  $vo.type == '1' } <span style="color:red;">充值</span> {/if}
+									  {if  $vo.type == '0' } <span style="color:green;">扣除</span> {/if}
+								  </td>
+								  <td>{:date('Y-m-d H:i',$vo.createtime)}</td>								  
+								</tr>
+						{/foreach}
+				    
+				  </tbody>
+				</table>
+				<div class="page">        
+					{$page1|raw}
+				</div>
+			</div>
+		  </div>
+		</div>
+    </div>
+
+	<div class="batAddBox" style="display: block">
+		<form class="layui-form" action="" method="post" style="padding:10px;">
+			<div class="layui-form-item">
+				<label for="fee" class="layui-form-label">
+					<span class="x-red">*</span>增加金额
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="fee" name="fee" required="" autocomplete="off" class="layui-input gold-input">
+				</div>
+				<div class="layui-form-mid layui-word-aux" style="margin-left: 30px;">
+					<span class="x-red">*</span> 单位：元，不加符号为正 前面加-为扣点
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label for="L_repass" class="layui-form-label">
+				</label>
+				<button  class="layui-btn" lay-filter="batAdd" lay-submit="">
+					增加
+				</button>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript" src="__JS__/common.js"></script>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+
+		  $('.batAdd').click(function(){
+			  layer.open({
+				  type: 1,
+				  title:'批量增加' ,
+				  content: $('.batAddBox') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+			  });
+		  });
+
+		  $('.batClear').click(function(){
+			  layer.confirm('您确认要批量清零吗？', {icon: 3, title:'提示'}, function(index){
+				  //do something
+				  $.ajax({
+					  type: "POST",
+					  url: "{:url('batClear')}",
+					  success: function(res){
+						  console.log(res);
+						  if(res == 'success'){
+							  layer.msg('操作成功!',function(){
+								  window.location.reload();
+							  });
+						  }else{
+							  layer.msg(res);
+						  }
+					  }
+				  });
+				  layer.close(index);
+			  });
+		  })
+        
+          //监听提交
+          form.on('submit(add)', function(data){
+            console.log(data.field);
+            $.ajax({
+               type: "POST",
+               url: "{:url('doRecharge')}",
+               data: data.field,
+               success: function(res){
+				   console.log(res);
+            	   if(res == 'success'){
+            		   layer.msg('充值成功!',function(){
+            			   window.location.reload();
+            		   });					   
+            	   }else{
+            			layer.msg(res);
+            	   }
+               }
+            });
+            return false;
+          });
+
+			//监听提交
+			form.on('submit(batAdd)', function(data){
+				console.log(data.field);
+				$.ajax({
+					type: "POST",
+					url: "{:url('batAdd')}",
+					data: data.field,
+					success: function(res){
+						console.log(res);
+						if(res == 'success'){
+							layer.msg('操作成功!',function(){
+								window.location.reload();
+							});
+						}else{
+							layer.msg(res);
+						}
+					}
+				});
+				return false;
+			});
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

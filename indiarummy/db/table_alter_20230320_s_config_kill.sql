@@ -1,0 +1,1 @@
+ALTER TABLE `s_config_kill` ADD COLUMN `alone` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否独立房间' AFTER `ord`;

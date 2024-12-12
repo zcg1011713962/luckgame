@@ -1,0 +1,9 @@
+{
+  "success": "success",
+  "param error": "Parameter error",
+  "operate failed": "operation failed",
+  "unauthorized access": "Unauthorized access",
+  "client ip is unauthorized": "Client IP is unauthorized",
+  "invalid interface address": "invalid interface address",
+  "permission denied": "permission denied"
+}

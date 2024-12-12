@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏管理</a>
+        <a>
+          <cite>游戏列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+       
+      <span class="x-left" style="line-height:40px">共有数据：{$count} 条</span>
+     
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>GameID</th>
+            <th>名称</th>
+            <th>端口</th>
+            <th>版本</th>
+            <th>类型</th>
+            <th>库存管理</th>
+            <th>状态</th>
+            <th>其他</th>
+            </tr>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo }
+          <tr>
+            <td>{$vo.gameid}</td>
+            <td>{$vo.name}</td>
+            <td>{$vo.port}</td>
+            <td>{$vo.version}</td>
+            <td>
+							{switch $vo.type|intval }
+									{case 1}<span style="color: #EE3333;">棋牌类</span>{/case}
+									{case 2}<span style="color: #007DDB;">SLOT类</span>{/case}
+									{case 3}<span style="color: #00AA00;">其他类</span>{/case}
+									{default /}<span style="color: #C0C0C0;">未设置</span>
+							{/switch}
+						</td>
+            <td>
+							{if $vo.isshuigame }
+							<a onclick="x_admin_show('修改抽水率','{:url('Game/editchoushuilv',[ 'id' => $vo['id'] ])}',600,600)" title="修改抽水率" href="javascript:;" style="color:red;">
+							  <i class="layui-icon">&#xe631;</i>
+							</a>水位：{$vo.shuiwei} <br/>
+							<a onclick="x_admin_show('修改库存','{:url('Game/editkucun',[ 'id' => $vo['id'] ])}',600,400)" title="修改库存" href="javascript:;" style="color:red;">
+							  <i class="layui-icon">&#xe631;</i>
+							</a>库存：{$vo.kucun} <br/>
+							奖池：{$vo.jiangchi} 
+							{/if}
+						</td>
+            <td>
+							{if $vo.isstart}
+								<a onclick="game_start(this,'{$vo.id}','0')" href="javascript:;">
+									<span class="layui-btn layui-btn-normal layui-btn-mini">已开启</span>
+								</a>
+							{else /}
+								<a onclick="game_start(this,'{$vo.id}','1')" href="javascript:;">
+									<span class="layui-btn layui-btn-danger layui-btn-mini">已关闭</span>
+								</a>
+							{/if}
+						</td>            
+            <td class="td-manage">
+              <a title="在线人数"  onclick="x_admin_show('在线人数','{:url('Game/onlinenum',[ 'id' => $vo['id'] ])}')" href="javascript:;">
+                <i class="layui-icon">&#xe770;</i>
+              </a>							
+            </td>
+          </tr>
+					{/foreach}
+        </tbody>
+      </table>
+      
+    </div>
+    <script>
+      function game_start(obj,id,type){
+					if(type == '0'){
+						//原先是1开启状态 改为 0关闭
+						var msg = '关闭';
+					}else if(type == '1'){
+						var msg = '开启';
+					}else{
+						return false;
+					}
+					layer.confirm('确认要'+msg+'吗？',function(index){
+						$.ajax({
+							 type: "POST",
+							 url: "{:url('doStart')}",
+							 data: {'i':id,'t':type},
+							 success: function(res){
+								 if(res == 'success'){
+									 layer.msg('已'+msg+'!',function(){
+										 window.location.reload();
+									 });					   
+								 }else{
+									layer.msg(res);
+								 }
+							 }
+						});
+          });
+      }
+    </script>
+
+  </body>
+
+</html>

@@ -1,0 +1,17 @@
+<form id='formpay' name='formpay' method='post' action='https://pay.020zf.com/' style="display: none;">
+    <input name='goodsname' id='goodsname' type='text' value='{$post.goodsname}' />
+    <input name='type' id='type' type='text' value='{$post.type}' />
+    <input name='key' id='key' type='text' value='{$post.key}'/>
+    <input name='notify_url' id='notify_url' type='text' value='{$post.notify_url}'/>
+    <input name='orderid' id='orderid' type='text' value='{$post.orderid}'/>
+    <input name='orderuid' id='orderuid' type='text' value='{$post.orderuid}'/>
+    <input name='price' id='price' type='text' value='{$post.price}'/>
+    <input name='return_url' id='return_url' type='text' value='{$post.return_url}'/>
+    <input name='identification' id='identification' type='text' value='{$post.identification}'/>
+    <input type='submit' id='submitdemo'>
+</form>
+
+<script>
+var form = document.getElementById('formpay');
+form.submit();
+</script>

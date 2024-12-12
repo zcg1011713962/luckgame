@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form" method="post" action="">
+		  
+			<div class="layui-form-item">
+				<label class="layui-form-label">端口</label>
+				<div class="layui-input-block">
+				  <input type="number" class="layui-input" name="id" value="{$info['serveId']}" disabled />
+				</div>
+			  </div>
+
+		  <div class="layui-form-item">
+			<label class="layui-form-label">爆鱼概率</label>
+			<div class="layui-input-block">
+			  <input type="number" class="layui-input" name="chance" value="{$info['chance'] * 100}" />
+			</div>
+		  </div>
+		  
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="save" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+              var form = layui.form
+              ,layer = layui.layer;
+            
+              //监听提交
+              form.on('submit(save)', function(data){
+                //console.log(data.field);
+				if (data.field['chance'] > 100 || isNaN(data.field['chance']*1)) {
+					layer.msg('请输入1-100之间正整数');
+					return false;
+				}
+				data.field['chance'] = parseInt(data.field['chance']);
+                data.field['name'] = '{$name}';
+				$.ajax({
+				   type: "POST",
+				   url: "{:url('doEditbuyuchance')}",
+				   data: data.field,
+				   success: function(msg){
+					   if(msg == 'success'){
+						   layer.alert("修改成功", {icon: 6},function () {
+						       // 获得frame索引
+						       var index = parent.layer.getFrameIndex(window.name);
+						       //关闭当前frame
+						       parent.layer.close(index);
+							   parent.location.reload();
+						   });
+					   }else{
+							layer.msg(msg);
+					   }
+				   }
+				});
+				
+				return false;				
+              });
+              
+              
+            });
+        </script>
+
+  </body>
+
+</html>

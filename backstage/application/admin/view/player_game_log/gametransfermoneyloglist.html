@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+ <body>
+    <style>
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin="primary"] {padding-left: 0px;width: 200px;}
+        .layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .alertBox {width: 50%; margin: 0 auto; padding: 40px 0; text-align: center;}
+        .alertSelect {height:40px;}
+        .layui-input { margin-top: 20px;}
+        .layui-btn {margin-top: 20px;}
+        .header { width: 100%; height: auto; } 
+	    .header .left { width: 50%; height: auto; float: left; } 
+		.header .right { width: 50%; height: auto; float: left; } 
+		.header .right .search { width: 100%; height: 40px; float: right;} 
+		.header .right .tabs { width: 100%; height: 40px; float: right; } 
+		.layui-tab-brief>.layui-tab-title .layui-this { color: rgb(34, 45, 50); } 
+		.layui-tab-brief>.layui-tab-title .layui-this::after { border: none; border-radius: 0; border-bottom: 2px solid rgb(34, 45, 50); } 
+		.search { width: 100%; height: 40px; float: right; } 
+		.searchbox { width: 250px; height: 35px; background-color: rgb(34, 45,50); font-size: 12px; float: right; margin-right: 65px; border-radius:3px; } 
+		.searchInput { height: 29px; width: 210px; margin-top: 3px; margin-left:3px; border: none; text-indent: 5px; float: left; } 
+		.searchBtn { border:0; background-color: rgb(34, 45, 50); line-height: 35px; width: 37px; height:35px; text-align: center; color: #fff; cursor: pointer; float: left; }
+		.operate_btn {display: block; float: left; padding: 5px;}
+        .layui-table-view {margin: 0;}
+    </style>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏记录</a>
+        <a>
+          <cite>游戏转账记录</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-form-item">
+            <div class="layui-inline" style="margin: 0;">
+                <div class="layui-input-inline" style="width: 150px;">
+                    <input type="text" id="searchstr" name="searchstr"  placeholder="ID/账号" value="" autocomplete="off" class="layui-input searchstr" style="margin-top: 0;">
+                </div>
+            </div>
+            <div class="layui-inline" style="margin: 0;">
+                <label class="layui-form-label" style="width: auto;">日期筛选</label>
+                <div class="layui-inline" id="test6">
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" autocomplete="off" id="test-startDate-1" class="layui-input" placeholder="开始日期" style="margin-top: 0;">
+                    </div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input type="text" autocomplete="off" id="test-endDate-1" class="layui-input" placeholder="结束日期" style="margin-top: 0;">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-inline" style="margin: 0;">
+                <label class="layui-form-label" style="width: auto;">类型筛选</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <select id="type" style="height: 38px;">
+                        <option value="0">金币</option>
+                        <option value="1">钻石</option>
+                      </select>
+                </div>
+            </div>
+            <div class="layui-inline" style="margin: 0;">
+                <label class="layui-form-label" style="width: auto;">状态筛选</label>
+                <div class="layui-input-inline" style="width: 100px;">
+                    <select id="state" style="height: 38px;">
+                        <option value="99">全部</option>
+                        {foreach $state as $key => $item}
+                            <option value="{$key}">{$item}</option>
+                        {/foreach}
+                      </select>
+                </div>
+            </div>
+            <div class="layui-inline" style="margin: 0;">
+                <button type="button" class="layui-btn" id="searchBtn" style="margin-top: 0;">搜索</button>
+            </div>
+        </div>
+        <div class="header" style="height: auto; overflow: hidden;">
+            <div class="left">
+                <br />
+                <span class="x-left" style="line-height:40px" id="count">
+                    共有数据：0 条
+                </span>
+            </div>
+        </div>
+      <table id="list">
+      </table>
+    </div>
+    <script type="text/html" id="tools">
+        <a class="operate_btn" onclick="edit_game(this,'1')" href="javascript:;" title="编辑" style="margin-top:1px;">
+            <i class="fa fa-edit" style="color:#1E9FFF; font-size: 16px;"></i>
+        </a>
+    </script>
+    <script>
+        layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,url: "{:url('PlayerGameLog/getgametransfermoneyloglist')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'otherId', title: 'ID'}
+                ,{field: 'othernickname', title: '转账人', templet: function(d) {
+                    return '(<span style="color:red;">'+d.sendid+'</span>)'+d.othernickname;
+                }}
+                ,{field: 'timeStamp',  title: '转账时间'}
+                ,{field: 'nickname', title: '接收人', templet: function(d) {
+                    return '(<span style="color:red;">'+d.userid+'</span>)'+d.nickname;
+                }}
+                ,{field: 'sendcoin', title: '转账金额'}
+                ,{field: 'state', title: '状态', templet: function(d) {
+                    return d.state == 0 ? '未领' : '已收到';
+                    // console.log(d);
+                }}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            // 日期选择实例
+            laydate.render({
+                elem: '#test6'
+                ,range: ['#test-startDate-1', '#test-endDate-1']
+            });
+
+            $('#searchBtn').on('click',function() {
+                var data = {};
+                    data.begin_time = $('#test-startDate-1').val();
+                    data.end_time   = $('#test-endDate-1').val() ? $('#test-endDate-1').val() + ' 23:59:59' : '' ;
+                    data.state      = $('#state').val();
+                    data.searchstr  = $('#searchstr').val();
+                    data.type       = $('#type').val();
+                tableId.reload({
+                    url: "{:url('PlayerGameLog/getgametransfermoneyloglist')}?begin_time="+data.begin_time+"&end_time="+data.end_time+"&state="+data.state+"&searchstr="+data.searchstr+"&type="+data.type
+                });
+            });
+
+        });
+
+	</script>
+  </body>
+
+</html>

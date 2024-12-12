@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">玩家列表</a>
+        <a><cite>玩家列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="" method="post">
+            <input type="text" name="searchstr"  placeholder="玩家ID" value="{$searchstr}" autocomplete="off" class="layui-input" >
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+					<div class="layui-inline" style="color: red;">玩家数量:{$count}</div>
+<!--            <button class="layui-btn" type="button" onclick="x_admin_show('创建用户','{:url('User/add')}',650,400)"><i class="layui-icon"></i>添加</button>-->
+        </form>
+      </div>
+        <xblock style="display: block;">
+<!--            <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+            <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('MyUser/add')}',700,400)"><i class="layui-icon"></i>添加</button>
+<!--            <span class="x-right" style="line-height:40px">共有数据：{$count} 条</span>-->
+        </xblock>
+      
+      <table class="layui-table">
+        <thead>
+          <tr>
+           
+            <th>玩家ID</th>
+            <th>玩家账号</th>
+            <th>当前金币数</th>
+              <th>金币操作</th>
+            <th>注册时间</th>
+            <th>封禁</th>
+            <th>创建人</th>
+					</tr>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo } 							
+							<tr>							 
+							  <td>{$vo.Id}</td>
+							  <td>
+                                  <a onclick="x_admin_show('修改密码','{:url('User/editpwd',[ 'id' => $vo['Id'] ])}',600,400)" title="修改密码" href="javascript:;" style="color: red;">
+                                      <i class="layui-icon">&#xe631;</i>
+                                  </a>
+                                  {$vo.Account}
+                              </td>
+							  <td>{$vo.score|showGold}</td>
+                                <td>
+                                    <a title="添加金币"  onclick="x_admin_show('添加金币','{:url('User/addScore',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+                                        <i class="icon iconfont">&#xe6b9;</i>
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a title="删减金币"  onclick="x_admin_show('删减金币','{:url('User/delScore',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+                                        <i class="icon iconfont">&#xe6fe;</i>
+                                    </a>
+                                </td>
+							  <td>{$vo.AddDate}</td>
+                            <td class="td-status">
+                                {if !$vo.iscanlogin}
+                                <a onclick="member_feng(this,'{$vo.Id}','0')" href="javascript:;">
+                                    <span class="layui-btn layui-btn-normal layui-btn-mini">已启用</span>
+                                </a>
+                                {else /}
+                                <a onclick="member_feng(this,'{$vo.Id}','1')" href="javascript:;">
+                                    <span class="layui-btn layui-btn-danger layui-btn-mini">已封禁</span>
+                                </a>
+                                {/if}
+
+                            </td>
+							  <td>[{$vo.ChannelType}] {$vo.username}</td>
+							</tr>
+					{/foreach}
+          
+        </tbody>
+      </table>
+      <div class="page">        
+				{$page|raw}
+      </div>
+
+    </div>
+    <script>
+        /*用户-封禁|解封*/
+        function member_feng(obj,id,type){
+            if(type == '0'){
+                //原先是1开启状态 改为 0封禁 限制登录
+                var msg = '封禁';
+            }else if(type == '1'){
+                var msg = '解封';
+            }else{
+                return false;
+            }
+            layer.confirm('确认要'+msg+'吗？',function(index){
+                $.ajax({
+                    type: "POST",
+                    url: "{:url('doCanLogin')}",
+                    data: {'i':id,'t':type},
+                    success: function(res){
+                        if(res == 'success'){
+                            layer.msg('已'+msg+'!',function(){
+                                window.location.reload();
+                            });
+                        }else{
+                            layer.msg(res);
+                        }
+                    }
+                });
+            });
+        }
+    	layui.use(['form','laydate','jquery'], function(){
+      	  var $ = layui.$;
+      	  var laydate = layui.laydate;
+      	  
+      	  laydate.render({
+    				elem: '#starttime',
+    				type: 'datetime'
+      	  });
+      	  
+      	  laydate.render({
+      	  	elem: '#endtime',
+    				type: 'datetime'
+      	  });
+      	  
+      	  var form = layui.form;
+      		
+      	});
+    </script>
+
+  </body>
+
+</html>

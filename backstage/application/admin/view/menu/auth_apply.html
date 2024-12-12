@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="shortcut icon" href="__STATIC__/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="__CSS__/font.css">
+    <link rel="stylesheet" href="__CSS__/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="__JS__/xadmin.js"></script>
+
+    <link rel="stylesheet"  href="__JS__/ztree/zTreeStyle/zTreeStyle.css">
+    <script type="text/javascript" src="__JS__/ztree/ztree.all.min.js" charset="utf-8"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        ul.ztree li {
+            white-space: normal !important;
+        }
+
+        ul.ztree li span.button.switch {
+            margin-right: 5px;
+        }
+
+        ul.ztree ul ul li {
+            display: inline-block;
+            white-space: normal;
+        }
+
+        ul.ztree > li {
+            padding: 15px 25px 15px 15px;
+        }
+
+        ul.ztree > li > ul {
+            margin-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        ul.ztree > li > ul > li {
+            padding: 5px;
+        }
+
+        ul.ztree > li > a > span {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        ul.ztree .level2 .button.level2 {
+            background: 0 0;
+        }
+    </style>
+</head>
+
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="think-box-shadow">
+            <ul id="zTree" class="ztree notselect"></ul>
+        </div>
+        {notempty name='info.id'}<input name='id' type='hidden' value='{$info.id}'>{/notempty}
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">
+            </label>
+            <button class="layui-btn"  type="button" data-submit-role lay-filter="add" lay-submit="">
+                保存
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+
+    new function () {
+        var that = this;
+        this.data = {}, this.ztree = null, this.setting = {
+            view: {showLine: false, showIcon: false, dblClickExpand: false},
+            check: {enable: true, nocheck: false, chkboxType: {"Y": "ps", "N": "ps"}}, callback: {
+                beforeClick: function (id, node) {
+                    node.children.length < 1 ? that.ztree.checkNode(node, !node.checked, null, true) : that.ztree.expandNode(node);
+                    return false;
+                }
+            }
+        };
+        this.renderChildren = function (list, level) {
+            var childrens = [];
+            for (var i in list) childrens.push({
+                open: true, node: list[i].node, name: list[i].title || list[i].node,
+                checked: list[i].checked || false, children: this.renderChildren(list[i]._sub_, level + 1)
+            });
+            return childrens;
+        };
+        this.getData = function () {
+            $.get('{:url("authApply")}', {id: '{$info.id}', action: 'ajax'}, function (ret) {
+                return (that.data = that.renderChildren(ret.data, 1)), that.showTree(), false;
+            });
+        };
+        this.showTree = function () {
+            this.ztree = $.fn.zTree.init($("#zTree"), this.setting, this.data);
+            while (true) {
+                var nodes = this.ztree.getNodesByFilter(function (node) {
+                    return (!node.node && node.children.length < 1);
+                });
+                if (nodes.length < 1) break;
+                for (var i in nodes) this.ztree.removeNode(nodes[i]);
+            }
+        };
+        this.submit = function () {
+            var nodes = [], data = this.ztree.getCheckedNodes(true);
+            for (var i in data) if (data[i].node) nodes.push(data[i].node);
+            $.post('{:url("authApply")}', {id: '{$info.id}', action: 'save', nodes: nodes}, function (res) {
+                if (res.code == 1) {
+                    layer.msg(res.msg, function () {
+                        parent.location.reload();
+                    });
+                } else {
+                    layer.msg(res.msg);
+                }
+                return false;
+            });
+        };
+        // 刷新数据
+        this.getData();
+        // 提交表单
+        $('[data-submit-role]').on('click', function () {
+            that.submit();
+        });
+    };
+
+</script>
+
+</body>
+</html>

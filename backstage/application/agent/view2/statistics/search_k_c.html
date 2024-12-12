@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">财务管理</a>
+        <a>
+          <cite>库存统计</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">   
+		<div style="padding-bottom: 1em;">
+			<form class="layui-form" action="">
+				开始时间：<div class="layui-inline">
+					<input type="text" name="starttime" class="layui-input" id="starttime" />
+				</div>
+				结束时间：<div class="layui-inline">
+					<input type="text" name="endtime" class="layui-input" id="endtime" />
+				</div>
+				<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+			</form>
+		</div>
+		
+		<blockquote class="layui-elem-quote layui-quote-nm">
+			<span id="searchfeeres">查询库存：{$searchfee}</span>
+		</blockquote>
+		
+		<blockquote class="layui-elem-quote layui-quote-nm">
+			最新库存：{$kucun}
+		</blockquote>
+		      
+    </div>
+    <script>
+		layui.use(['form','laydate','jquery'], function(){
+		  var $ = layui.$;
+		  var laydate = layui.laydate;
+		  
+		  laydate.render({
+			elem: '#starttime'
+		  });
+		  
+		  laydate.render({
+		  	elem: '#endtime'
+		  });
+		  
+		  var form = layui.form;
+			
+		  form.on('submit(formDemo)', function(data){
+			//console.log(JSON.stringify(data.field));
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doSearchKC')}",
+			   data: data.field,
+			   success: function(msg){
+				   var msg = JSON.parse(msg);				   
+				   if(msg.status){
+					   //console.log(msg.msg);
+					   layer.msg('查询成功');
+					   var str = msg.msg;
+					   var obj = JSON.parse(str);
+					   var show = '';
+					   show += '开始库存：'+obj.num1;
+					   show += '<br/>结束库存：'+obj.num2;
+					   show += '<br/>新增库存：'+obj.res;
+					   $('#searchfeeres').html(show);
+				   }else{
+						layer.msg(msg.msg);
+				   }
+			   }
+			});
+			return false;
+		  });
+		  
+		});
+    </script>
+
+  </body>
+
+</html>

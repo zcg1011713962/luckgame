@@ -1,0 +1,83 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 3673590 */
+  src: url('~@/static/fonts/iconfont.woff2?t=1667279177591') format('woff2'),
+       url('~@/static/fonts/iconfont.woff?t=1667279177591') format('woff'),
+       url('~@/static/fonts/iconfont.ttf?t=1667279177591') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-transferin:before {
+  content: "\e61e";
+}
+
+.icon-transferout:before {
+  content: "\e61f";
+}
+
+.icon-paysuccess:before {
+  content: "\e609";
+}
+
+.icon-mobile:before {
+  content: "\e704";
+}
+
+.icon-bank:before {
+  content: "\eb57";
+}
+
+.icon-idcard:before {
+  content: "\e7de";
+}
+
+.icon-email:before {
+  content: "\e670";
+}
+
+.icon-sousuo:before {
+  content: "\e693";
+}
+
+.icon-loudoushaixuan:before {
+  content: "\e77d";
+}
+
+.icon-shizhong:before {
+  content: "\e605";
+}
+
+.icon-shizhong1:before {
+  content: "\e66f";
+}
+
+.icon-shizhong2:before {
+  content: "\e64d";
+}
+
+.icon-24gl-funnel:before {
+  content: "\eacd";
+}
+
+.icon-shibai:before {
+  content: "\e66b";
+}
+
+.icon-bi:before {
+  content: "\e61d";
+}
+
+.icon-duigoux:before {
+  content: "\ec9e";
+}
+
+.icon-iconfontzhizuobiaozhun47:before {
+  content: "\e62e";
+}
+

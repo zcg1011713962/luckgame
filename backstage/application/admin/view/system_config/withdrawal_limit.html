@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    {include file="public/head" /}
+    <body>
+        <style>
+            .other {
+                width: 115px;
+            }
+            .other-input {
+                margin-left: 150px;
+            }
+            .tips {
+                clear: both;
+            }
+        </style>
+        <div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					系统配置
+				</a>
+				<a>
+					<cite>
+                        提现流水限制
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+        <div class="x-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label other">提现流水限制：</label>
+<!--                    <div class="layui-input-block layui-col-xs3">-->
+<!--                      <input type="number" name="withdrawal_flow_limit" value="{$info['value']|default=''}" required lay-verify="required" placeholder="请输入流水倍数" autocomplete="off" class="layui-input">-->
+<!--                    </div>-->
+<!--                    <span class="layui-form-label x-red tips" style="width: 30%">提现限制：几倍的充值流水才能提现</span>-->
+                  </div>
+
+                <div class="layui-form-item">
+                    <label for="L_box_money" class="layui-form-label">
+                        <span class="x-red">*</span>充值流水倍数
+                    </label>
+                    <div class="layui-input-inline">
+                         <input type="number" name="recharge" min="1" value="{$info['recharge']|default=''}" required lay-verify="required" placeholder="请输入充值流水倍数" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">
+                        <span class="x-red">*</span>倍数不能低于1
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_recharge_money" class="layui-form-label">
+                        <span class="x-red">*</span>赠送流水倍数
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="give" required  placeholder="请输入赠送流水倍数"
+                               autocomplete="off" class="layui-input" value="{$info['give']|default=''}"  min="1">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">
+                        <span class="x-red">*</span>倍数不能低于1
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                    </label>
+                    <button  class="layui-btn" lay-filter="save" lay-submit >
+                        保存
+                    </button>
+                </div>
+              </form>
+        </div>
+        <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+
+            //监听提交
+            form.on('submit(save)', function(data){
+                if (data.field.recharge < 1) {
+                    layer.msg('充值流水倍数不能低于1');
+                    return false;
+                }
+                if (data.field.give < 1) {
+                    layer.msg('赠送流水倍数不能低于1');
+                    return false;
+                }
+                $.post("{:url('SystemConfig/withdrawalLimit')}",data.field,function(data){
+                    if (data.status == 0) {
+                        layer.alert(data.message, {icon: 6},function (index) {
+                            layer.close(index);
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                },'Json');
+                return false;
+            });
+        });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    {include file="public/head" /}
+    <body>
+        <style>
+            .other {
+                width: 115px;
+            }
+            .other-input {
+                margin-left: 150px;
+            }
+        </style>
+        <div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					兑换管理
+				</a>
+				<a>
+					<cite>
+                        比例设置
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+        <div class="x-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label other">支付比例</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="paymentScale" value="{$payScale.payment}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">提现比例</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="cashScale" value="{$payScale.cash}" lay-verify="required|number" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">赠送手续费%</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="givecommission" value="{$payScale.givecommission}" lay-verify="required|number|checkNumber" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">税收手续费%</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="taxation" value="{$payScale.taxation}" lay-verify="required|number|checkNumber" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                    </label>
+                    <button  class="layui-btn" lay-filter="save" lay-submit >
+                        保存
+                    </button>
+                </div>
+              </form>
+        </div>
+        <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+
+                form.verify({
+                    checkNumber:function(value, item){
+                        if (value >= 100) {
+                            return '不能输入大于100的百分比数据';
+                        }
+                    }
+                });
+
+            //监听提交
+            form.on('submit(save)', function(data){
+                $.post("{:url('SystemConfig/savePayConfig')}",data.field,function(data){
+                    if (data.status == 0) {
+                        layer.alert(data.message, {icon: 6},function (index) {
+                            layer.close(index);
+                            location.reload();
+                        });
+                    }
+                },'Json');
+                return false;
+            });
+        });
+        </script>
+    </body>
+</html>

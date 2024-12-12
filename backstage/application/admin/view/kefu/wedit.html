@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <style>
+        .imageBox {width: 120px; height: auto; padding: 0 20px; float: left;}
+        .imageBox-top {width: 100%; height: 155px;}
+        .imageBox-bottom {width: 100%;}
+        .image {width: 100%; height: 120px; float: left; border: 1px dashed #ddd; position: relative;}
+        .button {color: #ccc; position: relative; cursor: pointer; text-align: center; position: absolute; top: 0; width: 120px; height: 120px; line-height: 120px;}
+        .uploadFile {opacity: 0; position: absolute; left: 0; width: 100%; height: 120px; cursor: pointer;}
+    </style>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>客服名称
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="username" name="username" lay-verify="required"
+                  autocomplete="off" class="layui-input" value="{$info.name}">
+              </div>              
+          </div>
+         
+          <div class="layui-form-item">
+              <label for="L_pass" class="layui-form-label">
+                  <span class="x-red">*</span>客服链接
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="L_pass" name="customer_url" lay-verify="required|url"
+                  autocomplete="off" class="layui-input" value="{$info.customer_url}">
+              </div>
+              <!-- <div class="layui-form-mid layui-word-aux">
+                  6到16个字符
+              </div> -->
+          </div>
+		  
+		  <div class="layui-form-item">
+			<label class="layui-form-label"><span class="x-red">*</span>是否关闭</label>
+			<div class="layui-input-block" style="padding-top: 9px;">
+			  <input type="checkbox" name="isdaili" lay-skin="switch" {if $info.isclose}checked{/if}>
+			</div>
+		  </div>
+          
+		  
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>客服头像
+		      </label>
+		      <div class="imageBox img-1">
+                <div class="imageBox-top">
+                    <div class="image">
+                        <img class="previewImg" {if $info.avatar} src="{$info.avatar_url}" {/if} width="100%" height="100%" />
+                        <div class="button">
+                            <input name="avatar" type="file" class="uploadFile" accept="images" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox-bottom">
+                </div>
+            </div>		      
+		  </div>
+		  
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+
+
+          var imageObj;
+
+        $('.imageBox').find('.uploadFile').on('change',function(e){
+            // 图片验证
+            var filePath = $(this).val();
+            var fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+            if(!fileFormat.match(/.png|.jpg|.gif/)) {
+                layer.msg('上传失败，图片格式不正确！');
+                return false;
+            }
+            // 图片预览
+            imageObj = this.files[0];
+            $('.imageBox').find('.previewImg').attr('src',window.URL.createObjectURL(this.files[0]));
+        });
+
+        form.on('submit(add)', function(data) {
+
+            var paramsData = new FormData();
+            paramsData.append('avatar', imageObj);
+            paramsData.append('customer_url', data.field.customer_url);
+            paramsData.append('username', data.field.username);
+            paramsData.append('adminid', '{$info.id}');
+            paramsData.append('isdaili', data.field.isdaili);
+
+            $.ajax({
+                url: "{:url('dowEdit')}",
+                type: 'post',
+                data: paramsData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'Json',
+                success: function(data){
+                    if (data.status == 0) {
+                        layer.alert("修改成功", {icon: 6},function () {
+		 					// 获得frame索引
+		 					var index = parent.layer.getFrameIndex(window.name);
+		 					//关闭当前frame
+		 					parent.layer.close(index);
+		 					parent.location.reload();
+		 			   });
+                        // layer.msg('上传成功');
+                        // var index = parent.layer.getFrameIndex(window.name);
+		 				// //关闭当前frame
+		 				// parent.layer.close(index);
+		 				// parent.location.reload();
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }
+            });
+
+            return false;
+            });  
+        });
+    </script>
+
+  </body>
+
+</html>

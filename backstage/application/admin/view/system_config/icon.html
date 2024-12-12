@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    {include file="public/head" /}
+    <body>
+        <style>
+            .imageBox {width: 120px; height: auto; padding: 20px 20px; float: left;}
+            .imageBox-top {width: 100%; height: 155px;}
+            .imageBox-bottom {width: 100%;}
+            .title {width: 100%; height: 30px; float: left; text-align: center; font-size: 14px; font-weight: bold;}
+            .image {width: 100%; height: 120px; float: left; border: 1px dashed #ddd;}
+            .button {width: 100%; height: 30px; position: relative; cursor: pointer; text-align: center; background-color: rgb(34, 45, 50); line-height: 30px; color: #fff;}
+            .uploadFile {opacity: 0; position: absolute; left: 0; height: 30px; width: 100%;}
+        </style>
+        <div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					系统配置
+				</a>
+				<a>
+					<cite>
+                        icon配置
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+        <div class="x-body">
+            <div class="container-icon imageList">
+                <div class="imageBox img-1">
+                    <div class="imageBox-top">
+                        <div class="title">活动icon上传</div>
+                        <div class="image">
+                            <img {if $iconList.activity} src="{$iconList.activity}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="activity" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-2">
+                    <div class="imageBox-top">
+                        <div class="title">邮件 icon上传</div>
+                        <div class="image">
+                            <img {if $iconList.email} src="{$iconList.email}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="email" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-3">
+                    <div class="imageBox-top">
+                        <div class="title">兑换 icon上传</div>
+                        <div class="image">
+                            <img {if $iconList.replace} src="{$iconList.replace}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="replace" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-4">
+                    <div class="imageBox-top">
+                        <div class="title">支付 icon上传</div>
+                        <div class="image">
+                            <img {if $iconList.payment} src="{$iconList.payment}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="payment" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-5">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传一</div>
+                        <div class="image">
+                            <img {if $iconList.Other1} src="{$iconList.Other1}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other1" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-6">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传二</div>
+                        <div class="image">
+                            <img {if $iconList.Other2} src="{$iconList.Other2}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other2" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-7">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传三</div>
+                        <div class="image">
+                            <img {if $iconList.Other3} src="{$iconList.Other3}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other3" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-8">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传四</div>
+                        <div class="image">
+                            <img {if $iconList.Other4} src="{$iconList.Other4}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other4" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-9">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传五</div>
+                        <div class="image">
+                            <img {if $iconList.Other5} src="{$iconList.Other5}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other5" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox img-10">
+                    <div class="imageBox-top">
+                        <div class="title">Other icon上传六</div>
+                        <div class="image">
+                            <img {if $iconList.Other6} src="{$iconList.Other6}" {/if} class="previewImg" width="100%" height="100%" />
+                        </div>
+                    </div>
+                    <div class="imageBox-bottom">
+                        <div class="button">
+                            <input name="Other6" type="file" class="uploadFile" accept="image/png" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // 图片上传组件
+           ~function($){
+            var option = {
+                el:'.imageList',
+                preview: '.previewImg',
+                init:function() {
+                    var _this = this;
+                    $(document).find(this.el).find('.imageBox').on('change','.uploadFile',function(e){
+                        // 图片验证
+                        var filePath = $(this).val();
+                        var fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+                        if(!fileFormat.match(/.png/)) {
+                            layer.msg('上传失败，图片必须是png格式！');
+                            return false;
+                        }
+                        // 图片预览
+                        $(this).parents('.imageBox').find(_this.preview).attr('src',window.URL.createObjectURL(this.files[0]));
+                        // 图片上传
+                        var imgData = new FormData();
+                        imgData.append('image',this.files[0]);
+
+                        $.ajax({
+                            url: "{:url('SystemConfig/saveIcon')}?act="+this.name,
+                            type: 'post',
+                            data: imgData,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            dataType: 'Json',
+                            success: function(data){
+                                if (data.status == 0) {
+                                    layer.msg('上传成功');
+                                } else {
+                                    layer.msg(data.message);
+                                }
+                            }
+                        })
+                    });
+                }
+            }
+            option.init();
+           }($)
+        </script>
+    </body>
+</html>

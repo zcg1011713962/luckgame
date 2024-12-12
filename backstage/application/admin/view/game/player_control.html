@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏管理</a>
+        <a>
+          <cite>玩家控制</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+		<xblock>
+			<button class="layui-btn" onclick="x_admin_show('添加用户','{:url('addPlayerControl')}')"><i class="layui-icon"></i>添加</button>
+		</xblock>
+      <table class="layui-table">
+        <thead>
+          	<tr>
+				<th>玩家ID</th>
+				<th>金币</th>
+				<th>操作</th>
+        	</tr>
+        </thead>
+        <tbody>
+			{foreach $list as $key=>$vo }
+			<tr>
+				<td>{$vo.userId}</td>
+				<td>{$vo.coinCtrl|showGold}</td>
+				<td class="td-manage">              
+					<a title="编辑"  onclick="x_admin_show('编辑','{:url('editPlayerControl',array('id'=>$vo['userId']))}')" href="javascript:;">
+					  <i class="layui-icon">&#xe642;</i>
+					</a>	
+					<a title="删除" onclick="member_del(this,'{$vo.userId}')" href="javascript:;">
+					  <i class="layui-icon">&#xe640;</i>
+					</a>	
+				</td>
+			</tr>
+			{/foreach}
+        </tbody>
+      </table>
+      
+    </div>
+    <script>
+      
+		/*用户-删除*/
+		function member_del(obj,id){
+			layer.confirm('确认要删除吗？',function(index){
+				//发异步删除数据
+							  $.ajax({
+								 type: "POST",
+								 url: "{:url('doDelPlayerControl')}",
+								 data: {"id":id},
+								 success: function(msg){
+									 if(msg == 'success'){									   
+										 $(obj).parents("tr").remove();
+										 layer.msg('已删除!',{icon:1,time:1000});									   
+									 }else{
+										  layer.msg(msg);
+									 }
+								 }
+							  });
+			});
+		}
+  
+	  </script>
+  </body>
+
+</html>

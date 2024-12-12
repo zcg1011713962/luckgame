@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+			width: auto;
+		}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">意见反馈管理</a>
+        <a><cite>{$breadcrumb_name}</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+          反馈问题:
+          <input type="text" name="searchstr"  placeholder="问题" value="" autocomplete="off" class="layui-input searchstr" style="width: 400px;">
+          <br/><br/>
+          创建时间:
+            <input type="text" id="begin_time" name="reg_begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 190px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="reg_end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 190px; display: inline-block;">
+        </form>
+      </div>
+      <xblock style="">
+        <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+	<span class="x-right" id="count" style="line-height:40px"></span>
+      </xblock>
+	 <table id="list">
+	  </table>
+  </div>
+ <script> 
+      layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,width: '100%'
+                ,url: "{:url('feedback/getlists')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field:"id",title:"ID",fixed:'left',width:'50'},
+                 {field:'nickname',title:"昵称",fixed:"left",width:'100'},
+                 {field:'created_at',title:'反馈时间',width:"200"},
+                 {field:'content',title:'反馈内容',width:"300"},
+                 {field:'resolve_content',title:"处理内容",width:"300"},
+		 {field: 'status', title: '状态', width:'150',templet: function(d){
+                    return d.status >0 ? "<span style='color:green;'>已处理</span>" : "<span style='color:red;'>待处理</span>";
+                }},
+                 {field:'id',title:"操作",fixed:"right",width:'200',templet: function(d){
+                var info= '{:url("feed_back/edit")}?id='+d.id;
+                var html='<button type="button" class="layui-btn" onclick="x_admin_show(\'反馈处理\',\''+info+'\',800,500)">回复</button>';
+                 html+='<button type="button" class="layui-btn" onclick="feedback_del(this,'+d.id+')">删除</button>';                
+                   return html; 
+               }} 
+                ]],
+                done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            
+              });
+            $('#search').on('click',function() {
+                tableId.reload({
+                    url: "{:url('feedback/getlists')}?searchstr="+$('.searchstr').val()+"&begin_time="+$('#begin_time').val()+"&end_time="+$("#end_time").val()
+                });
+            });
+      });  
+ </script>
+ <script>    
+      /*FQA-删除*/
+      function feedback_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+							$.ajax({
+							   type: "POST",
+							   url: "{:url('feed_back/doDel')}",
+							   data: {"id":id},
+							   success: function(msg){
+								   if(msg == 'success'){									   
+									   $(obj).parents("tr").remove();
+									   layer.msg('已删除!',{icon:1,time:1000});									   
+								   }else{
+										layer.msg(msg);
+								   }
+							   }
+							});
+          });
+      }
+
+
+    </script>
+
+  </body>
+
+</html>

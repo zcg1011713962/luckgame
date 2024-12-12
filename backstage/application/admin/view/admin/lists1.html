@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  
+   {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">管理员管理</a>
+        <a>
+          <cite>代理商列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+     
+      <xblock>
+				<button class="layui-btn" onclick="x_admin_show('添加用户','{:url('Admin/add')}')"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$count} 条</span>
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>            
+            <th>ID</th>
+            <th>登录名</th>
+            <th>详情</th>
+            <th>金币</th>
+            <th>金币修改</th>
+            <th>税收总计</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo }
+          <tr>            
+            <td>{$vo.id}</td>
+            <td>{$vo.username}</td>          
+            <td>
+              <a title="详情"  onclick="x_admin_show('详情','{:url('Admin/agentInfo',array('id'=>$vo['id']))}')" href="javascript:;">
+                <i class="layui-icon">&#xe600;</i>
+              </a>
+            </td>
+            <td>{$vo.score|showGold}</td>
+            <td>
+              <a title="添加金币"  onclick="x_admin_show('添加金币','{:url('Agent/addScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                <i class="icon iconfont">&#xe6b9;</i>
+              </a>
+              <a title="删减金币"  onclick="x_admin_show('删减金币','{:url('Agent/delScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                <i class="icon iconfont">&#xe6fe;</i>
+              </a>
+            </td>
+            <td>
+              {$vo.user_tax_total}
+            </td>
+            <td class="td-manage">              
+              <a title="编辑"  onclick="x_admin_show('编辑','{:url('Admin/edit',array('id'=>$vo['id']))}')" href="javascript:;">
+                <i class="layui-icon">&#xe642;</i>
+              </a>
+              <a title="删除" onclick="member_del(this,'{$vo.id}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+            </td>
+          </tr>
+					{/foreach}
+        </tbody>
+      </table>
+      <div class="page">
+        {$page|raw}
+      </div>
+
+    </div>
+    <script>
+      
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+							$.ajax({
+							   type: "POST",
+							   url: "{:url('doDel')}",
+							   data: {"id":id},
+							   success: function(msg){
+								   if(msg == 'success'){									   
+									   $(obj).parents("tr").remove();
+									   layer.msg('已删除!',{icon:1,time:1000});									   
+								   }else{
+										layer.msg(msg);
+								   }
+							   }
+							});
+          });
+      }
+
+
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+  
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+
+  </body>
+
+</html>

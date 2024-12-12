@@ -1,0 +1,68 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/login.css">
+<style>
+
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="login-wrap">
+<div class="login-container">
+    <form class="login-form">
+        <div class="input-group">
+            <input type="text" id="username" name="username" class="input-field">
+            <label for="username" class="input-label">
+                <span class="label-title">username</span>
+            </label>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" name="password" class="input-field">
+            <label for="password" class="input-label">
+                <span class="label-title">password</span>
+            </label>
+        </div>
+        <input type="hidden" name="ip" value="" class="local_ip">
+        <button type="button" class="login-button">Login In<i class="ai ai-enter"></i></button>
+    </form>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    // $(function () {
+    //     app = {
+    //         login : '{/}login',
+    //     };
+    //     layui.config({
+    //         base: '/assets/lay/modules/'
+    //     }).extend(app).use('login');
+    // });
+    fetch('https://api.ipify.org?format=json').
+    then(response => response.json())
+        .then(data => {
+            $('.local_ip').val(data.ip);
+        })
+        .catch(error => {console.error('Failed', error);
+    });
+    $(".login-button").click(function () {
+        var index = layer.load();
+        $.ajax({
+            url: "/backend/admin/login",
+            type: 'POST',
+            data: $('.login-form').find('input').serialize(),
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    layer.msg(data.data.msg);
+                } else {
+                    if (window.top === window) {
+                        window.location.href = '/backend/admin';
+                    } else {
+                        parent.location.reload();
+                    }
+                }
+            }
+        });
+    });
+</script>
+{{/block}}

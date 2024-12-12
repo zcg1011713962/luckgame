@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    <style>
+		.layui-form-label {width: 150px !important;}
+		.layui-form-item .layui-input-inline{width: 250px !important;}
+		.layui-form-item {margin-bottom: 5px;}
+	</style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                 ID
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" class="layui-input" disabled value="{$info.aid}">
+              </div>   
+				 <div class="layui-form-mid layui-word-aux">
+					 游戏ID/代理ID
+				 </div>
+          </div>
+         
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  邀请码
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" class="layui-input" disabled value="{$info.yqcode}">
+              </div>              
+          </div>
+		  
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          上级
+		      </label>
+		      <div class="layui-input-inline">
+				  {if $info.pid == '0'}
+		          <input type="text" class="layui-input" disabled value="顶级">
+				  {else}
+		          <input type="text" class="layui-input" disabled value="[{$info.pid}] {$info.pname}">
+				  {/if}
+		      </div>              
+		  </div>
+		  
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          姓名
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.name}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          微信
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.wxname}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          手机号
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.mobile}">
+		      </div>              
+		  </div>
+		  
+		  {if $info.clientShow.status}
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          A级好友数
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.clientShow.data.numA}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          B级好友数
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.clientShow.data.numB}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          C级好友数
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.clientShow.data.numC}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          本周时时总收益
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.clientShow.data.nowIncome}">
+		      </div>              
+		  </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		         历史总收益
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" class="layui-input" disabled value="{$info.clientShow.data.AllYongJin}">
+		      </div>              
+		  </div>
+		  {/if}
+      </form>
+	{if $info.clientShow.status}
+		<table class="layui-table">		  
+		  <thead>
+		    <tr>
+		      <th>好友ID</th>
+		      <th>当前战绩</th>
+		      <th>总亏损</th>
+		      <th>时时收益</th>
+		      <th>总收益</th>
+		    </tr> 
+		  </thead>
+		  <tbody>
+			  {if $info.clientShow.data.person.a}
+			 {foreach $info.clientShow.data.person.a as $key=>$vo } 
+		    <tr>
+		      <td>A {$key}</td>
+		      <td>{$vo[0]}</td>
+		      <td>{$vo[1]}</td>
+		      <td>{$vo[2]}</td>
+		      <td>{$vo[3]}</td>
+		    </tr>
+		    {/foreach}
+			{/if} 
+			
+			{if $info.clientShow.data.person.b}
+			{foreach $info.clientShow.data.person.b as $key=>$vo }
+			<tr>
+			  <td>B {$key}</td>
+			  <td>{$vo[0]}</td>
+			  <td>{$vo[1]}</td>
+			  <td>{$vo[2]}</td>
+			  <td>{$vo[3]}</td>
+			</tr>
+			{/foreach}
+			{/if} 
+			
+			{if $info.clientShow.data.person.c}
+			{foreach $info.clientShow.data.person.c as $key=>$vo }
+			<tr>
+			  <td>C {$key}</td>
+			  <td>{$vo[0]}</td>
+			  <td>{$vo[1]}</td>
+			  <td>{$vo[2]}</td>
+			  <td>{$vo[3]}</td>
+			</tr>
+			{/foreach}
+			{/if} 
+		  </tbody>
+		</table>
+	 {/if} 
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+        });
+    </script>
+
+  </body>
+
+</html>

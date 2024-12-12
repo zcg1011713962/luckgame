@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+</head>
+<body>
+  123456
+ <script src='__SOCKET__/socket.io.js'></script>
+ <script>
+ // 如果服务端不在本机，请把127.0.0.1改成服务端ip
+  //var socket = io('http://192.168.1.66:{$port}');
+var socket = io('http://127.0.0.1:{$port}');
+ //var socket = io('http://192.168.1.66:{$port}');
+ // 当连接服务端成功时触发connect默认事件
+ socket.on('connect', function(){
+    console.log('connect success');
+		 
+		
+		socket.emit('login', ' xxxxxxxxxxxxxxxxxx ');
+	
+		socket.on('login msg return', function(msg){
+				console.log('login msg return:' + msg + ' from server');
+		});
+		 
+ });
+ </script>
+ 
+</body>
+</html>

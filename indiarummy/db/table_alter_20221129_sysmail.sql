@@ -1,0 +1,1 @@
+UPDATE d_sys_mail SET msg = "We're so thrilled to have you in our big community where you can easily create your own world, enjoy the challenges, have fun and win big profits! Are you ready to get rewarded? Start your adventure now!" WHERE stype = 8;

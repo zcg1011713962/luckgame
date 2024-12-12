@@ -1,0 +1,412 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    /*background-color: #1a1a1a;*/
+    background: url('../images/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    margin-top: -4vw;
+    height: 20vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4vw;
+    background: url('../images/shangkuang.png') no-repeat center center;
+    background-size: cover;
+}
+
+.header h1 {
+    margin-top: 5vw;
+    font-size: 7.23vw;
+    /*margin-left: -9vw;*/
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffffff, #94e1dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+
+.header .back-btn, .header .close-btn {
+    font-size: 6vw;
+    color: #ff0;
+    text-decoration: none;
+}
+
+.balance {
+    text-align: center;
+}
+
+.balance-label {
+    display: block;
+    font-size: 5vw;
+    color: #b57c32;
+    font-weight: bolder;
+}
+.jine {
+    width: 60%;
+    height: 16vw;
+    margin: 0 auto;
+    display: flex; /* 使用Flexbox布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    background-image: url('../images/jinekuang.png'); /* 替换为你的背景图URL */
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+}
+.balance-amount {
+    display: block;
+    font-size: 6vw;
+    margin-top: 1vw;
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffd88d, #c38729);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+
+.deposit-input {
+    width: 95%;
+    height: 16vw;
+    margin: 0 auto;
+    position: relative;
+    text-align: center;
+    display: flex; /* 使用Flexbox布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    background-image: url('../images/jinekuang2.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+}
+
+.deposit-input input {
+    width: 80%;
+    font-size: 6vw;
+    text-align: center;
+    padding: 1vw;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    color: #f7e6a3;
+}
+.deposit-input input:focus {
+    outline: none;
+}
+.deposit-input .clear-btn {
+    position: absolute;
+    right: 4%;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 5vw;
+}
+
+.button-grid {
+    margin: 0 auto;
+    width: 95%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1vw;
+}
+.button-grid button {
+    font-size: 4vw;
+    font-weight: bolder;
+    padding: 5vw 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+    background-color: transparent;
+}
+.button-grid .un_selected {
+    color: #858275;
+    background-image: url('../images/weixuanzhong_1.png');
+}
+.button-grid .selected {
+    color: #f7e6a3;
+    background-image: url('../images/xuanzhong_1.png');
+}
+.info {
+    text-align: center;
+    margin-bottom: 1vw;
+}
+
+.info p {
+    font-size: 3.1vw;
+    color: #b57c32;
+}
+
+.balances {
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4vw;
+}
+.deposit-button {
+    text-align: center;
+}
+
+.deposit-button button {
+    font-size: 5.88vw;
+    font-weight: bolder;
+    padding: 5vw 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 60%;
+    color: #160d01;
+    background-image: url('../images/querenanniu.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+    background-color: transparent;
+    margin-top: 6vw;;
+}
+.fanhui {
+    width: 4vw;
+    margin-left: 5vw;
+    margin-top: 5vw;
+}
+.fengexian {
+    width: 95%;
+    height: 5vw;
+    background-image: url('../images/fengexian.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+    margin: 5vw auto 0;
+}
+.bank-card-biaoti {
+    width: 95%;
+    height: 5vw;
+    position: relative;
+    display: flex; /* 使用Flexbox布局 */
+    align-items: center; /* 垂直居中 */
+    background-image: url('../images/biaotikuang.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 5vw auto 2vw;
+}
+.bank-card-biaoti span {
+    margin-left: 2vw;
+    font-size: 3vw;
+    color: #e79d28;
+    font-weight: bolder;
+}
+.bank-card-xuanze {
+    width: 95%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2vw;
+    margin: 0 auto;
+}
+.bank-card-xuanze .bank-card:nth-child(even),
+.bank-card-xuanze .bank-type:nth-child(even) {
+    margin-left: 1.8vw;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 48%;
+    height: 14vw;
+    border-radius: 10px;
+    padding: 2vw;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.bank-card {
+    background-color: transparent;
+    background-image: url('../images/weixuanzhong_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.bank-card .bank-name {
+    font-size: 3vw;
+    font-weight: bolder;
+    color: #dfc972;
+}
+
+.bank-card .card-number {
+    font-size: 3vw;
+    margin-top: 2vw;
+    color: #858275;
+}
+.bank-type.selected,
+.bank-card.selected {
+    background-color: transparent;
+    background-image: url('../images/xuanzhong_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.add-card .bank-type-info {
+    font-weight: bolder;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+
+.add-card .bank-type-info span {
+    font-size: 3vw;
+    width: 60%;
+    margin-left: 4vw;
+}
+.add-card .bank-type-info img {
+    width: 25%;
+}
+.bank-type.selected .bank-type-info,
+.bank-card.selected .bank-name, .bank-card.selected .card-number {
+    color: #f7e6a3;
+}
+
+.add-card {
+    color: #ffc107;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    background-image: url('../images/weixuanzhong_2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.add-card .add-text {
+    font-weight: bolder;
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+}
+
+.add-card .add-text span {
+    font-size: 3vw;
+    width: 80%;
+}
+.add-card .add-text img {
+    width: 20%;
+    cursor: pointer;
+}
+.withdraw-tips {
+    width: 95%;
+    color: #7e6c4c;
+    font-size: 3vw;
+    text-align: center;
+}
+
+/***modal弹出框****/
+.modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.show {
+    display: flex;
+    animation: fadeIn 0.5s;
+}
+
+.modal-content {
+    height: 138vw;
+    width: 88%;
+    padding: 5vw;
+    position: relative;
+    background-image: url('../images/tankuang.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.modal-content.show {
+    transform: scale(1);
+}
+
+.modal-header {
+    padding-bottom: 2vw;
+    margin-bottom: 1vw;
+    text-align: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 6vw;
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffffff, #94e1dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+
+.close-btn {
+    width: 9vw;
+    cursor: pointer;
+    position: absolute;
+    right: -4vw;
+    top: -3vw;
+}
+
+.modal-body .form-group {
+    height: 10vw;
+    margin-bottom: 2.5vw;
+    background-image: url('../images/jinekuang2.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+}
+
+.modal-body label {
+    font-size: 3.5vw;
+    display: block;
+    margin-top: 3vw;
+    margin-bottom: 1.87vw;
+    font-weight: bold;
+    color: #dfc972;
+}
+
+.modal-body .form-group input, .modal-body .form-group select {
+    margin-left: 2vw;
+    margin-top: 2vw;
+    border: none;
+    background-color: transparent;
+    width: 93%;
+    font-size: 3.5vw;
+    padding: 1vw;
+    border-radius: 5px;
+    color: #f7e6a3;
+}
+
+.modal-footer {
+    text-align: center;
+}
+

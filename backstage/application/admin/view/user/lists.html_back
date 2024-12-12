@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员管理</a>
+        <a><cite>{$breadcrumb_name}</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+         ID/账户:
+          <input type="text" name="searchstr"  placeholder="ID/账号" value="" autocomplete="off" class="layui-input searchstr" style="width: 400px;">
+          <br/><br/>
+          注册时间:
+            <input type="text" id="begin_time" name="reg_begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="reg_end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+	   <br/><br/>	 
+           <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+			<button class="layui-btn" type="button" onclick="x_admin_show('创建用户','{:url('User/add')}',650,400)"><i class="layui-icon"></i>添加</button>
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+      <xblock style="display: none;">
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('User/add')}',700,400)"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">123123</span>
+      </xblock>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+				,width: '100%'
+                ,url: "{:url('User/getlists',  ['robot' => $robot])}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'Id', title: 'ID', fixed: 'left', width:'80'}
+                ,{field: 'Account', title: '账号', fixed: 'left', width:'150', templet: function(d) {
+					var editpwd = '{:url("User/editpwd")}?id='+d.Id;
+					var AccountHtml = '<a onclick="x_admin_show(\'修改密码\',\''+editpwd+'\',600,400)" title="修改密码" href="javascript:;" style="color: red;">';
+						AccountHtml += '<i class="layui-icon">&#xe631;</i>';
+						AccountHtml += '</a>';
+						AccountHtml += d.Account;
+					return AccountHtml;
+                }}
+                ,{field: 'nickname',  title: '昵称', fixed: 'left', width:'150'}
+                ,{field: 'score', title: '金币操作', sort:true, width: '150', templet: function(d) {
+					var addScore = '{:url("User/addScore")}?id='+d.Id;
+					var delScore = '{:url("User/delScore")}?id='+d.Id;
+					var scoreHtml = '<a title="添加金币"  onclick="x_admin_show(\'添加金币\',\''+addScore+'\',600,400)" href="javascript:;">';
+						scoreHtml += '<i class="icon iconfont">&#xe6b9;</i>';
+						scoreHtml += '</a>';
+						scoreHtml += '&nbsp;';
+						scoreHtml += showGold(d.score);
+						scoreHtml += '&nbsp;';
+						scoreHtml += '<a title="删减金币"  onclick="x_admin_show(\'删减金币\',\''+delScore+'\',600,400)" href="javascript:;">';
+						scoreHtml += '<i class="icon iconfont">&#xe6fe;</i>';
+						scoreHtml += '</a>';
+					return scoreHtml;
+                }}
+<!--
+				,{field: 'diamond', title: '房卡操作', width: '100', templet: function(d) {
+					var adddiamond = '{:url("User/addDiamond")}?id='+d.Id;
+					var deldiamond = '{:url("User/delDiamond")}?id='+d.Id;
+					var diamondHtml = '<a title="添加房卡"  onclick="x_admin_show(\'添加房卡\',\''+adddiamond+'\',600,400)" href="javascript:;">';
+						diamondHtml += '<i class="icon iconfont">&#xe6b9;</i>';
+						diamondHtml += '</a>';
+						diamondHtml += '&nbsp;';
+						diamondHtml += d.diamond;
+						diamondHtml += '&nbsp;';
+						diamondHtml += '<a title="删减房卡"  onclick="x_admin_show(\'删减房卡\',\''+deldiamond+'\',600,400)" href="javascript:;">';
+						diamondHtml += '<i class="icon iconfont">&#xe6fe;</i>';
+						diamondHtml += '</a>';
+					return diamondHtml;
+                }}
+        -->
+				,{field: 'housecard', title: '等级操作', width: '100', templet: function(d) {
+					var housecardHtml = '<a title="增加等级"  onclick="adjustLevel(\''+d.Id+'\',\''+d.housecard+'\',\'add\')" href="javascript:;">';
+						housecardHtml += '<i class="icon iconfont">&#xe6b9;</i>';
+						housecardHtml += '</a>';
+						housecardHtml += '&nbsp;';
+						housecardHtml += d.housecard;
+						housecardHtml += '&nbsp;';
+						housecardHtml += '<a title="减少等级"  onclick="adjustLevel(\''+d.Id+'\',\''+d.housecard+'\',\'minus\')" href="javascript:;">';
+						housecardHtml += '<i class="icon iconfont">&#xe6fe;</i>';
+						housecardHtml += '</a>';
+					return housecardHtml;
+                }}
+				,{field: 'Id', title: '银行密码', width: '100', templet: function(d) {
+                    var bankpass = '{:url("User/bankpass")}?id='+d.Id;
+					var Html = '<a title="银行密码"  onclick="x_admin_show(\'银行密码\',\''+bankpass+'\',600,400)" href="javascript:;" style="color: red;">';
+						Html += '<i class="layui-icon">&#xe631;</i>';
+						Html += '</a>';
+					return Html;
+                }}
+                ,{field: 'Id', title: '实时数值', width: '100', templet: function(d) {
+                    var nowRealNums = '{:url("User/nowRealNums")}?id='+d.Id;
+					var Html = '<a title="实时数值"  onclick="x_admin_show(\'实时数值\',\''+nowRealNums+'\',600,400)" href="javascript:;" style="color: red;">';
+						Html += '<i class="layui-icon">&#xe631;</i>';
+						Html += '</a>';
+					return Html;
+                }}
+				,{field: 'totalRecharge', title: '总充值', width: '150'}
+				,{field: 'AddDate', title: '注册时间', width: '180'}
+				,{field: 'Id', title: '封禁状态', fixed: 'right', width: '120', templet: function(d) {
+					var Html = '<a onclick="member_feng(this,'+d.Id+','+(d.account_using ? 0 : 1)+')" href="javascript:;">';
+						Html += '<span class="layui-btn layui-btn-normal layui-btn-mini" style="background-color:'+(d.account_using ? '#1E9FFF' : '#FF5722')+'">'+(d.account_using ? '已启用' : '已封禁')+'</span>';
+						Html += '</a>';
+					return Html;
+				}}
+				,{field: 'Id', title: 'VIP状态', fixed: 'right', width: '100', templet: function(d) {
+					var Html = '<a onclick="member_vip(this,'+d.Id+','+(d.is_vip ? 0 : 1)+')" href="javascript:;">';
+						Html += '<span class="layui-btn layui-btn-normal layui-btn-mini" style="background-color:'+(d.is_vip ? '#1E9FFF' : '#FF5722')+'">'+(d.is_vip ? '是' : '否')+'</span>';
+						Html += '</a>';
+					return Html;
+				}}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            $('#search').on('click',function() {
+                tableId.reload({
+                    url: "{:url('User/getlists')}?robot={$robot}&searchstr="+$('.searchstr').val()+"&begin_time="+$('#begin_time').val()+"&end_time="+$("#end_time").val()
+                });
+				return false;
+            });
+
+        });
+	</script>
+    <script>
+
+		// 增加用户等级
+		function adjustLevel(uid, level, type) {
+			if (type == 'add' && level >= 6) {
+				layer.msg('增加等级失败，已达到最高等级。');
+				return;
+			}
+			if (type == 'minus' && level <= 1) {
+				layer.msg('减少等级失败，已达到最低等级。');
+				return;
+			}
+			var data = {uid: uid, level:level, type:type};
+			$.post("{:url('User/adjustLevel')}",data,function(data){
+				layer.msg(data.message,{time:1000});
+				if (data.status == 0) {
+					setTimeout(function(){
+						window.location.reload();
+					},1000);
+				}
+			},'Json');
+		}
+      
+       /*用户-封禁|解封*/
+      function member_feng(obj,id,type){
+		  if(type == '1'){
+			  //原先是1开启状态 改为 0封禁 限制登录  
+			  var msg = '解封';
+		  }else if(type == '0'){
+			  var msg = '封禁';
+		  }else{
+			  return false;
+		  }
+          layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doCanLogin')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+          });
+      }
+			
+		function member_vip(obj,id,type){
+			if(type == '0'){
+			  var msg = '关闭VIP状态';
+			}else if(type == '1'){
+			  var msg = '开启VIP状态';
+			}else{
+			  return false;
+			}
+			    layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doVip')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+			    });
+			}
+	  
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+  
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+
+  </body>
+
+</html>

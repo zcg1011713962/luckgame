@@ -1,0 +1,200 @@
+<?php
+namespace app\api\controller;
+use app\api\controller\Init;
+use app\api\controller\Curl;
+use think\facade\Request;
+use app\api\model\UserModel;
+use app\api\model\EncnumModel;
+use app\api\model\GameModel;
+
+class Pay extends Init
+{
+	private $shangHuNumber = 11103;
+	private $payUrl = 'http://www.nfpay.cc/Pay_index.html';
+	private $apikey = 'rvmt8kc5vt1yo4pob8h6wzh8pwd4jvcd';
+
+
+	// http://ydlht.com/index.php/api/pay/pay/uid/1000/fee/0.01/type/1
+	public function pay(){
+
+		$get = Request::param();
+		if(empty($get)){
+			return $this->returnError('Get Empty');
+		}
+
+		$uid = $get['uid'];
+		$fee = $get['fee'];
+		$type = $get['type'];
+		if( empty($uid) || empty($fee) || empty($type) || ($fee<0) || !in_array($type,[1,2]) ){
+			return $this->returnError('Param Error');
+		}
+
+		$usermodel = new UserModel();
+		$checkUid = $usermodel->checkAccountUser($uid);
+		if( empty($checkUid)  ){
+			return $this->returnError('Uid Error');
+		}
+		
+		//验证 一分钟支付一次
+		$checkPay = $usermodel->checkUserCanPay($uid);
+		if( $checkPay ){
+
+			//新增订单
+			$data = $this->calcToPay($uid, $fee, $type);
+			if(is_array($data)){
+				$this->assign('result',$data);
+				return $this->fetch();
+			}else{
+				return $this->returnError('Pay Error');
+			}
+			
+		}else{
+
+			//判断是否上一笔订单 否则返回error
+			$data = $usermodel->getUserPayInfo($uid, $fee, $type);
+			if(is_array($data)){
+				$this->assign('result',$data);
+				return $this->fetch();
+			}else{
+				return $this->returnError('1min Error');
+			}
+			
+		}
+
+	}
+
+	/**
+	 * type 1：微信支付；2：支付宝
+	 */
+	private function calcToPay($orderuid, $price, $type){
+		$this->init();
+		$time = time();
+		
+		$goodsname = "意大利娱乐充值";
+		$orderid = 'YDL'.date("YmdHis",$time).mt_rand(100,999);  
+		
+		$token = "G1QK0PZD8AQA76I0BVBMP7SWUFPIG8HK";  
+		$identification = "7X10GKKZ27CYMZ7M";   
+		
+		$thisurl = $this->testapi_url;
+		$return_url = $thisurl."/index.php/api/pay/returnUrl";
+		$notify_url = $thisurl."/index.php/api/pay/notifyUrl";
+		
+		$price = $price*100; 
+		// $key = md5($goodsname. $identification. $notify_url. $orderid. $orderuid. $price. $return_url. $token. $type  );
+		// $returndata['price'] = $price;
+		// $returndata['type'] = $type;
+		// $returndata['orderuid'] =$orderuid;
+		// $returndata['goodsname'] = $goodsname;
+		// $returndata['orderid'] = $orderid;
+		// $returndata['identification'] = $identification;
+		// $returndata['notify_url'] = $notify_url;
+		// $returndata['return_url'] = $return_url;
+		// $returndata['key'] = $key; 
+		//var_dump($returndata);die;
+
+		$pay_bankcode = 901;
+		/*
+		ydl1 - 901	微信手机wap
+		ydl2 - 902	微信扫码支付
+		ydl3 - 903	支付宝扫码支付
+		ydl4 - 904	支付宝手机wap
+		ydl5 - 905	QQ手机支付
+		ydl6 - 907	网银支付
+		ydl7 - 908	QQ扫码支付
+		ydl8 - 909	百度钱包
+		ydl9 - 910	京东支付
+		*/
+
+
+		$returndata['pay_memberid'] = $this->shangHuNumber;
+		$returndata['pay_orderid'] = $orderid;
+		$returndata['pay_applydate'] = date('Y-m-d H:i:s',$time);
+		$returndata['pay_bankcode'] = $pay_bankcode;
+		$returndata['pay_notifyurl'] = $notify_url;
+		$returndata['pay_callbackurl'] = $return_url;
+		$returndata['pay_amount'] = $price;
+		$returndata['pay_md5sign'] = $this->makeSignature_nongfu($returndata); 
+		$returndata['pay_attach'] = $orderid;//订单号
+		$returndata['pay_productname'] = $goodsname;
+
+		$payUrl = $this->payUrl;
+		
+
+
+		$curl = new Curl();
+		$result = $curl->_request($payUrl,true,'post',$returndata);
+		var_dump($result);die;
+		//string(267) "{"code":200,"data":{"qrcode":"wxp:\/\/f2f0Pq7X3q7m4abBZlEHN_EMmSHJ2iqw_D4T","type":"1","actual_price":1,"bill_no":"20190826499710153","end_time":1566789629,"return_url":"http:\/\/yidaliadmin.youmegame.cn\/index.php\/api\/pay\/returnUrl","orderid":"YDL1566789329194"}}"
+		$result = json_decode($result,true);
+		if($result['code'] != '200'){
+			return 'Pay Param Error:'.$result['code'];
+		}
+
+		//存记录
+		$insert = array(
+			'uid' => $orderuid,
+			'fee' => $price/100,
+			'type' => $type,
+			'osn' => $orderid,
+			'createtime' => $time,
+			'paytime' => 0,
+			'status' => 0,
+			'payresmsg' => '',
+			'prepayresmsg' => json_encode($result['data']),
+			'payendtime' => $result['data']['end_time']
+		);
+		$model = new GameModel();
+		$model->savePayLog($insert);
+
+		return $result['data'];
+	}
+
+	//同步通知
+	public function returnUrl(){
+		return $this->fetch('returnUrl');
+	}
+
+	//异步通知
+	public function notifyUrl(){
+		$token = "G1QK0PZD8AQA76I0BVBMP7SWUFPIG8HK"; 
+
+		$post = Request::param();
+		if(empty($post)){
+			return false;
+		}
+	
+		$bill_no = $post["bill_no"];                  //一个24位字符串，是此订单在020ZF服务器上的唯一编号
+		$orderid = $post["orderid"];                  //是您在发起付款接口传入的您的自定义订单号
+		$price = $post["price"];                      //单位：分。是您在发起付款接口传入的订单价格
+		$actual_price = $post["actual_price"];        //单位：分。一定存在。表示用户实际支付的金额。
+		$orderuid = $post["orderuid"];                //如果您在发起付款接口带入此参数，我们会原封不动传回。
+		$key = $post["key"];                       
+		
+		$notify_key = md5($actual_price.$bill_no.$orderid.$orderuid.$price.$token);
+		if($key == $notify_key){
+			
+			//修改记录
+			$model = new GameModel();
+			$rs = $model->editPayLog($post);
+			if($rs){
+				echo "success";	  
+			}
+			
+		}
+	}
+
+	//获取订单状态
+	public function orderStatus(){
+		$post = Request::param();
+		if(empty($post)){
+			return false;
+		}
+
+		$ordersn = $post['ordersn'];
+		$model = new UserModel();
+		$info = $model->getOrderStatus($ordersn);
+		echo $info;
+	}
+	
+}

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  
+   {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">代理管理</a>
+        <a>
+          <cite>代理列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+     
+		 <div style="padding-bottom: 1em;">
+		 	<form class="layui-form" action="" method="post">
+		 		<div class="layui-inline">
+		 			<input type="text" name="starttime" class="layui-input" id="starttime" value="{$starttime}" placeholder="开始时间"/>
+		 		</div>
+		 		<div class="layui-inline">
+		 			<input type="text" name="endtime" class="layui-input" id="endtime" value="{$endtime}" placeholder="结束时间"/>
+		 		</div>
+		 		<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+		 	</form>
+		 </div>
+		 
+      <table class="layui-table">
+        <thead>
+          <tr>            
+            <th>代理ID</th>
+            <th>昵称</th>
+            <th>当前金币数</th>
+            <th>金币操作</th>
+            <th>创建时间</th>
+            <th style="display: none;">所属运营商</th>
+            <th>代理等级</th>
+            <th>上级代理</th>
+            <th>手机号</th>
+
+            {if $isShow }
+            <th>当前战绩</th>
+            <th>总亏损</th>
+            <th>实时收益</th>
+            <th>总收益</th>
+            {/if}
+            
+            <th style="display: none;">设置</th>
+        </thead>
+        <tbody>
+          {foreach $list as $key=>$vo }
+          <tr>            
+            <td>{$vo.aid}</td>
+            <td>{$vo.username}</td>
+            <td>{$vo.score|showGold}</td>
+            <td>
+              <a title="添加金币"  onclick="x_admin_show('添加金币','{:url('User/addScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                <i class="icon iconfont">&#xe6b9;</i>
+              </a>
+              <a title="删减金币"  onclick="x_admin_show('删减金币','{:url('User/delScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                <i class="icon iconfont">&#xe6fe;</i>
+              </a>
+            </td>
+            <td>{:date('Y-m-d H:i:s',$vo.createtime)}</td>   
+            <td style="display: none;">yxx</td>
+            <td>{$vo.level}</td>  
+            <td>[{$vo.pid}] {$vo.pname}</td> 
+            <td>{$vo.mobile}</td> 
+
+            {if $isShow }
+            <td>{$clientShow['person']['all'][$vo.aid][0]}</td> 
+            <td>{$clientShow['person']['all'][$vo.aid][1]}</td> 
+            <td>{$clientShow['person']['all'][$vo.aid][2]}</td> 
+            <td>{$clientShow['person']['all'][$vo.aid][3]}</td> 
+            {/if}
+
+            <td class="td-manage" style="display: none;">              
+              
+              <a title="删除" onclick="member_del(this,'{$vo.aid}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+							
+            </td>
+          </tr>
+					{/foreach}
+        </tbody>
+      </table>
+      <div class="page">
+        {$page}
+      </div>
+
+    </div>
+    <script>
+			layui.use(['form','laydate','jquery'], function(){
+      	  var $ = layui.$;
+      	  var laydate = layui.laydate;
+      	  
+      	  laydate.render({
+						elem: '#starttime',
+						type: 'datetime'
+      	  });
+      	  
+      	  laydate.render({
+      	  	elem: '#endtime',
+						type: 'datetime'
+      	  });
+      	  
+      	  var form = layui.form;
+      		
+      	});
+    </script>
+
+  </body>
+
+</html>

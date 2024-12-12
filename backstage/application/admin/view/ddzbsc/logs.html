@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">斗地主比赛场记录</a>        
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">  
+		<a class="layui-btn layui-btn-small layui-btn-primary" href="{:url('index')}" title="返回配置">返回配置</a>   
+       
+      <table class="layui-table">
+       
+        <tbody>
+			<tr> 
+				<td>ID</td> 
+				<td>用户ID</td> 
+				<td>用户昵称</td>
+				<td>应完总场数</td> 
+				<td>已完总场数</td> 
+				<td>已赢总场数</td> 
+				<td>当地主场数</td> 
+				<td>地主赢场数</td> 
+				<td>已扣报名费</td> 
+				<td>中奖</td> 
+				<td>是否发奖励</td> 
+				<td>创建时间</td> 
+				<td>操作</td> 
+			</tr>	
+			{foreach $logs as $key=>$vo } 
+				<tr>
+					<td>{$vo.id}</td>
+					<td>{$vo.uid}</td>
+					<td>{$vo.nick_name}</td>
+					<td>{$vo.allc}</td>
+					<td>{$vo.play}</td>
+					<td>{$vo.win_all}</td>
+					<td>{$vo.dizhu_num}</td>
+					<td>{$vo.win_dizhu}</td>
+					<td>{$vo.bm_score}</td>
+					<td>{if $_conf[$vo['result']]['type'] == '1' }金币：{/if}
+						{if $_conf[$vo['result']]['type'] == '2' }其他：{/if}
+						{$_conf[$vo['result']]['value']} </td>
+					<td>{if $vo.is_send_win == '0'} 未发 {/if}
+						{if $vo.is_send_win == '1'} 已发 {/if}
+					</td>
+					<td>{$vo.create_time/1000|date='Y-m-d H:i'}</td>
+					<td>
+						{if ($_conf[$vo['result']]['type'] == '2') && ($vo.is_send_win == '0') }
+						<a href="{:url('doSendWin',array('id'=>$vo['id']))}" class="layui-btn layui-btn-primary">发奖</a>
+						{/if}
+					</td>
+				</tr>
+			{/foreach}	
+				
+					
+        </tbody>
+      </table>
+      
+    </div>
+    
+  </body>
+
+</html>
+
+<script>
+layui.use(['form','jquery'], function(){
+  var form = layui.form;
+  var $ = layui.$;
+  
+});
+
+function changeType(obj,t){
+	//var type = $(obj).siblings('input').val();
+	$(obj).siblings('input').val(t);
+
+	if(t === '1'){
+		$(obj).removeClass('layui-btn-primary').addClass('layui-btn-normal');  
+		$(obj).siblings('.t2').removeClass('layui-btn-normal').addClass('layui-btn-primary');  
+	}
+	if(t === '2'){ 
+		$(obj).siblings('.t1').removeClass('layui-btn-normal').addClass('layui-btn-primary');  
+		$(obj).removeClass('layui-btn-primary').addClass('layui-btn-normal'); 
+	}
+	
+}
+
+function start_game(type){
+	if(type == '0'){		
+		var msg = '关闭';
+	}else if(type == '1'){
+		var msg = '开启';
+	}else{
+		return false;
+	}
+	layer.confirm('确认要'+msg+'吗？',function(index){
+	$.ajax({
+		type: "POST",
+		url: "{:url('doStartGame')}",
+		data: {'t':type},
+		success: function(res){
+			if(res == 'success'){
+				layer.msg('已'+msg+'!',function(){
+					window.location.reload();
+				});					   
+			}else{
+				layer.msg(res);
+			}
+		}
+	});
+	});
+}
+
+</script>

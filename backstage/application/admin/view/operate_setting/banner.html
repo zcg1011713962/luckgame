@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+			width: auto;
+		}
+        /* .layui-table-cell {
+            height: 100px;
+        } */
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">运营设置</a>
+        <a><cite>Banner管理</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <div>
+            子运营商：
+            <select id="agent_id" style="width: 150px; height:40px;">
+                <option value="0">代理</option>
+            </select>
+            &nbsp;&nbsp;
+            状态：
+            <select id="agent_id" style="width: 150px; height:40px;">
+                <option value="0">启用</option>
+                <option value="1">禁用</option>
+            </select>
+            &nbsp;&nbsp;
+            <button class="layui-btn" id="search">搜索</button>
+            <br /><br />
+            <button class="layui-btn" onclick="x_admin_show('添加Banner','{:url('OperateSetting/add_banner')}',700,400)"><i class="layui-icon"></i>添加Banner</button>
+        </div>
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,lineStyle: 'height:200px'
+                ,url: "{:url('OperateSetting/getBanner')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                {field: 'id', title: 'ID'}
+                ,{field: 'id', title: '运营商', templet: function(d){
+                    return '代理';
+                }}
+                ,{field: 'id', title: '时间', templet: function(d) {
+                    return d.begin_time +' - '+ d.end_time;
+                }}
+                ,{field: 'image',  title: '图片', templet: function(d) {
+                    return '<img src="'+d.image+'" />'
+                }}
+                ,{field: 'id', title: '状态', templet: function(d) {
+                    return d.status == 1 ? '<span style="color:red;">禁用</span>' : '<span style="color:green;">启用</span>';
+                }}
+                ,{field: 'id', title: '操作', templet: function(d) {
+                    var edit_black_url = '{:url("OperateSetting/edit_banner")}?id='+d.id;
+                    var html = '';
+                        html += '<button type="button" class="layui-btn" onclick="x_admin_show(\'编辑Banner\',\''+edit_black_url+'\',800,500)">编辑</button>';
+                        var text = d.status == 1 ? '启用' : '禁用';
+                        var status = d.status == 1 ? 0 : 1;
+                        html += '<button type="button" class="layui-btn" onclick="delete_led(this,'+d.id+',\''+status+'\')">'+text+'</button>';    
+                        return html;
+                }}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+        });
+	</script>
+    <script>
+        function delete_led(_this, id, status) {
+            var text = status == 0 ? '启用' : '禁用';
+            layer.confirm('确认要'+text+'吗？',function(index){
+                $.post("{:url('delete_banner')}",{id:id,status:status},function(data){
+                    if (data.status == 0) {
+                        layer.alert(data.message, {icon: 6},function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(data.message);
+                    }
+                },'Json');
+            });
+        }
+    </script>
+  </body>
+</html>

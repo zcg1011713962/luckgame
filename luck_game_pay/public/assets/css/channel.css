@@ -1,0 +1,150 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    /*background-color: #1a1a1a;*/
+    background: url('../images/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    margin-top: -4vw;
+    height: 20vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4vw;
+    background: url('../images/shangkuang.png') no-repeat center center;
+    background-size: cover;
+}
+
+.header h1 {
+    margin-top: 5vw;
+    font-size: 7.23vw;
+    /*margin-left: -9vw;*/
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffffff, #94e1dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+
+.header .back-btn, .header .close-btn {
+    font-size: 6vw;
+    color: #ff0;
+    text-decoration: none;
+}
+
+.bizhong {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.bizhong .vnd-div {
+    width: 50vw;
+    height: 10vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../images/kuang01.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+}
+.bizhong .vnd-text {
+    margin-left: 3vw;
+    font-size: 5vw;
+    width: 73vw;
+}
+.jianbianse {
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffd88d, #c38729);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+.bizhong img {
+    width: 7vw;
+    margin-left: 3vw;
+}
+.bizhong span {
+    font-size: 5vw;
+}
+.channel-text {
+    margin-left: 3vw;
+    font-size: 5vw;
+    margin-top: 4vw;
+}
+.channel-kuang {
+    width: 99%;
+    height: 142vw;
+    margin: 0 auto;
+    padding-top: 1vw;
+    background-image: url(../images/biankuang8.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.channel-title {
+    margin-left: 5vw;
+    font-size: 5vw;
+    margin-top: 4vw;
+}
+.channel ul {
+    width: 96%;
+    margin: 0 auto;
+}
+.channel ul li {
+    height: 12vw;
+    margin: 1vw auto 0;
+    background-image: url(../images/kuang04.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.channel ul li img:first-child {
+    width: 7vw;
+    margin-left: 5vw;
+}
+.channel ul li img:last-child {
+    width: 3vw;
+    margin-right: 4vw;
+    cursor: pointer;
+    transform: scaleX(-1);
+}
+.channel ul li .bank-name {
+    margin-left: 2vw;
+    color: #f7e6a3;
+    font-size: 3.5vw;
+    width: 22vw;
+}
+.channel ul li .bank-limit {
+    color: #fff0b2;
+    font-size: 3vw;
+    width: 36vw;
+}
+.hide-or-show {
+    cursor: pointer;
+    color: #1dff00;
+    font-size: 5vw;
+    font-weight: bolder;
+    text-align: center;
+    margin: 0 auto;
+}

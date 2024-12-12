@@ -1,0 +1,32 @@
+{{extend './base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/error.css">
+<style>
+
+</style>
+{{/block}}
+{{block 'content'}}
+<body>
+<div class="container">
+    <header class="header">
+        <a href="#" class=""></a>
+        <h1 class="biaoti">{{L('Error Occurred')}}</h1>
+        <a href="#" class="close-btn"></a>
+    </header>
+    <div class="content">
+        <div class="none-div">
+            <div class="none-img">
+                <img src="/assets/images/logo.png" alt="">
+            </div>
+            <div class="none-text1">{{L('You just need a game app')}}</div>
+            <div class="none-text2">{{error_message}}</div>
+        </div>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+
+</script>
+{{/block}}

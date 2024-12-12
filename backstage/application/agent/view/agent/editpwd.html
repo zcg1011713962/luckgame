@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+	<style>
+		.layui-form-label{ width: 110px; }
+	</style>
+
+  <body>
+	  <div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">账号管理</a>
+	      <a>
+	        <cite>修改密码</cite></a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	  </div>
+    <div class="x-body">
+        <form class="layui-form">
+			<div class="layui-form-item">
+			    <label for="username" class="layui-form-label">
+			        当前密码
+			    </label>
+			    <div class="layui-input-inline">
+			        <input type="text" name="nowpwd" autocomplete="off" class="layui-input">
+			    </div>
+			</div>
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  新密码
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="newpwd" name="newpwd" lay-verify="pass" autocomplete="off" class="layui-input" >
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		     <label for="username" class="layui-form-label">
+		         确认密码
+		     </label>
+		     <div class="layui-input-inline">
+		         <input type="text" id="renewpwd" name="renewpwd" lay-verify="repass" autocomplete="off" class="layui-input">
+		     </div>
+		  </div>		 
+         
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //自定义验证规则
+          form.verify({
+            pass: function(value){
+              if(value.length < 6 || value.length > 12){
+                return '密码必须6到12位';
+              }
+            }            
+            ,repass: function(value){
+                if($('#newpwd').val()!=$('#renewpwd').val()){
+                    return '两次密码不一致';
+                }
+            }
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doEditPwd')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("修改成功", {icon: 6},function () {							
+							parent.location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

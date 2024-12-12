@@ -1,0 +1,36 @@
+/***modal弹出框****/
+.msg-modal {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.msg-modal.show {
+    display: flex;
+    animation: fadeIn 0.5s;
+}
+
+.msg-modal-content {
+    /* These properties will center the modal content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vw;
+    width: 88%;
+    padding: 5vw;
+    background-image: url('../images/jinekuang2.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff0b2;
+    font-size: 3.2vw;
+}
+
+

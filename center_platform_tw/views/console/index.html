@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/assets/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-row layui-col-space20">
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body chart-card">
+                    <div class="chart-header">
+                        <div class="metawrap">
+                            <div class="meta">
+                                <span>应用</span>
+                            </div>
+                            <div class="total">{{appCount}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div class="contentwrap">
+
+                        </div>
+                    </div>
+                    <div class="chart-footer">
+                        <div class="field">
+                            <span>应用数</span>
+<!--                            <span>321</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body chart-card">
+                    <div class="chart-header">
+                        <div class="metawrap">
+                            <div class="meta">
+                                <span>渠道</span>
+                            </div>
+                            <div class="total">{{channelCount}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div class="contentwrap">
+
+                        </div>
+                    </div>
+                    <div class="chart-footer">
+                        <div class="field">
+                            <span>渠道数</span>
+<!--                            <span>321</span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body chart-card">
+                    <div class="chart-header">
+                        <div class="metawrap">
+                            <div class="meta">
+                                <span>今日代收总额</span>
+                            </div>
+                            <div class="total">{{todayPayAmount}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div class="contentwrap">
+
+                        </div>
+                    </div>
+                    <div class="chart-footer">
+                        <div class="field">
+                            <span>今日代收笔数</span>
+                            <span>{{todayPayCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm6 layui-col-md3">
+            <div class="layui-card">
+                <div class="layui-card-body chart-card">
+                    <div class="chart-header">
+                        <div class="metawrap">
+                            <div class="meta">
+                                <span>今日代付总额</span>
+                            </div>
+                            <div class="total">{{todayPayoutAmount}}</div>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <div class="contentwrap">
+
+                        </div>
+                    </div>
+                    <div class="chart-footer">
+                        <div class="field">
+                            <span>今日代付笔数</span>
+                            <span>{{todayPayoutCount}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-sm12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">渠道代收统计</li>
+                        <li>渠道代付统计</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show" style="text-align: center">
+                            暂无数据
+                        </div>
+                        <div class="layui-tab-item" style="text-align: center">
+                            暂无数据
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/layui/layui.js"></script>
+<script>
+    var element = layui.element;
+</script>
+</body>
+</html>

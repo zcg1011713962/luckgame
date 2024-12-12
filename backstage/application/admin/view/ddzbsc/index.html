@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">斗地主比赛场</a>        
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+			<a class="layui-btn layui-btn-small layui-btn-primary" href="{:url('logs')}" title="记录">记录</a>
+      <table class="layui-table">
+       
+        <tbody>
+						<form class="layui-form" action="{:url('nandu_save')}" method="post">
+						
+						<tr>
+							<td colspan="3" class="layui-bg-green" >
+								设置 			
+							</td>
+						</tr>
+						
+						
+						<tr> 
+							<td>总场数</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$total}" class="layui-input" disabled style="border: none;background: none;">
+									</div>
+								</div>							
+							</td> 
+							<td>
+								
+							</td> 
+						</tr>	
+						<tr> 
+							<td>出局场数</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$out}" class="layui-input" disabled style="border: none;background: none;">
+									</div>
+								</div>						
+							</td> 
+							<td>
+								
+							</td> 
+						</tr>	
+						<tr> 
+							<td>报名费</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$score}" class="layui-input" name="BM_SCORE[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>
+								
+							</td> 
+						</tr>
+						<tr> 
+							<td>启动</td> 
+							<td>	
+								{if $start == 0} 未开启 {/if}		
+								{if $start == 1} 已开启 {/if}						
+							</td> 
+							<td>
+								<button type="button" class="layui-btn" onclick="start_game('1')">开始</button>		
+								<button type="button" class="layui-btn" onclick="start_game('0')">结束</button>
+							</td> 
+						</tr>	
+						
+						{foreach $awards as $key=>$vo } 
+  						<tr> 
+								<td>奖品{$vo.award}</td> 
+								<td>		
+									<div class="layui-inline">
+										<div class="layui-input-inline">
+											<input type="text" name="AWARD{$vo.award}[value]" value="{$vo.value}" class="layui-input">
+										</div>
+									</div>									
+								</td> 
+								<td>		
+									<input type="hidden" name="AWARD{$vo.award}[type]" value="{$vo.type}">							
+									<a onclick="changeType(this,'1')" class="t1 layui-btn {if $vo['type'] == 1}layui-btn-normal{else}layui-btn-primary{/if}" href="javascript:;">金币</a>
+									<a onclick="changeType(this,'2')" class="t2 layui-btn {if $vo['type'] == 2}layui-btn-normal{else}layui-btn-primary{/if}" href="javascript:;">其他</a>
+								</td> 
+						</tr> 
+						{/foreach}
+
+						<tr class="layui-bg-gray"><td colspan="3">排位赛</td></tr>
+						<tr> 
+							<td>总场次</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_total}" class="layui-input" name="PW_TOTAL[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+						<tr> 
+							<td>冠军</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_award1}" class="layui-input" name="PW_AWARD1[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+						<tr> 
+							<td>亚军</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_award2}" class="layui-input" name="PW_AWARD2[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+						<tr> 
+							<td>季军</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_award3}" class="layui-input" name="PW_AWARD3[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+						<tr> 
+							<td>第四至第十</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_award4}" class="layui-input" name="PW_AWARD4[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+						<tr> 
+							<td>其他参与者</td> 
+							<td>		
+								<div class="layui-inline">
+									<div class="layui-input-inline">
+										<input type="text" value="{$pw_award5}" class="layui-input" name="PW_AWARD5[value]">
+									</div>
+								</div>						
+							</td> 
+							<td>								
+							</td> 
+						</tr>
+
+						<tr>
+							<td colspan="3" class="layui-bg-green" >								
+								<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formNandu">修改</button> 								
+							</td>
+						</tr>
+
+						</form>
+					
+					
+        </tbody>
+      </table>
+      
+    </div>
+    
+  </body>
+
+</html>
+
+<script>
+layui.use(['form','jquery'], function(){
+  var form = layui.form;
+  var $ = layui.$;
+  
+});
+
+function changeType(obj,t){
+	//var type = $(obj).siblings('input').val();
+	$(obj).siblings('input').val(t);
+
+	if(t === '1'){
+		$(obj).removeClass('layui-btn-primary').addClass('layui-btn-normal');  
+		$(obj).siblings('.t2').removeClass('layui-btn-normal').addClass('layui-btn-primary');  
+	}
+	if(t === '2'){ 
+		$(obj).siblings('.t1').removeClass('layui-btn-normal').addClass('layui-btn-primary');  
+		$(obj).removeClass('layui-btn-primary').addClass('layui-btn-normal'); 
+	}
+	
+}
+
+function start_game(type){
+	if(type == '0'){		
+		var msg = '关闭';
+	}else if(type == '1'){
+		var msg = '开启';
+	}else{
+		return false;
+	}
+	layer.confirm('确认要'+msg+'吗？',function(index){
+	$.ajax({
+		type: "POST",
+		url: "{:url('doStartGame')}",
+		data: {'t':type},
+		success: function(res){
+			if(res == 'success'){
+				layer.msg('已'+msg+'!',function(){
+					window.location.reload();
+				});					   
+			}else{
+				layer.msg(res);
+			}
+		}
+	});
+	});
+}
+
+</script>

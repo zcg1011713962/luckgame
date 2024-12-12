@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	{include file="public/head" /}
+	<body>
+		<style>
+			.header { width: 100%; height: 80px; } 
+			.header .left { width: 50%; height: 80px; float: left; } 
+			.header .right { width: 50%; height: 80px; float: left; } 
+			.header .right .search { width: 100%; height: 40px; float: right;} 
+			.header .right .tabs { width: 100%; height: 40px; float: right; } 
+			.layui-tab-brief>.layui-tab-title .layui-this { color: rgb(34, 45, 50); } 
+			.layui-tab-brief>.layui-tab-title .layui-this::after { border: none; border-radius: 0; border-bottom: 2px solid rgb(34, 45, 50); } 
+			.search { width: 100%; height: 40px; float: right; } 
+			.searchbox { width: 250px; height: 35px; background-color: rgb(34, 45,50); font-size: 12px; float: right; margin-right: 65px; border-radius:3px; } 
+			.searchInput { height: 29px; width: 210px; margin-top: 3px; margin-left:3px; border: none; text-indent: 5px; float: left; } 
+			.searchBtn { border:0; background-color: rgb(34, 45, 50); font-size: 27px; width: 37px; height:35px; text-align: center; color: #fff; cursor: pointer; float: left; }
+			.operate_btn {display: block; float: left; padding: 5px;}
+		</style>
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					会员管理
+				</a>
+				<a>
+					<cite>
+						在线人数列表
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+		<div class="x-body">
+			<div class="header">
+				<div class="left">
+					<br />
+					<span class="x-left" style="line-height:40px">
+						共有数据：{$count} 条
+					</span>
+				</div>
+			</div>
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<th>
+							ID
+						</th>
+						<th>
+							账号
+						</th>
+						<th>
+							游戏名称
+						</th>
+						<th>
+							游戏端口
+						</th>
+						<th>
+							分数
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $gameUserOnline as $key=>$vo }
+					<tr>
+						<td>
+							{$vo.Id}
+						</td>
+						<td>
+							{$vo.account}
+						</td>
+						<td>
+							{$vo.gameName}
+						</td>
+						<td>
+							{$vo.GameId}
+						</td>
+                        <td>
+                            {$vo.score}
+                        </td>
+					</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,168 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    /*background-color: #1a1a1a;*/
+    background: url('../images/background.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+
+.header {
+    margin-top: -4vw;
+    height: 20vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4vw;
+    background: url('../images/shangkuang.png') no-repeat center center;
+    background-size: cover;
+}
+
+.header h1 {
+    margin-top: 5vw;
+    font-size: 7.23vw;
+    /*margin-left: -9vw;*/
+    font-weight: bolder;
+    background: -webkit-linear-gradient(#ffffff, #94e1dc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 0 #000;
+}
+
+.header .back-btn, .header .close-btn {
+    font-size: 6vw;
+    color: #ff0;
+    text-decoration: none;
+}
+
+.tab {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #858275;
+}
+.tab a {
+    font-size: 3vw;
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    color: #858275;
+    border-bottom: 3px solid transparent;
+}
+.tab a.active {
+    color: #f7e6a3;
+    font-weight: bolder;
+    border-bottom: 3px solid #f7e6a3;
+}
+.filter {
+    display: flex;
+    justify-content: space-around;
+    padding: 1.87vw;
+}
+.filter button {
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 2.867vw;
+    font-weight: bolder;
+    padding: 1vw 3vw;
+    border: none;
+    width: 100%;
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+    background-color: transparent;
+}
+.filter .un_selected {
+    color: #858275;
+    background-image: url('../images/weixuanzhong_2.png');
+}
+.filter .selected {
+    color: #f7e6a3;
+    background-image: url('../images/xuanzhong_2.png');
+}
+.notice {
+    font-size: 3.5vw;
+    text-align: center;
+    color: #d0021b;
+    padding: 1vw 0;
+}
+.transaction {
+    padding: 2vw;
+}
+.transaction .date {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.transaction .details {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 23vw;
+    margin: 0 auto;
+    background-image: url('../images/jilu.png');
+    background-size: contain; /* 背景图完整显示 */
+    background-position: center; /* 背景图居中 */
+    background-repeat: no-repeat; /* 不重复背景图 */
+}
+.transaction .details i {
+    font-size: 7vw;
+    width: 10vw;
+    margin-left: 4vw;
+    color: #f7e6a3;
+}
+.transaction .details .info {
+    color: #e79d28;
+    flex: 1;
+}
+.transaction .details .info div {
+    font-size: 3.56vw;
+    margin-bottom: 0.33vw;
+}
+.transaction .status {
+    color: #f7e6a3;
+}
+.transaction .details .info div.reason {
+    color: #7e6c4c;
+    border-top: 1px dashed;
+    font-size: 2.856vw;
+    padding-top: 1vw;
+}
+.transaction .amount {
+    margin-right: 4vw;
+    font-size: 3.88vw;
+    color: #f7e6a3;
+    font-weight: bolder;
+}
+.none-div {
+    margin-top: 10vw;
+}
+.none-div .none-img, .transaction .none-text1, .transaction .none-text2 {
+    text-align: center;
+}
+.none-div .none-img img {
+    width: 10vw;
+}
+.none-div .none-text1 {
+    font-size: 3vw;
+    color: #858275;
+    margin-top: 2vw;
+}
+.none-div .none-text2 {
+    font-size: 3vw;
+    color: #f7e6a3;
+    margin-top: 5vw;
+}

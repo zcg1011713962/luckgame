@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/lib/layui/css/layui.mobile.css">
+    <style>
+        html,body {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<img src="{$list.image}" style=" width: 100%; height: 100%;" />
+
+    <script src="/static/lib/layui/layui.js"></script>
+    <script>
+        // layui.use('form' , function(){
+        //     var form = layui.form , $ = layui.$;
+        //     $('.left').click(function (){
+        //         $('.left').removeClass('selected');
+        //         $(this).addClass('selected');
+        //         var id = $(this).attr('data-id');
+        //         $('.right').html('')
+        //         $.post('{:url('activityContent')}' , {id : id} , function(res){
+        //             $('.right').html(res.msg.content).removeClass('hidden');
+        //         })
+        //     })
+
+        //     // 默认第一条
+        //     let size = $('.left').size();
+        //     if (size > 0){
+        //         $('.left :eq(0)').click();
+        //     }
+        // })
+    </script>
+</body>
+</html>

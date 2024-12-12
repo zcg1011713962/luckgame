@@ -1,0 +1,4 @@
+update s_config set v='{"mobile":{"open":1,"ord":1,"title":"Mobile Number","icon":"icon-mobile","note":"For login options and customer service contact."},"pan":{"open":1,"ord":2,"title":"ID Card","icon":"icon-idcard","note":"For safety and security of all transactions."},"bank":{"open":1,"ord":3,"title":"Bank Card","icon":"icon-bank","note":"For quick withdrawals to you bank account."}}' where k='kycverify';
+
+update d_mail_tpl set content='You have successfully verified your ID Card',title='ID Card verified' where id=12;
+update d_mail_tpl set content='ID Card verification failed,the reasons are as follows:XXX',title='ID Card verify failed' where id=13;

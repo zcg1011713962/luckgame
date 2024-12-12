@@ -1,0 +1,9 @@
+{
+  "success": "成功",
+  "param error": "参数错误",
+  "operate failed": "操作失败",
+  "unauthorized access": "未授权访问",
+  "client ip is unauthorized": "客户端IP未授权",
+  "invalid interface address": "请求接口地址无效",
+  "permission denied": "无权限操作"
+}

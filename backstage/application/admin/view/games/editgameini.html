@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  {include file="public/head" /}
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>类别
+              </label>
+              <div class="layui-input-inline">
+                  <select name="parent_id" id="parent_id" lay-filter="field_parent">
+                    <option value=0>请选择</option> 
+                    {foreach $root_fields as $k => $v}
+              
+                    <option value="{$v['id']}">{$v['name']}</option>
+                    {/foreach}
+                 </select> 
+              </div>              
+          </div>
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>元数据
+              </label>
+              <div class="layui-input-inline">
+                 <select name="field_id" id="field_id">
+                    <option value=""></option>
+                 </select> 
+              </div>              
+          </div>
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>值
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="field_value" name="field_value" required=""
+                  autocomplete="off" class="layui-input" value="">
+              </div>              
+          </div> 
+
+          
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+          </div>
+      </form>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  添加
+              </button>
+              <button  class="layui-btn" lay-filter="review" onclick='ReviewIni({$game.game_id})' >
+                  预览
+              </button>
+      
+   </div> 
+    <table class="layui-table" id="list">
+       <thead>
+          <tr>
+              <td>ID</th>
+              <td>类别</th>
+              <td>元数据key</th>
+              <td>元数据value</th>
+              <td>操作</th>  
+          </tr>
+       </thead>
+       <tbody>
+           {foreach $game_ini as $key=>$val}
+           <tr>
+             <td>{$val.id}</td>
+             <td>{$val.parent_name}</td>
+             <td>{$val.name}</td>
+             <td>{$val.value}</td>
+             <td class="td-mange">
+               <!-- <button  class="layui-btn"  title="编辑" id="edit" onclick="EditIni({$val.id},{$val.parent_id},{$val.field_id},{$val.value})">编辑</button> -->
+                <button   class="layui-btn" title="删除" id="del" onclick="DelIni({$val.id})">删除</button>
+             </td>
+           </tr>
+           {/foreach}
+       </tbody> 
+    </table>
+  </div>     
+
+
+    <script>
+        
+       function EditIni(id,parentId,fieldId,value){
+           $('#parent_id').find('option[value='+parentId+']').attr('selected',true); 
+         //document.getElementById("parent_id").value=parentId;
+          document.getElementById("field_id").value=fieldId;
+          document.getElementById("field_value").value=value;
+       }
+        function DelIni(id){
+         $.ajax({
+             type:"POST",
+             data:{"id":id},
+             url:"{:url('games/delGameIni')}",
+             success:function(msg){
+				   if(msg == 'success'){
+					   layer.alert("删除成功", {icon: 6},function () {
+                                              
+							window.location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+             }
+           })
+       } 
+       
+       function ReviewIni(id){
+           $.ajax({
+             type:"POST",
+             data:{"game_id":id},
+             url:"{:url('games/getReviewGameIni')}",
+             success:function(msg){
+                 var html="<textarea  style='width:560px;height:480px' class='layui-textarea' >"
+                     +msg+"</textarea>";
+                layer.alert(html,{ area: ['600px', '480px'],title:"游戏配置"},function(){
+                          
+                  });
+             }
+          });
+       }
+ 
+        var fields="{$fields}";
+        fields=fields.replaceAll("&quot;","\"");
+        var dict_fields=JSON.parse(fields);
+        
+        var game_name="{$game.name}";
+        var game_id="{$game.game_id}";
+        
+
+        layui.use(['form','layer','table','laydate' , 'upload' , 'layedit'], function(){
+            $ = layui.jquery;
+          var table = layui.table;
+          var laydate=layui.laydate;
+          
+
+          var form = layui.form
+          ,layer = layui.layer,upload = layui.upload,layedit = layui.layedit;
+          //选择监听
+          form.on('select(field_parent)', function(data){
+               var parent_id=data.value; //获取类别ID 
+               $('#field_id option').empty();
+               var field_son_select='';
+               data=dict_fields[parent_id]["childnodes"];
+               for(var o in data){
+                   field_son_select +='<option value="'+data[o].id+'">'+data[o].name+'</option>';     
+               }
+               $('#field_id').html(field_son_select);
+               form.render('select');
+          });
+          //监听提交
+          form.on('submit(add)', function(data){
+    
+            data.field.game_id = game_id; // 原生API;
+            data.field.field_value = document.getElementById('field_value').value;
+            data.field.field_id = document.getElementById('field_id').value;
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('games/doEditGameini')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+                                                      window.location.reload();
+							//window.parent.location.href = "{:url('games/gamelists')}";
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+         form.on('submite(review)',function(data){
+            $.ajax({
+               type:"POST",
+               url: "{:url('games/getGameIni')}"
+            })   
+         }); 
+          
+        });
+    </script>
+
+  </body>
+
+</html>

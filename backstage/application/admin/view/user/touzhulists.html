@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员管理</a>
+        <a><cite>会员列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="" method="post">
+          <input type="text" name="searchstr"  placeholder="ID/账号" value="{$searchstr}" autocomplete="off" class="layui-input" style="width: 400px;">
+		  <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+		  
+		  	<!--<a title="同步" class="layui-btn" onclick="x_admin_show('同步','{:url('User/localTongbu')}',600,400)" href="javascript:;">
+				同步
+			</a>-->
+		</form>
+      </div>
+      <xblock style="display: none;">
+        <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>
+        <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('User/add')}',600,400)"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">共有数据：{$count} 条</span>
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th style="display: none;">
+              <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>ID</th>
+            <th>账号</th>
+            <th>昵称</th>
+            <th>金币
+							<span id="scoresort" class="layui-table-sort layui-inline" lay-sort="{$scoresort}">
+								<i class="layui-edge layui-table-sort-asc" onclick="scoresort('asc')" title="升序"></i>
+								<i class="layui-edge layui-table-sort-desc" onclick="scoresort('desc')" title="降序"></i>
+							</span>
+						</th>
+						<script>
+							function scoresort(ss){
+								var nowss = $('#scoresort').attr('lay-sort');
+								//console.log(nowss,'----',ss);
+								
+								var sortres = '';
+								if(nowss == ss){
+									sortres = '';
+								}else{
+									sortres = ss;
+								}
+								$('#scoresort').attr('lay-sort',sortres);
+								
+								var searchstr = "{$searchstr}";
+								if(searchstr.length == 0){ searchstr = 0; }
+								
+								var url = "/index.php/admin/user/lists/searchstr/"+searchstr+"/scoresort/"+sortres+"/diamondsort/0.html";
+								//console.log(url);
+								location.href=url;
+								
+							}
+							function diamondsort(ss){
+								var nowss = $('#diamondsort').attr('lay-sort');
+								//console.log(nowss,'----',ss);
+								
+								var sortres = '';
+								if(nowss == ss){
+									sortres = '';
+								}else{
+									sortres = ss;
+								}
+								$('#diamondsort').attr('lay-sort',sortres);
+								
+								var searchstr = "{$searchstr}";
+								if(searchstr.length == 0){ searchstr = 0; }
+								
+								var url = "/index.php/admin/user/lists/searchstr/"+searchstr+"/scoresort/0/diamondsort/"+sortres+".html";
+								//console.log(url);
+								location.href=url;
+								
+							}
+						</script>
+						
+            <th>金币操作</th>
+            <th>房卡
+							<span id="diamondsort" class="layui-table-sort layui-inline" lay-sort="{$diamondsort}">
+								<i class="layui-edge layui-table-sort-asc" onclick="diamondsort('asc')" title="升序"></i>
+								<i class="layui-edge layui-table-sort-desc" onclick="diamondsort('desc')" title="降序"></i>
+							</span>
+						</th>
+            <th>房卡操作</th>
+            <th>总充值</th>
+            <th>实时数值</th>
+            <th>注册时间</th>
+            <th>封禁状态</th>
+            <th>VIP状态</th>
+            <th style="display: none;">操作</th>
+					</tr>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo } 							
+							<tr>
+							  <td style="display: none;">
+							    <div class="layui-unselect layui-form-checkbox" lay-skin="primary" data-id='{$vo.Id}'><i class="layui-icon">&#xe605;</i></div>
+							  </td>
+							  <td>{$vo.Id}</td>
+							  <td>
+							    <a onclick="x_admin_show('修改密码','{:url('User/editpwd',[ 'id' => $vo['Id'] ])}',600,400)" title="修改密码" href="javascript:;" style="color: red;">
+							      <i class="layui-icon">&#xe631;</i>
+							    </a>
+									{$vo.Account}
+									</td>
+							  <td>{$vo.nickname}</td>
+							  <td>{$vo.score}</td>
+							  <!--  <td>{$vo.score/100}</td> -->
+							  <td>
+									<a title="添加金币"  onclick="x_admin_show('添加金币','{:url('User/addScore',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+									  <i class="icon iconfont">&#xe6b9;</i>
+									</a>
+									<a title="删减金币"  onclick="x_admin_show('删减金币','{:url('User/delScore',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+									  <i class="icon iconfont">&#xe6fe;</i>
+									</a>
+								</td>
+							  <td>{$vo.diamond}</td>
+								<td>
+									<a title="添加房卡"  onclick="x_admin_show('添加房卡','{:url('User/addDiamond',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+									  <i class="icon iconfont">&#xe6b9;</i>
+									</a>
+									<a title="删减房卡"  onclick="x_admin_show('删减房卡','{:url('User/delDiamond',[ 'id' => $vo['Id'] ])}',600,400)" href="javascript:;">
+									  <i class="icon iconfont">&#xe6fe;</i>
+									</a>
+								</td>
+							  <td>{$vo.totalRecharge}</td>
+							  <td><!-- {$vo.loginip} -->
+								<a onclick="x_admin_show('实时数值','{:url('User/nowRealNums',[ 'id' => $vo['Id'] ])}',600,400)" title="实时数值" href="javascript:;" style="color: red;">
+									<i class="layui-icon">&#xe631;</i>
+								</a></td>
+							  <td>{$vo.AddDate}</td>
+							  <td class="td-status">
+									{if !$vo.iscanlogin}
+										<a onclick="member_feng(this,'{$vo.Id}','0')" href="javascript:;">
+											<span class="layui-btn layui-btn-normal layui-btn-mini">已启用</span>
+										</a>
+									{else /}
+										<a onclick="member_feng(this,'{$vo.Id}','1')" href="javascript:;">
+											<span class="layui-btn layui-btn-danger layui-btn-mini">已封禁</span>
+										</a>
+									{/if}
+									
+								</td>
+								<td class="td-status">
+									{if $vo.is_vip}
+										<a onclick="member_vip(this,'{$vo.Id}','0')" href="javascript:;">
+											<span class="layui-btn layui-btn-normal layui-btn-mini">是</span>
+										</a>
+									{else /}
+										<a onclick="member_vip(this,'{$vo.Id}','1')" href="javascript:;">
+											<span class="layui-btn layui-btn-danger layui-btn-mini">否</span>
+										</a>
+									{/if}
+									
+								</td>
+							  <td class="td-manage" style="display: none;">
+							    <a title="编辑"  onclick="x_admin_show('编辑','{:url('User/editinfo')}',600,400)" href="javascript:;">
+							      <i class="layui-icon">&#xe642;</i>
+							    </a>
+							    <a title="删除" onclick="member_del(this,'要删除的id')" href="javascript:;">
+							      <i class="layui-icon">&#xe640;</i>
+							    </a>
+							  </td>
+							</tr>
+					{/foreach}
+          
+        </tbody>
+      </table>
+      <div class="page">        
+				{$page|raw}
+      </div>
+
+    </div>
+    <script>
+      
+       /*用户-封禁|解封*/
+      function member_feng(obj,id,type){
+		  if(type == '0'){
+			  //原先是1开启状态 改为 0封禁 限制登录  
+			  var msg = '封禁';
+		  }else if(type == '1'){
+			  var msg = '解封';
+		  }else{
+			  return false;
+		  }
+          layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doCanLogin')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+          });
+      }
+			
+			function member_vip(obj,id,type){
+			if(type == '0'){
+			  var msg = '关闭VIP状态';
+			}else if(type == '1'){
+			  var msg = '开启VIP状态';
+			}else{
+			  return false;
+			}
+			    layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doVip')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+			    });
+			}
+	  
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+  
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+
+  </body>
+
+</html>

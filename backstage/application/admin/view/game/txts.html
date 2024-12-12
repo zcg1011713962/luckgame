@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏管理</a>
+        <a>
+          <cite>游戏文字</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">    
+      
+        <form class="layui-form" action="" method="POST">
+            
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label">管理员微信</label>
+              <div class="layui-input-inline">
+                  <input type="text" name="txt1" required  placeholder="请输入" autocomplete="off" class="layui-input" value="{$txt1.value}"/>
+              </div>
+              <div class="layui-form-mid layui-word-aux">不是代理时显示</div>
+            </div>
+            
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">修改</button>                
+              </div>
+            </div>
+          </form>
+
+          <script>              
+            layui.use('form', function(){
+              var form = layui.form;
+                                              
+            });
+          </script>
+
+      <hr/>
+
+     
+     
+    </div>
+	
+  </body>
+
+</html>

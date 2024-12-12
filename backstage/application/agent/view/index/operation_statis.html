@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+			width: auto;
+		}
+        .layui-panel {
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .block-item {
+            padding: 1px 0;
+        }
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">代理运营统计</a>
+        <a><cite>运营统计报表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <div>
+            &nbsp;&nbsp;
+            日期：
+            <input type="text" id="begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <button class="layui-btn" id="search">搜索</button>
+        </div>
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,width: '100%'
+                ,height: 500
+                ,totalRow: true
+                ,url: "{:url('Index/operationStatisInfo')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                {field: 'time', title: '时间', width:'120', totalRowText: '总和：'}
+                ,{field: 'box_amount', title: '宝箱金额', width:'100', totalRow: true}
+                ,{field: 'new_have',  title: '注册人数' , width:'100', totalRow: true}
+                ,{field: 'payment_total',  title: '充值人数' , width:'100', totalRow: true}
+                ,{field: 'two_payment',  title: '复充人数' , width:'100', totalRow: true}
+                ,{field: 'payment_amount',  title: '充值金额' , width:'100', totalRow: true}
+                ,{field: 'new_payment_gold',  title: '有效充值金额（扣除支付点位）' , width:'200', totalRow: true}
+                ,{field: 'cash_amount',  title: '提现金额' , width:'100', totalRow: true}
+                ,{field: 'cash_total',  title: '提现人数' , width:'100', totalRow: true}
+                ,{field: 'win_or_close_total',  title: '游戏输赢' , width:'100', totalRow: true}
+                ,{field: 'diff_pay',  title: '充提差' , width:'100', totalRow: true}
+                ,{field: 'usecoin',  title: '流水（投注记录）' , width:'150', totalRow: true}
+                ,{field: 'commission_total',  title: '流水佣金（拉人抽成）' , width:'150', totalRow: true}
+                ,{field: 'balance_amount',  title: '平台余额' , width:'150', totalRow: true}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.total+' 条');
+                    for(i in res['count']) {
+                        console.log(i +'-'+ res['count'][i]);
+                        if (res['count'][i] !== null) {
+                            $('#'+i).text(res['count'][i]);
+                        }
+                    }
+                }
+            });
+
+            $('#search').on('click',function() {
+
+                var data = {};
+                    data.begin_time = $('#begin_time').val();
+                    data.end_time = $('#end_time').val();
+                    
+                var url_str = '';
+                for (i in data) {
+                    url_str += i +'='+ data[i] + '&';
+                }
+                url_str = url_str.substring(0, url_str.length - 1);
+                tableId.reload({
+                    url: "{:url('Index/operationStatisInfo')}?"+ url_str
+                });
+				return false;
+            });
+        });
+	</script>
+    <script>
+    </script>
+  </body>
+</html>

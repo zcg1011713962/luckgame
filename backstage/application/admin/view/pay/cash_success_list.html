@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">兑换管理</a>
+        <a><cite>提现成功列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <style>
+        .layui-form-select{width: 150px;display: inline-block}
+    </style>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="{:url('Pay/CashSuccessList' , ['status' => 0, 'type' => 99])}" method="post">
+            <input type="text" name="value"  placeholder="ID/账号/流水号/卡号/姓名" value="{$postParams['value']|default=''}" autocomplete="off" class="layui-input" style="width: 300px;">
+            <div class="layui-inline">
+                <label class="layui-form-label">数据时间</label>
+                <div class="layui-input-inline" style="width: 300px;">
+                    <input type="text" style="width: 100%" readonly name="searchtime" value="{$postParams['searchtime']|default=''}" id="start" placeholder="请选择数据时间" autocomplete="off" class="layui-input layui-date">
+                </div>
+            </div>
+            <input type="hidden" name="page" value="1">
+            <div class="layui-inline">
+                <div class="layui-btn-group times">
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="1">今天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="2">昨天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="3">近3天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="4">近7天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="5">近30天</button>
+                    <button type="button" class="layui-btn layui-btn-primary" data-type="0">不限</button>
+                </div>
+            </div>
+
+		  <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+		</form>
+      </div>
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>流水号</th>
+            <th>用户ID</th>
+            <th>银行卡号</th>
+            <th>真实姓名</th>
+            <th>提现金额($)</th>
+            <th>提现比例</th>
+            <th>提现金额</th>
+            <th>创建时间</th>
+		  </tr>
+        </thead>
+        <tbody>
+		{foreach $payCashList as $key => $item }
+		<tr>
+		  <td>{$item.id}</td>
+		  <td>{$item.order_number}</td>
+		  <td>{$item.uid}({$item.nickname})</td>
+		  <td>{$item.bank_number}</td>
+		  <td>{$item.real_name}</td>
+		  <td>{$item.fee}</td>
+		  <td>{$item.payscale}</td>
+          <td>{$item.money}</td>
+          <td>{$item.created_at}</td>
+		</tr>
+		{/foreach}
+        </tbody>
+      </table>
+    </div>
+    <script>
+        function getFullDate(time) {
+            var month = time.getMonth() + 1, day = time.getDate();
+            if (month < 10) {
+                month = "0" + month;
+            }
+            if (day < 10) {
+                day = "0" + day;
+            }
+            return time.getFullYear() + '-' + month + '-' + day;
+        }
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem : '#start' ,
+                type : 'datetime' ,
+                range: '~',
+            });
+
+            $('.times button').on('click', function (e) {
+                let type               = parseInt(e.currentTarget.dataset.type);
+                let dates              = new Date();
+                let startTime, endTime = getFullDate(new Date()) + ' 23:59:59';
+                $($(this).siblings()).removeClass('layui-btn-success').addClass('layui-btn-primary')
+                $(this).removeClass('layui-btn-primary').addClass('layui-btn-success');
+                switch (type) {
+                    case 0 :
+                        // 不限
+                        $('.layui-date').val('');
+                        return;
+                        break;
+                    case 1 :
+                        // 今天
+
+                        break;
+                    case 2 :
+                        // 昨天
+                        dates.setDate(dates.getDate() - 1);
+                        endTime = getFullDate(dates) + ' 23:59:59';
+                        break;
+                    case 3 :
+                        // 近三天
+                        dates.setDate(dates.getDate() - 2);
+                        break;
+                    case 4 :
+                        // 近一周
+                        dates.setDate(dates.getDate() - 6);
+                        break;
+                    case 5 :
+                        // 近一月
+                        dates.setDate(dates.getDate() - 29);
+                        break;
+                }
+                startTime = getFullDate(dates) + ' 00:00:00';
+                $('.layui-date').val(startTime + ' ~ ' + endTime);
+            })
+        });
+    </script>
+
+  </body>
+
+</html>

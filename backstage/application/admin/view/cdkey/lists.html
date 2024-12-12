@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  
+   {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">点卡管理</a>
+        <a>
+          <cite>点卡列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+     <div style="padding-bottom: 1em;">
+      <form class="layui-form" action="" method="POST">
+        卡号：<div class="layui-inline">
+          <input type="text" name="number" value="{$Think.post.number}" class="layui-input" id="number" />
+        </div>
+        <button class="layui-btn" lay-submit>查询</button>
+      </form>
+    </div>
+      <xblock>
+				<button class="layui-btn" onclick="x_admin_confirm()"><i class="layui-icon"></i>添加</button>
+        <a class="layui-btn" href="{:url('doExcel')}"><i class="layui-icon"></i>导出</a>
+        <span class="x-right" style="line-height:40px">
+          已使用：{$useCount} 个，未使用：{$notCount} 个，
+          共有数据：{$count} 条
+        </span>
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>            
+            <th>ID</th>
+            <th>点卡</th>
+            <th>使用状态</th>
+            <th>使用ID</th>
+            <th>使用时间</th>
+            <th>操作</th>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo }
+          <tr>            
+            <td>{$vo.id}</td>
+            <td>{$vo.number}</td>   
+            <td><font color="{$vo.color}">{$vo.status}</font></td>  
+            <td>{if $vo.use_id }{$vo.use_id}{/if}</td>  
+            <td>{if $vo.use_time }{$vo.use_time}{/if}</td>
+            <td class="td-manage">              
+              <a title="删除" onclick="member_del(this,'{$vo.id}')" href="javascript:;">
+                <i class="layui-icon">&#xe640;</i>
+              </a>
+            </td>
+          </tr>
+					{/foreach}
+        </tbody>
+      </table>
+      <div class="page">
+        {$page|raw}
+      </div>
+
+    </div>
+    <script>
+      
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+							$.ajax({
+							   type: "POST",
+							   url: "{:url('doDel')}",
+							   data: {"id":id},
+							   success: function(msg){
+								   if(msg == 'success'){									   
+									   $(obj).parents("tr").remove();
+									   layer.msg('已删除!',{icon:1,time:1000});									   
+								   }else{
+										layer.msg(msg);
+								   }
+							   }
+							});
+          });
+      }
+
+
+
+    function x_admin_confirm(){
+        layer.confirm('批量生成Cdkey，确定吗？', function(index){
+           //do something
+           //发异步删除数据
+          $.ajax({
+             type: "POST",
+             url: "{:url('doPut')}",
+             data: {},
+             success: function(msg){
+              if(msg == 'success'){
+                layer.msg('已生成!',{icon:1,time:1000});
+               location.replace(location.href);
+              }else{
+                layer.msg('生成失败!',{icon:2,time:1000});
+              }
+             }
+          });
+           layer.close(index);
+        }); 
+    }
+
+
+    </script>
+
+  </body>
+
+</html>

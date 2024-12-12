@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <style>
+        .imageBox {width: 120px; height: auto; float: left;}
+        .imageBox-top {width: 100%; height: 155px;}
+        .imageBox-bottom {width: 100%;}
+        .image {width: 100%; height: 120px; float: left; border: 1px dashed #ddd; position: relative;}
+        .button {color: #ccc; position: relative; cursor: pointer; text-align: center; position: absolute; top: 0; width: 120px; height: 120px; line-height: 120px;}
+        .uploadFile {opacity: 0; position: absolute; left: 0; width: 100%; height: 120px; cursor: pointer;}
+    </style>
+    <div class="x-body">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="label-note layui-form-label">
+                    子运营商
+                </label>
+                <div class="layui-input-block">
+                  <select name="agent_id" id="agent_id" lay-verify="required">
+                    <option value="0">代理</option>
+                  </select>
+                </div>		      
+            </div>
+            <div class="layui-form-item">
+                <label class="label-note  layui-form-label">
+                   时间
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="begin_time" name="begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required|timetype">
+                    &nbsp;&nbsp;
+                    <input type="text" id="end_time" name="end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required|timetype">
+                </div>
+              </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          图片
+		      </label>
+		      <div class="imageBox img-1">
+                <div class="imageBox-top">
+                    <div class="image">
+                        <img class="previewImg" width="100%" height="100%" />
+                        <div class="button">
+                            <input name="banner" lay-verify="required" type="file" class="uploadFile" accept="images" /><i class="layui-icon">&#xe67c;</i>上传图片
+                        </div>
+                    </div>
+                </div>
+                <div class="imageBox-bottom">
+                </div>
+            </div>		      
+		  </div>
+		  
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer','laydate'], function(){
+            $ = layui.jquery;
+            var form = layui.form
+            ,layer = layui.layer
+            ,laydate = layui.laydate;
+
+
+            // 渲染时间选择器
+            laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+          var imageObj;
+
+        $('.imageBox').find('.uploadFile').on('change',function(e){
+            // 图片验证
+            var filePath = $(this).val();
+            var fileFormat = filePath.substring(filePath.lastIndexOf(".")).toLowerCase();
+            if(!fileFormat.match(/.png|.jpg|.gif/)) {
+                layer.msg('上传失败，图片格式不正确！');
+                return false;
+            }
+            // 图片预览
+            imageObj = this.files[0];
+            $('.imageBox').find('.previewImg').attr('src',window.URL.createObjectURL(this.files[0]));
+        });
+
+        form.on('submit(add)', function(data) {
+
+            var paramsData = new FormData();
+            paramsData.append('banner', imageObj);
+            paramsData.append('begin_time', data.field.begin_time);
+            paramsData.append('end_time', data.field.end_time);
+
+            $.ajax({
+                url: "{:url('save_banner')}",
+                type: 'post',
+                data: paramsData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                dataType: 'Json',
+                success: function(data){
+                    if (data.status == 0) {
+                        layer.alert("增加成功", {icon: 6},function () {
+		 					// 获得frame索引
+		 					var index = parent.layer.getFrameIndex(window.name);
+		 					//关闭当前frame
+		 					parent.layer.close(index);
+		 					parent.location.reload();
+		 			   });
+                    } else {
+                        layer.msg(data.message);
+                    }
+                }
+            });
+
+            return false;
+            });  
+        });
+    </script>
+
+  </body>
+
+</html>

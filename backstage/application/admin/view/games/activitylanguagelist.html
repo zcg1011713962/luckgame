@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏配置</a>
+        <a><cite>{$breadcrumb_name}</cite></a>
+        <a><cite>活动多语言</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+	 <button class="layui-btn" type="button" onclick="x_admin_show('新增多语言','{:url("games/addActivityLanguage")}?id={$activity_id}',650,700)"><i class="layui-icon"></i>新增</button>
+      </div>
+      <xblock style="display: none;">
+        <button class="layui-btn" onclick="x_admin_show('添加用户','{:url('games/addactivity')}',700,1000)"><i class="layui-icon"></i>添加</button>
+        <span class="x-right" style="line-height:40px">123123</span>
+      </xblock>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+				,width: '100%'
+                ,url: "{:url('games/getactivitylanguagelist')}?id={$activity_id}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'id', title: '活动ID', fixed: 'left', width:'80'}
+                ,{field: 'language', title: '语言', fixed: 'left', width:'80'}
+                ,{field: 'title', title: '标题', fixed: 'left', width:'80'}
+                ,{field: 'pic_url',  title: '图片', width:'150',fixed:'left',templet: function(d){
+                        var imgs = d.pic_url;
+                        var html='<img src="'+imgs+'">';
+                        return html;
+                 }}
+                ,{field: 'Id',  title: '操作', fixed: 'right', width:'180',templet: function(d){
+                    var btnHtml = '';
+                        btnHtml += '<button class="layui-btn other-btn" type="button" onclick="operate(\'edit\',\''+d.id+'\', \'edit\')">编辑</button>';
+                        btnHtml += '&nbsp;&nbsp;';
+                        btnHtml += '<button class="layui-btn other-btn" type="button" onclick="operate(\'delete\',\''+d.id+'\', \''+d.status+'\')">删除</button>';
+                    return btnHtml;
+                     
+                }}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+
+                }
+            });
+
+            $('#search').on('click',function() {
+                tableId.reload({
+                    url: "{:url('games/getactivitylanguagelists')}?id={$activity_id}"
+                });
+				return false;
+            });
+
+        });
+	</script>
+    <script>
+       function operate(action,Id,status){
+           if(action == 'edit'){
+               x_admin_show("编辑活动",'{:url("games/editactivitylanguage")}?id='+Id,600,700); 
+           }
+           else if(action == "delete"){
+                var msg ='删除';
+                layer.confirm('确认要'+msg+'吗？',function(index){
+                    $.post("{:url('games/delactivitylanguage')}",{"id":Id},function(data){
+                        if (data.code == 200 && data.msg=="success") {
+                            layer.msg('已'+msg+'!',function(){
+						        window.location.reload();
+					        });
+                        } else {
+                            layer.msg(data.message);
+                        }
+                    },'Json');
+                });
+              
+           }
+           return false;
+       } 
+
+    </script>
+
+  </body>
+
+</html>

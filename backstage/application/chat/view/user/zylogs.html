@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+  
+  <body>
+	<div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">转移记录</a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	</div>
+    <div class="x-body layui-anim layui-anim-up">
+		
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+			
+			<li class="layui-this">金币记录</li>
+			
+		  </ul>
+		  <div class="layui-tab-content">
+			 
+			<div class="layui-tab-item layui-show">
+				<span class="x-left" style="line-height:40px">共有数据：{$count} 条</span>
+				<table class="layui-table">
+				  <thead>
+				    <tr>				     
+				     
+				      <th>账号ID</th>
+				      <th>变动金额</th>
+				      <th>原有金额</th>
+				      <th>最新金额</th>
+				      <th>类型</th>
+				      <th>操作时间</th>
+					</tr>
+				  </thead>
+				  <tbody>
+						{foreach $list as $key=>$vo } 							
+								<tr>
+								 
+								  <td>{$vo.uid}</td>
+								  <td>{$vo.czfee/100}</td>
+								  <td>{$vo.oldfee/100}</td>								  
+								  <td>{$vo.newfee/100}</td>
+								  <td>
+									  {if  $vo.type == '1' } <span style="color:red;">充值</span> {/if}
+									  {if  $vo.type == '0' } <span style="color:green;">扣除</span> {/if}
+								  </td>
+								  <td>{:date('Y-m-d H:i',$vo.createtime)}</td>								  
+								</tr>
+						{/foreach}
+				    
+				  </tbody>
+				</table>
+				<div class="page">        
+					{$page|raw}
+				</div>
+			</div>
+			
+		  </div>
+		</div>
+		
+        
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+           
+        });
+    </script>
+
+  </body>
+
+</html>

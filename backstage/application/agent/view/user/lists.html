@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员管理</a>
+        <a><cite>会员列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" action="" method="post">					
+						<div class="layui-inline">
+							<input type="text" name="starttime" class="layui-input" id="starttime" value="{$starttime}" placeholder="开始时间" />
+						</div>
+						<div class="layui-inline">
+							<input type="text" name="endtime" class="layui-input" id="endtime" value="{$endtime}" placeholder="结束时间" />
+						</div>
+						<input type="text" name="searchstr"  placeholder="玩家ID" value="{$searchstr}" autocomplete="off" class="layui-input" >
+						<div class="layui-inline">
+							<select name="searchaid" >
+												<option value="">选择代理</option>
+												{foreach $agents as $k=>$v}
+													<option value="{$v.aid}" {if $searchaid == $v['aid']} selected="selected" {/if}>{$v.username}</option>
+												{/foreach}
+							 </select>
+						</div>
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+					<div class="layui-inline" style="color: red;">玩家数量:{$count}</div>
+        </form>
+      </div>
+      <table class="layui-table">
+        <thead>
+          <tr>
+           
+            <th>玩家ID</th>
+            <th>玩家昵称</th>
+            <th>注册时间</th>
+            <th>金币</th>
+            <th>金币操作</th>
+            <th style="display: none;">服务器ID</th>
+            <th>代理ID</th>
+            <td>税收总计</td>
+            <th>投注记录</th>
+					</tr>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo } 							
+							<tr>							 
+							  <td>{$vo.uid}</td>							  
+							  <td>{$vo.Account}</td>
+							  <td>{:date('Y-m-d H:i:s',$vo.createtime)}</td>
+                                <td>{$vo.score|showGold}</td>
+                            <td>
+                                <a title="添加金币"  onclick="x_admin_show('添加金币','{:url('User/addScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                                    <i class="icon iconfont">&#xe6b9;</i>
+                                </a>
+                                <a title="删减金币"  onclick="x_admin_show('删减金币','{:url('User/delScore',[ 'id' => $vo['uid'] ])}',600,400)" href="javascript:;">
+                                    <i class="icon iconfont">&#xe6fe;</i>
+                                </a>
+                            </td>
+							  <td style="display: none;">yxx</td>
+							  <td>[{$vo.aid}] {$vo.username}</td>
+                <td>{$vo.user_tax_total}</td>
+                <td><a onclick="x_admin_show('投注记录','{:url('player_game_log/getUserInfo',[ 'uid' => $vo['uid'] ])}',1000,500)" href="javascript:;"><span class="layui-btn layui-btn-normal layui-btn-mini" style="background-color:#1E9FFF">查看</span></a></td>
+							</tr>
+					{/foreach}
+          
+        </tbody>
+      </table>
+      <div class="page">        
+				{$page|raw}
+      </div>
+
+    </div>
+    <script>
+    	layui.use(['form','laydate','jquery'], function(){
+      	  var $ = layui.$;
+      	  var laydate = layui.laydate;
+      	  
+      	  laydate.render({
+    				elem: '#starttime',
+    				type: 'datetime'
+      	  });
+      	  
+      	  laydate.render({
+      	  	elem: '#endtime',
+    				type: 'datetime'
+      	  });
+      	  
+      	  var form = layui.form;
+      		
+      	});
+    </script>
+
+  </body>
+
+</html>

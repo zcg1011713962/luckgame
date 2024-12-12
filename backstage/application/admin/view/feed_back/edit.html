@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>游戏ID
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="title" name="title" required=""
+                  autocomplete="off" style='background-color: #cccccc'  class="layui-input"  readonly="readonly"  value="{$info.nickname|default=''}">
+		 <input type="hidden" name="id" value="{$info.id}" />
+              </div>              
+          </div>
+          <div class="layui-form-item">
+             <label class="layui-form-label">
+                  <span class="x-red">*</span>反馈内容
+             </label>
+		      <div class="layui-input-inline">
+                  <div style="margin-bottom: 20px; width: 600px;">
+                      <textarea class="layui-textarea"    name="content" id="LAY_demo2" readonly='readonly' style="display: block; background-color: #cccccc">{$info.content|default=''}</textarea>
+                  </div>
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>处理反馈
+		      </label>
+		      <div class="layui-input-inline">
+                  <div style="margin-bottom: 20px; width: 600px;">
+                      <textarea class="layui-textarea" name="resolve_content" id="LAY_demo3" style="display: block">{$info.resolve_content|default=''}</textarea>
+                  </div>
+              </div>
+		  </div>
+          
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="__STATIC__/kindeditor/lang/zh-CN.js"></script>
+    <script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#LAY_demo3',{
+                uploadJson : '__STATIC__/kindeditor/php/upload_json.php',
+                fileManagerJson : '__STATIC__/kindeditor/php/file_manager_json.php',
+                allowFileManager : true,
+            });
+        });
+    </script>
+    <script>
+    
+        layui.use(['form','layer' , 'upload' , 'layedit'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer,upload = layui.upload,layedit = layui.layedit;
+          //监听提交
+          form.on('submit(add)', function(data){
+              // 取得HTML内容
+              var html = window.editor.html();
+
+              // 同步数据后可以直接取得textarea的value
+              window.editor.sync();
+              html = document.getElementById('LAY_demo3').value;
+            
+            data.field.resolve_content = html; // 原生API;
+            data.field.id = '{:input('id')}';
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('feed_back/doEdit')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+                                              
+							window.parent.location.href = "{:url('lists')}";
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

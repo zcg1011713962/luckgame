@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<style>
+		.msgs li{ line-height:2em;font-size:1.2em;}
+	</style>
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会话管理</a>
+        <a><cite>会话列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      
+        <div class="layui-row">
+          <div class="layui-col-md2 nleft" style="border: 1px solid #ccc;height: 80%;margin-right:2em;">
+			
+			{foreach $list as $row}
+            <div class="layui-card layui-col-md12">
+              <div class="layui-card-header"><span onclick="openMsgList({$row['uid']})">{$row['uid']}</span>
+				<i class="layui-icon layui-unselect layui-tab-close" onclick="closeLeft({$row['uid']})" style="float:right;">ဆ</i>
+				<i class="layui-icon layui-icon-chat nw{$row['uid']} " style="float:right;color:red;display: none;"></i>
+			  </div>
+            </div>
+			{/foreach}
+				
+          </div>
+          <div class="layui-col-md9" style="border: 1px solid #ccc;height: 80%;">
+            <div style="width: 90%;margin: 1em auto;min-height:20em;">
+				<ul class="msgs">
+					<li>请点击打开</li>
+				</ul>
+			</div>
+			<div style="width: 90%;margin: 1em auto;">
+				<div class="layui-row">
+					<div class="layui-col-md10">
+						<input type="text" name="msg" id="msg" value="" class="layui-input"/>
+						<input type="hidden" name="uid" id="uid" value="" />
+					</div>
+					<div class="layui-col-md2"><button id="sendmsg" type="button" class="layui-btn layui-btn-normal layui-btn-fluid">发送</button></div>
+				
+				
+				</div>
+			</div>
+          </div>
+        </div>
+
+	</div>
+	<script src='__SOCKET__/socket.io.js'></script>
+	<script>
+		function writeCurrentDate() {
+          var now = new Date();
+          var year = now.getFullYear(); //得到年份
+          var month = now.getMonth();//得到月份
+          var date = now.getDate();//得到日期
+          var hour = now.getHours();//得到小时
+          var minu = now.getMinutes();//得到分钟
+          var sec = now.getSeconds();//得到秒
+        
+         month = month + 1;
+         if (month < 10) month = "0" + month;
+         if (date < 10) date = "0" + date;
+         if (hour < 10) hour = "0" + hour;
+         if (minu < 10) minu = "0" + minu;
+         if (sec < 10) sec = "0" + sec;
+        
+         var time = "";
+         time = year + "-" + month + "-" + date + " " + hour + ":" + minu + ":" + sec ;
+         return time;
+       }
+		
+	var socket = io('{$gameServer}');
+
+	socket.on('connect', function(){
+		console.log('connect success');
+
+			var json = {"code":"sjfhcnweuqiebncwe2@!5fy&","gm_id":"{$kfid}"}; 
+			var jsonStr = JSON.stringify(json); 
+			socket.emit('GMLogin', jsonStr);
+		
+			socket.on('sendMsgToGM', function(msg){
+				var uid = $('#uid').val();
+				console.log(msg, uid);
+				if(uid == msg.user_id){
+					var s1 = writeCurrentDate();	
+					$('.msgs').append('<li style="text-align:left;">['+s1+']'+msg.user_id+' '+msg.user_name+':<br/> '+msg.msg+'</li>');
+				}else{
+					var obj = $('.nw' + msg.user_id);
+					// console.log(obj);
+					// console.log(obj.length);
+					if(obj.length>0){
+						obj.show();
+					}else{
+						var str = '<div class="layui-card layui-col-md12">';
+							str += '<div class="layui-card-header"><span onclick="openMsgList('+msg.user_id+')">'+msg.user_id+'</span>';
+								str += '<i class="layui-icon layui-unselect layui-tab-close" onclick="closeLeft('+msg.user_id+')" style="float:right;">ဆ</i>';
+								str += '<i class="layui-icon layui-icon-chat nw'+msg.user_id+' " style="float:right;color:red;"></i>';
+							str += '</div>';
+							str += '</div>';
+						//console.log(str);
+						$('.nleft').append(str);
+
+						//默认回复
+						$.ajax({
+							type: "POST",
+							url: "{:url('sendMsg')}",
+							data: {uid:msg.user_id,msg:'NXP_CONFIG_DEFAULT_RETURNMSG'},
+							success: function(msg){
+								console.log(msg);
+							}
+						});
+					}					
+				}
+			});
+			
+	});
+	</script>
+    <script>
+    	layui.use(['form','jquery'], function(){
+      	  var $ = layui.$;
+      	  var form = layui.form;
+		  
+      	});
+		
+		//window.setInterval('minDoSearch()', 1000);
+		function minDoSearch(){
+			var uid = $('#uid').val();
+			if(uid){
+				minDoAjax(uid);
+			}
+		}
+		function minDoAjax(uid){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('openMsgList')}",
+			   data: {uid:uid},
+			   success: function(msg){
+					//console.log(msg);
+					$('.msgs').html(msg);
+			   }
+			});
+		}
+		
+		function openMsgList(uid){
+			//console.log(uid);
+			$('#uid').val(uid);
+			$('.nw' + uid).hide();
+			minDoAjax(uid);
+			
+		}
+		function closeLeft(uid){
+			//console.log(uid);
+			layer.confirm('确认关闭吗？', {
+			btn: ['确认', '取消'] //可以无限个按钮
+
+			}, function(index, layero){
+			//按钮【按钮一】的回调
+				$.ajax({
+				type: "POST",
+				url: "{:url('closeLeft')}",
+				data: {uid:uid},
+				success: function(msg){
+						//console.log(msg);
+						if(msg == 'success'){
+							$('#uid').val('');
+							$('.nw' + uid).parent().parent().remove();
+							$('.msgs').html('请重新打开');
+						}
+						layer.close(index);
+				}
+				});
+
+			}, function(index){
+			//按钮【按钮二】的回调
+			});
+			
+		}
+		
+		$('#sendmsg').click(function(){
+			var msg = $('#msg').val();
+			var uid = $('#uid').val();
+			console.log(msg+'-'+uid);
+			if(msg.length > 0 && !!uid){
+				$.ajax({
+				   type: "POST",
+				   url: "{:url('sendMsg')}",
+				   data: {uid:uid,msg:msg},
+				   success: function(msg){
+						console.log(msg);
+						openMsgList(msg);
+				   }
+				});
+			}
+		});
+    </script>
+
+  </body>
+
+</html>

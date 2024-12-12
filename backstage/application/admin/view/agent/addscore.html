@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body>
+    <div class="x-body">
+        <form class="layui-form" method="post" action="">
+          <div class="layui-form-item">
+              <label for="L_username" class="layui-form-label">
+                  账号
+              </label>
+              <div class="layui-input-inline" style="width: 300px;">
+                  <input type="text" id="L_username" name="username" disabled="disabled" value="{$info.Account}" class="layui-input">
+				  <input type="hidden" name="uid" value="{$info.Id}" />
+              </div>
+          </div>   
+		  <div class="layui-form-item">
+			 <label for="L_username" class="layui-form-label">
+				 金币数值
+			 </label>
+			 <div class="layui-input-inline" style="width: 300px;">
+				 <input type="text" id="L_username" name="score" disabled="disabled" value="{$info.score|showGold}" class="layui-input">
+			 </div>
+		  </div>  
+          <div class="layui-form-item">
+              <label for="L_pass" class="layui-form-label">
+                  <span class="x-red">*</span>增加数值
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="L_pass" name="addscore" required="" lay-verify="required"
+                  autocomplete="off" class="layui-input gold-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                  <!--6到16个字符-->
+              </div>
+          </div>          
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="save" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script type="text/javascript" src="__JS__/common.js"></script>
+    <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+              var form = layui.form
+              ,layer = layui.layer;
+            
+              //监听提交
+              form.on('submit(save)', function(data){
+                //console.log(data.field);
+                
+				$.ajax({
+				   type: "POST",
+				   url: "{:url('doAddscore')}",
+				   data: data.field,
+				   success: function(msg){
+					   if(msg == 'success'){
+						   layer.alert("修改成功", {icon: 6},function () {
+						       // 获得frame索引
+						       var index = parent.layer.getFrameIndex(window.name);
+						       //关闭当前frame
+						       parent.layer.close(index);
+							   parent.location.reload();
+						   });
+					   }else{
+							layer.msg(msg);
+					   }
+				   }
+				});
+				
+				return false;				
+              });
+              
+              
+            });
+        </script>
+
+  </body>
+
+</html>

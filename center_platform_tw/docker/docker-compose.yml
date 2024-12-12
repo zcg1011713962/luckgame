@@ -1,0 +1,20 @@
+version: '3.5'
+networks:
+  gamenet:
+    external:
+      name: gamenet
+services:
+  tw-pay-server:
+    restart: always
+    container_name: twpayservice
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8859:8859
+    networks:
+      gamenet:
+        ipv4_address: 172.24.0.108
+    volumes:
+      - ../:/app/server
+      - /app/server/node_modules

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+	<style>
+		.layui-form-label{ width: 110px; }
+	</style>
+
+  <body>
+	  <div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">道具管理</a>
+	      <a>
+	        <cite>道具转移</cite></a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	  </div>
+    <div class="x-body">
+		<div>
+			当前房卡：<span style="color: red;">{$realnum.diamond}</span><br/> 
+			当前金币：<span style="color: red;">{$realnum.score|showGold}</span><br/><br/>
+		</div>
+        <form class="layui-form">
+			<div class="layui-form-item">
+			    <label class="layui-form-label">
+			        玩家ID
+			    </label>
+			    <div class="layui-input-inline">
+			        <input type="text" name="account" autocomplete="off" class="layui-input">
+			    </div>
+			</div>
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+                  转移类型
+              </label>
+              <div class="layui-input-inline">
+                  <select name="type" lay-verify="required">
+                  					<option value="">选择转移类型</option>
+                  					<option value="金币">金币</option>
+                  					<option value="房卡">房卡</option>
+                   </select>
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		     <label class="layui-form-label">
+		         转移数量
+		     </label>
+		     <div class="layui-input-inline">
+		         <input type="text" name="fee" lay-verify="required" autocomplete="off" class="layui-input gold-input" >
+		     </div>
+		  </div>		 
+          
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  转移
+              </button>
+          </div>
+      </form>
+    </div>
+	  <script src="__JS__/common.js"></script>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+                 
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doRecharge')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("转移成功", {icon: 6},function () {
+							location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

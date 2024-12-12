@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+  
+  <body>
+	
+    <div class="x-body layui-anim layui-anim-up">
+		
+		<blockquote class="layui-elem-quote">该支付方式为模拟支付</blockquote>
+		
+		<form class="layui-form" action="" method="post" >
+			<div class="layui-form-item">
+				<label for="account" class="layui-form-label">
+					<span class="x-red">*</span>充值账号
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="account" name="account" value="{$account}" disabled="disabled" autocomplete="off" class="layui-input" style="width: 400px;">
+				</div>              
+			</div>
+			<div class="layui-form-item">
+				<label for="fee" class="layui-form-label">
+					<span class="x-red">*</span>充值金额
+				</label>
+				<div class="layui-input-inline">
+					<input type="text" id="fee" name="fee" value="{$fee}" required="" autocomplete="off" class="layui-input">
+				</div>
+					  <div class="layui-form-mid layui-word-aux">
+						  <span class="x-red">*</span> 单位：元
+					  </div>
+			</div>
+			
+			<div class="layui-form-item">
+				<label for="L_repass" class="layui-form-label">
+				</label>
+				<button  class="layui-btn" lay-filter="add" lay-submit="">
+					增加
+				</button>
+			</div>
+		</form>
+			
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //监听提交
+          form.on('submit(add)', function(data){
+            console.log(data.field);
+            $.ajax({
+               type: "POST",
+               url: "{:url('admin/User/doRecharge')}",
+               data: data.field,
+               success: function(res){
+				   console.log(res);
+            	   if(res == 'success'){
+            		   layer.msg('充值成功!',function(){
+            			   window.location.reload();
+            		   });					   
+            	   }else{
+            			layer.msg(res);
+            	   }
+               }
+            });
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">选择分类</label>
+                <div class="layui-input-block">
+                  <select name="cid" lay-verify="required">
+                    <option value="0">请选择</option>
+                    {foreach $category as $key=>$vo } 
+                    <option value="{$vo.id}" {if $info.cid == $vo.id}selected{/if}>{$vo.name}</option>
+                    {/foreach}
+                  </select>
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label for="title" class="layui-form-label">
+                     标题
+                  </label>
+                  <div class="layui-input-block">
+                      <input type="text" id="title" name="title" required="" lay-verify="title" value="{$info.title}"
+                      autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+
+              <input type="hidden" name="ggid" value="{$info.id}" />
+
+              <div class="layui-form-item">
+                  <label for="content" class="layui-form-label">
+                     内容
+                  </label>
+                  <div class="layui-input-block">
+                      <textarea id="editor_id" name="content">
+                          {$info.content}
+                        </textarea>
+                  </div>
+                  <script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-all.js"></script>
+                  <script charset="utf-8" src="__STATIC__/kindeditor/lang/zh-CN.js"></script>
+                  <script>
+                          KindEditor.ready(function(K) {
+                                  window.editor = K.create('#editor_id',{
+                                    uploadJson : '__STATIC__/kindeditor/php/upload_json.php',
+                                    fileManagerJson : '__STATIC__/kindeditor/php/file_manager_json.php',
+                                    allowFileManager : true,
+                                items : ['source','|', 'link', 'unlink','image', 'multiimage']
+                                  });
+                          });
+                  </script>
+              </div>
+        
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //自定义验证规则
+          form.verify({
+            gonggao: function(value){
+              if(value.length < 0){
+                return '公告不能为空';
+              }			 
+            },
+            content: function(value){
+              if(value.length < 0){
+                return '内容不能为空';
+              }			 
+            }
+            
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+
+            // 取得HTML内容
+            html = editor.html();
+
+            // 同步数据后可以直接取得textarea的value
+            editor.sync();
+            html = document.getElementById('editor_id').value; // 原生API            
+            //html2 = $('#editor_id').val(); // jQuery
+            //console.log(html);
+            //console.log(html2);
+            data.field.content = html;
+
+            // 设置HTML内容
+            //editor.html('HTML内容');
+
+			//return false;
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doEditGongGao')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("修改成功", {icon: 6},function () {
+							// 获得frame索引
+							var index = parent.layer.getFrameIndex(window.name);
+							//关闭当前frame
+							parent.layer.close(index);
+							parent.location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

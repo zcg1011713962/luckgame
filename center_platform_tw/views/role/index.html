@@ -1,0 +1,358 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/view.css"/>
+<style>
+    .category-label {
+        text-align: left;
+        background-color: #eeeeee;
+        width: 97.5%;
+    }
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-page-header">
+        <div class="pagewrap">
+            <h2 class="title">角色管理</h2>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-form layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-form-mid">状态:</div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="status" class="query_status">
+                                    <option value="">全部</option>
+                                    <option value="0">正常</option>
+                                    <option value="-1">禁用</option>
+                                </select>
+                            </div>
+                            <button class="layui-btn layui-btn-primary item-query-info">查询</button>
+                            <button class="layui-btn layui-btn-blue add-item-info"><i class="layui-icon">&#xe654;</i>新增</button>
+                        </div>
+                    </div>
+
+                    <table id="itemList">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-top: -5000px;">
+    <div id="model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body edit-item-info" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="role_name" value="" placeholder="名称" autocomplete="off" class="layui-input item_role_name">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">描述</label>
+                <div class="layui-input-block">
+                    <textarea name="description" placeholder="描述" class="layui-textarea item_description" cols="10" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                    <!--                    <button type="button" class="layui-btn layui-btn-blue edit-api-info-btn">保存</button>-->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div style="margin-top: -10000px;">
+    <div id="auth-model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body" action="">
+            {{each menuList item}}
+            <div class="layui-form-item">
+                <label class="layui-form-label category-label">{{item.title}}</label>
+                <div class="layui-form-item" style="margin-left: 20px;">
+                    {{each item.children item1}}
+                    <div class="layui-form-item">
+                        <input type="checkbox" name="auth_id" title="{{item1.title}}" lay-filter="pMenu" value="{{item1.id}}" class="menu_item_{{item1.id}} auth_item_id" lay-skin="primary">
+                        <div class="layui-form-item" style="margin-left: 40px;">
+                            {{each item1.children item2}}
+                            <input type="checkbox" name="auth_id" title="{{item2.title}}" value="{{item2.id}}" class="menu_item_{{item2.id}} menu_item_pid_{{item1.id}} auth_item_id" lay-skin="primary">
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/each}}
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    $('.item-query-info').click(function () {
+        var status = $('.query_status').val();
+        showList({status});
+    });
+    function showList(param) {
+        var index = layer.load();
+        $.ajax({
+            url: "/backend/role",
+            type: 'POST',
+            data: param,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                table.render({
+                    elem: '#itemList'
+                    ,cols: [[ //标题栏
+                        {field: 'id', title: 'ID', width: 60, sort: true}
+                        ,{field: 'create_time', title: '创建时间', minWidth: 50}
+                        ,{field: 'role_name', title: '名称', minWidth: 50}
+                        ,{field: 'description', title: '描述', width: 300}
+                        ,{field: 'status', title: '状态', minWidth: 50, templet: function (d) {
+                                if (d.status == 0) {
+                                    return '<input type="checkbox" name="status" checked lay-data="'+d.id+'" value="'+d.status+'" lay-text="正常|禁用" lay-filter="accountStatus" lay-skin="switch">';
+                                } else {
+                                    return '<input type="checkbox" name="status" lay-data="'+d.id+'" value="'+d.status+'" lay-text="正常|禁用" lay-filter="accountStatus" lay-skin="switch">';
+                                }
+                            }}
+                        ,{field: '', title: '操作', minWidth: 50, templet: function (d) {
+                                return '' +
+                                    '<button class="layui-btn layui-btn-sm show-item-info" onclick="showItemInfo('+d.id+')">查看</button>' +
+                                    '<button class="layui-btn layui-btn-sm" style="background-color: blue" onclick="assignRoleAuth('+d.id+')">授权</button>' +
+                                    '';
+                            }}
+
+                    ]]
+                    ,data: data.data.items
+                    ,skin: 'line' //表格风格
+                    ,even: true
+                    ,page: true //是否显示分页
+                    ,limits: [20, 50, 100]
+                    ,limit: 20 //每页默认显示的数量
+                });
+            }
+        });
+    }
+    $(function () {
+        showList({});
+    });
+    //状态
+    form.on('switch(accountStatus)', function (data) {
+        var index1 = layer.load();
+        var id = data.elem.getAttribute('lay-data');
+        var status = this.value;
+        if (status == 0) {
+            this.value = -1;
+        } else if (status == -1) {
+            this.value = 0;
+        }
+        $.ajax({
+            url: "/backend/role/editStatus",
+            type: 'POST',
+            data: {
+                id,
+                status: this.value,
+            },
+            success: function (data) {
+                layer.close(index1);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+            }
+        });
+    });
+    //新增
+    $('.add-item-info').click(function () {
+        $('.item_id').val('');
+        $('.item_role_name').val('');
+        $('.item_description').val('');
+        form.render();
+        var type = 'offset';
+        layer.open({
+            type: 1
+            , offset: '10px'
+            , id: 'layerDemo' + type //防止重复弹出
+            , title: '新增'
+            , content: $('#model')
+            , btn: ['保存']
+            , area: ['1200px', '720px']//定义宽和高
+            , btnAlign: 'c' //按钮居中
+            , shade: 0 //不显示遮罩
+            , btn1: function () {
+                console.log(123);
+            }
+            , yes: function () {
+                saveAddDate();
+                // layer.closeAll();
+            }
+        });
+    });
+    //查看
+    function showItemInfo(id) {
+        var index2 = layer.load();
+        $.ajax({
+            url: "/backend/role/info",
+            type: 'POST',
+            data: {id},
+            success: function (data) {
+                layer.close(index2);
+                console.log(data.data);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                $('.item_id').val(id);
+                $('.item_role_name').val(data.data.role_name);
+                $('.item_description').val(data.data.description);
+                form.render()
+                var type = 'offset'+id;
+                layer.open({
+                    type: 1
+                    , offset: '10px'
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , title: '查看'
+                    , content: $('#model')
+                    , btn: ['保存']
+                    , area: ['1200px', '520px']//定义宽和高
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , btn1: function () {
+                        console.log(123);
+                    }
+                    , yes: function () {
+                        saveAddDate();
+                        // layer.closeAll();
+                    }
+                });
+            }
+        });
+    }
+    //新增或编辑保存数据
+    function saveAddDate() {
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            role_name: $('.item_role_name').val(),
+            description: $('.item_description').val(),
+        };
+        var pwd = $.trim($('.item_password').val());
+        if (!!pwd) {
+            data.password = pwd;
+        }
+        $.ajax({
+            url: "/backend/role/addEdit",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.closeAll();
+                layer.msg(data.msg);
+                window.location.reload()
+            }
+        });
+    }
+    //分配权限
+    function assignRoleAuth(id) {
+        var index3 = layer.load();
+
+        $.ajax({
+            url: "/backend/role/info",
+            type: 'POST',
+            data: {id},
+            success: function (data) {
+                layer.close(index3);
+                console.log(data.data);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                $('.item_id').val(id);
+                $('.auth_item_id:checked').removeAttr('checked');
+                var auth_id = data.data.auth_id.split(',');
+                console.log(auth_id);
+                if (auth_id.length > 0) {
+                    for (var i = 0; i < auth_id.length; i++) {
+                        $('.menu_item_' + auth_id[i]).prop('checked', 'checked');
+                    }
+                }
+                form.render();
+                var type = 'offset2'+id;
+                layer.open({
+                    type: 1
+                    , offset: '10px'
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , title: '授权'
+                    , content: $('#auth-model')
+                    , btn: ['保存']
+                    , area: ['1200px', '650px']//定义宽和高
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , btn1: function () {
+                        console.log(123);
+                    }
+                    , yes: function () {
+                        saveAssignDate();
+                        // layer.closeAll();
+                    }
+                });
+            }
+        });
+    }
+    //分配权限
+    function saveAssignDate() {
+        var auth_id = [];
+        $('.auth_item_id:checked').each(function() {
+            auth_id.push($(this).val());
+        });
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            auth_id: auth_id.join(','),
+        };
+        $.ajax({
+            url: "/backend/role/assignRoleAuth",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+                layer.closeAll();
+                window.location.reload()
+            }
+        });
+    }
+    //全选设定
+    form.on('checkbox(pMenu)', function (data) {
+        console.log(data.elem.checked); // 是否选中
+        console.log(data.elem.value);   // checkbox的值
+        if (data.elem.checked) {
+            $('.menu_item_pid_' + data.elem.value).prop('checked', true);
+        } else {
+            $('.menu_item_pid_' + data.elem.value).prop('checked', false);
+        }
+        form.render();
+    });
+</script>
+{{/block}}

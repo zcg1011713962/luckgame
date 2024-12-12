@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html>
+  
+   {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">代理管理</a>
+        <a>
+          <cite>我的佣金</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+     
+		 <div style="padding-bottom: 1em;">
+		 	<form class="layui-form" action="" method="post">
+		 		<div class="layui-inline">
+		 			<input type="text" name="starttime" class="layui-input" id="starttime" value="{$starttime}" placeholder="开始时间"/>
+		 		</div>
+		 		<div class="layui-inline">
+		 			<input type="text" name="endtime" class="layui-input" id="endtime" value="{$endtime}" placeholder="结束时间"/>
+		 		</div>
+		 		<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+		 	</form>
+		 </div>
+		 
+      <table class="layui-table">
+        <thead>
+          <tr>            
+            <th>代理ID</th>
+            <th>获得时间</th>
+            <th>原始佣金</th>
+            <th>新增佣金</th>
+            <th>当前佣金</th>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo }
+          <tr>            
+            <td>{$vo.aid}</td>
+            <td>{:date('Y-m-d H:i:s',$vo.createtime)}</td>   
+            <td>{$vo.oldfee}</td>  
+            <td>{$vo.addfee}</td> 
+            <td>{$vo.newfee}</td>
+          </tr>
+					{/foreach}
+        </tbody>
+      </table>
+      <div class="page">
+          {$page|raw}
+      </div>
+
+    </div>
+    <script>
+			layui.use(['form','laydate','jquery'], function(){
+      	  var $ = layui.$;
+      	  var laydate = layui.laydate;
+      	  
+      	  laydate.render({
+						elem: '#starttime',
+						type: 'datetime'
+      	  });
+      	  
+      	  laydate.render({
+      	  	elem: '#endtime',
+						type: 'datetime'
+      	  });
+      	  
+      	  var form = layui.form;
+      		
+      	});
+    </script>
+
+  </body>
+
+</html>

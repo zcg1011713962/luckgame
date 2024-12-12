@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">代理管理</a>
+        <a><cite>每日查询</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <div>
+            子运营商：
+            <select id="agent_id" style="width: 150px; height:40px;">
+                <option value="0">代理</option>
+            </select>
+            &nbsp;&nbsp;
+            充值差：
+            <select id="payment_diff_type" style="width: 100px; height:40px;">
+                <option value="0">请选择</option>
+                <option value="1">正</option>
+                <option value="2">负</option>
+            </select>
+            &nbsp;&nbsp;
+            用户ID：<input type="text" class="layui-input searchstr" style="width: 80px; display: inline-block;" placeholder="userid" id="uid" value="{$id}" />
+            &nbsp;&nbsp;
+            邀请ID：<input type="text" class="layui-input searchstr" style="width: 80px; display: inline-block;" placeholder="parentid" id="pid" value="" />
+            &nbsp;&nbsp;
+            时间范围：
+            <input type="text" id="begin_time" name="begin_time" placeholder="开始时间" value="{$time}" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="end_time" placeholder="结束时间" value="{$time}" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            <br /><br />
+            未领佣金：
+            <input type="text" class="layui-input searchstr" style="width: 100px; display: inline-block;" placeholder="from" id="commission_no_from" value="" />
+            &nbsp;&nbsp;
+            <input type="text" class="layui-input searchstr" style="width: 100px; display: inline-block;" placeholder="to" id="commission_no_to" value="" />
+            &nbsp;&nbsp;
+            已领佣金：
+            <input type="text" class="layui-input searchstr" style="width: 100px; display: inline-block;" placeholder="from" id="commission_yes_from" value="" />
+            &nbsp;&nbsp;
+            <input type="text" class="layui-input searchstr" style="width: 100px; display: inline-block;" placeholder="to" id="commission_yes_to" value="" />
+            &nbsp;&nbsp;
+            <button class="layui-btn" id="search">搜索</button>
+        </div>
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,width: '100%'
+                ,url: "{:url('agents/getDayLists')}?uid={$id}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                {field: 'id', title: '子运营商', fixed: 'left', width:'130', rowspan: 2, templet: function(d) {
+                    return '代理';
+                }}
+                ,{field: 'id', title: '日期', fixed: 'left', width:'130', rowspan: 2, templet: function(d){
+                    return d.begin_time;
+                }}
+                ,{field: 'Id', title: '用户ID', fixed: 'left', width:'100', rowspan: 2}
+                ,{field: 'nickname',  title: '昵称', width:'130', fixed: 'left',  rowspan: 2}
+                ,{field: 'id', title: '代理信息', width: '130', rowspan:2, templet: function(d) {
+                    var info = '{:url("agents/info")}?id='+d.Id;
+                    return '<a href="#" onclick="x_admin_show(\'详情\',\''+info+'\',800,500)" class="info">详情</a>';
+                }}
+                ,{field: 'channelType', title: '上级ID', width: '130', rowspan:2}
+				,{align: 'center', title: '当日直营业绩', colspan: 2}
+                ,{field: 'history_performance', title: '当日结算佣金', width: '130', sort: true, rowspan:2}
+                // ,{field: 'yes_performance', title: '当日领取佣金', width: '130', sort: true, rowspan:2}
+                ,{field: 'no_performance', title: '未领佣金', width: '130', sort: true, rowspan:2}
+                ,{align: 'center', title: '当日团队', colspan: 8}
+                ],[
+                    {field: 'person_performance', title: '业绩', sort: true, width: '100'}
+                    ,{field: 'person_effect_performance', title: '有效业绩', sort: true, width: '100'}
+                    ,{field: 'id', title: '活跃人数', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.active_num;
+                    }}
+                    ,{field: 'id', title: '业绩', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.team_performance;
+                    }}
+                    ,{field: 'id', title: '有效业绩', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.team_performance_true;
+                    }}
+                    ,{field: 'id', title: '新增', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.new_add_num;
+                    }}
+                    ,{field: 'id', title: '充值', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.payment_num;
+                    }}
+                    ,{field: 'id', title: '提款', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.out_payment_num;
+                    }}
+                    ,{field: 'id', title: '充提差', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.diff_payment;
+                    }}
+                    ,{field: 'id', title: '输赢', width: '100', sort: true, templet: function(d) {
+                        return d.team_info.winLose;
+                    }}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            $('#search').on('click',function() {
+                var agent_id = $('#agent_id').val();
+                var diff_id = $('#payment_diff_type').val();
+                var uid = $('#uid').val();
+                var pid = $('#pid').val();
+                var begin_time = $('#begin_time').val();
+                var end_time = $('#end_time').val();
+                var cnf = $('#commission_no_from').val();
+                var cnt = $('#commission_no_to').val();
+                var cyf = $('#commission_yes_from').val();
+                var cyt = $('#commission_yes_to').val();
+                tableId.reload({
+                    url: "{:url('agents/getDayLists')}?agent_id="+agent_id+"&uid="+uid+"&diff_id="+diff_id+"&begin_time="+begin_time+"&pid="+pid+"&cnf="+cnf+"&cnt="+cnt+"&cyf="+cyf+"&cyt="+cyt+"&end_time="+end_time
+                });
+				return false;
+            });
+        });
+	</script>
+    <script>
+    </script>
+  </body>
+</html>

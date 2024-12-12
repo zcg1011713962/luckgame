@@ -1,0 +1,296 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/view.css"/>
+<style>
+    .layui-form-label {
+        width: 120px;
+    }
+    .layui-input-block {
+        margin-left: 150px;
+    }
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-page-header">
+        <div class="pagewrap">
+            <h2 class="title">支付渠道管理</h2>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-form layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-form-mid">名称: </div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" name="name" autocomplete="off" class="layui-input query_name">
+                            </div>
+                            <button class="layui-btn layui-btn-primary item-query-info">查询</button>
+                            <button class="layui-btn layui-btn-blue add-item-info"><i class="layui-icon">&#xe654;</i>新增</button>
+                        </div>
+                    </div>
+
+                    <table id="itemList" lay-filter="itemList">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="margin-top: -5000px;">
+    <div id="model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body edit-item-info" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" value="" placeholder="名称" autocomplete="off" class="layui-input item_name">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-block">
+                    <select name="type" class="item_type">
+                        {{each channelTypeList item}}
+                        <option value="{{item}}">{{item}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">货币</label>
+                <div class="layui-input-block">
+                    <select name="currency" class="item_currency">
+                        {{each currencyList item}}
+                        <option value="{{item.currency}}">{{item.name_cn}}({{item.currency}})</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">商户号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="mch_id" value="" placeholder="商户号" autocomplete="off" class="layui-input item_mch_id">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">MD5 KEY</label>
+                <div class="layui-input-block">
+                    <input type="text" name="md5_key" value="" placeholder="MD5 KEY" autocomplete="off" class="layui-input item_md5_key">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">代收APP_ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="pay_app_id" value="" placeholder="代收APP_ID" autocomplete="off" class="layui-input item_pay_app_id">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">代收APP_SECRET</label>
+                <div class="layui-input-block">
+                    <input type="text" name="pay_app_secret" value="" placeholder="代收APP_SECRET" autocomplete="off" class="layui-input item_pay_app_secret">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">代付APP_ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="payout_app_id" value="" placeholder="代付APP_ID" autocomplete="off" class="layui-input item_payout_app_id">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">代付APP_SECRET</label>
+                <div class="layui-input-block">
+                    <input type="text" name="payout_app_secret" value="" placeholder="代付APP_SECRET" autocomplete="off" class="layui-input item_payout_app_secret">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+                    <textarea name="remark" placeholder="备注" class="layui-textarea item_remark" cols="10" rows="5"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <input type="hidden" name="id" value="" class="item_id">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var element = layui.element;
+    var table = layui.table;
+    var form = layui.form;
+    $('.item-query-info').click(function () {
+        var name = $('.query_name').val();
+        showList({name});
+    });
+    function showList(param) {
+        table.render({
+            elem: '#itemList'
+            , url: '/backend/channel'
+            , method: 'POST'
+            , totalRow: true
+            , cols: [[ //标题栏
+                {field: 'id', title: 'ID', width: 60, sort: true}
+                ,{field: 'create_time', title: '创建时间', minWidth: 50}
+                ,{field: 'name', title: '名称', minWidth: 50}
+                ,{field: 'type', title: '类型', minWidth: 50}
+                ,{field: 'currency', title: '币种', minWidth: 50}
+                ,{field: 'mch_id', title: '商户号', minWidth: 50}
+                ,{field: 'md5_key', title: 'MD5 KEY', minWidth: 50}
+                ,{field: 'pay_app_id', title: '代收APP_ID', minWidth: 50}
+                ,{field: 'pay_app_secret', title: '代收APP_SECRET', minWidth: 50}
+                ,{field: 'payout_app_id', title: '代付APP_ID', minWidth: 50}
+                ,{field: 'payout_app_secret', title: '代付APP_SECRET', minWidth: 50}
+                ,{field: '', title: '操作', minWidth: 50, templet: function (d) {
+                        return '<button class="layui-btn layui-btn-sm" lay-event="show_item_info">查看</button>';
+                    }}
+            ]]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true
+            , limit: 20
+            , limits: [10, 20, 50, 100]
+            , where: param
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+        });
+    }
+    $(function () {
+        showList({});
+    });
+    //新增
+    $('.add-item-info').click(function () {
+        $('.item_id').val('');
+        $('.item_name').val('');
+        $('.item_mch_id').val('');
+        $('.item_md5_key').val('');
+        $('.item_pay_app_id').val('');
+        $('.item_pay_app_secret').val('');
+        $('.item_payout_app_id').val('');
+        $('.item_payout_app_secret').val('');
+        $('.item_remark').val('');
+        form.render();
+        var type = 'offset';
+        layer.open({
+            type: 1
+            , offset: '10px'
+            , id: 'layerDemo' + type //防止重复弹出
+            , title: '新增'
+            , content: $('#model')
+            , btn: ['保存']
+            , area: ['1200px', '720px']//定义宽和高
+            , btnAlign: 'c' //按钮居中
+            , shade: 0 //不显示遮罩
+            , btn1: function () {
+                console.log(123);
+            }
+            , yes: function () {
+                saveAddDate();
+                // layer.closeAll();
+            }
+        });
+    });
+    //查看
+    function showItemInfo(id) {
+        var index2 = layer.load();
+        $.ajax({
+            url: "/backend/channel/info",
+            type: 'POST',
+            data: {id},
+            success: function (data) {
+                layer.close(index2);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                console.log(data.data);
+                $('.item_id').val(id);
+                $('.item_name').val(data.data.name);
+                $('.item_type').val(data.data.type);
+                $('.item_mch_id').val(data.data.mch_id);
+                $('.item_md5_key').val(data.data.md5_key);
+                $('.item_pay_app_id').val(data.data.pay_app_id);
+                $('.item_pay_app_secret').val(data.data.pay_app_secret);
+                $('.item_payout_app_id').val(data.data.payout_app_id);
+                $('.item_payout_app_secret').val(data.data.payout_app_secret);
+                $('.item_remark').val(data.data.remark);
+                $('.item_currency').val(data.data.currency);
+                form.render()
+                var type = 'offset'+id;
+                layer.open({
+                    type: 1
+                    , offset: '10px'
+                    , id: 'layerDemo' + type //防止重复弹出
+                    , title: '查看'
+                    , content: $('#model')
+                    , btn: ['保存']
+                    , area: ['1200px', '720px']//定义宽和高
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                    , btn1: function () {
+                        console.log(123);
+                    }
+                    , yes: function () {
+                        saveAddDate();
+                        // layer.closeAll();
+                    }
+                });
+            }
+        });
+    }
+    //新增或编辑保存数据
+    function saveAddDate() {
+        var index = layer.load();
+        var data = {
+            id: $('.item_id').val(),
+            name: $('.item_name').val(),
+            type: $('.item_type').val(),
+            mch_id: $('.item_mch_id').val(),
+            md5_key: $('.item_md5_key').val(),
+            pay_app_id: $('.item_pay_app_id').val(),
+            pay_app_secret: $('.item_pay_app_secret').val(),
+            payout_app_id: $('.item_payout_app_id').val(),
+            payout_app_secret: $('.item_payout_app_secret').val(),
+            currency: $('.item_currency').val(),
+            remark: $('.item_remark').val(),
+        };
+        $.ajax({
+            url: "/backend/channel/addEdit",
+            type: 'POST',
+            data,
+            success: function (data) {
+                layer.close(index);
+                if (data.code < 0) {
+                    return layer.msg(data.msg);
+                }
+                layer.msg(data.msg);
+                layer.closeAll();
+                window.location.reload()
+            }
+        });
+    }
+    //监听操作栏
+    table.on('tool(itemList)', function (obj) {
+        var data = obj.data;
+        console.log(data);
+        var id = data.id;
+        var layEvent = obj.event;
+        if (layEvent === 'show_item_info') {
+            showItemInfo(id);
+        }
+    });
+</script>
+{{/block}}

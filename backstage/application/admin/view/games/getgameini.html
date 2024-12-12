@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+			width: auto;
+		}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏配置管理</a>
+        <a><cite>{$breadcrumb_name}</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+          元数据:
+          <input type="text" name="searchstr"  placeholder="键值||备注" value="" autocomplete="off" class="layui-input searchstr" style="width: 400px;">
+          <br/><br/>
+          上级节点:
+                  <select name="parent_id" id="parent_id">
+                     <option value="-1">全选</option>
+                     <option value="0">根节点</option>
+                    
+                    {foreach $root_fields as $k => $v}
+                    <option value="{$v['id']}">{$v['name']}</option>
+                    {/foreach}
+                 </select> 
+	 </form>
+      </div>
+      <xblock style="">
+        <button class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></button>
+        <button class="layui-btn"  onclick="x_admin_show('添加元数据','{:url('games/editfield')}',700,400)"><i class="layui-icon"></i>添加</button>
+	<span class="x-right" id="count" style="line-height:40px"></span>
+      </xblock>
+	 <table id="list">
+	  </table>
+  </div>
+ <script> 
+      layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,width: '100%'
+                ,url: "{:url('games/getgameini')}" //数据接口
+                ,page: {
+                    limits: [500,1000],
+                    limit:500
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field:"id",title:"ID",fixed:'left',width:'130'},
+                 {field:"parent_id",title:"上级ID",fixed:'left',width:"100"},
+                 {field:'field_id',title:"键值",fixed:"left",width:'150'},
+                 {field:'value',title:'名称',width:"300"},
+                 {field:'id',title:"操作",fixed:"right",width:'150',templet: function(d){
+                var info= '{:url("games/editfield")}?id='+d.id;
+                var html='<a style="text-decoration: underline; color: #0000FF;" title="编辑" href="javascript:;" onclick="x_admin_show(\'编辑\',\''+info+'\',800,500)"><i class="layui-icon">&#xe642;</i></a>';
+                html+="<a title=\"删除\" onclick=\"fqa_del(this,'"+d.id+"')\" href=\"javascript:;\"><i class=\"layui-icon\">&#xe640;</i>";
+                   return html; 
+               }} 
+                ]],
+                done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            
+              });
+            $('#search').on('click',function() {
+                var parent_id=document.getElementById('parent_id').value;
+                tableId.reload({
+                    url: "{:url('games/getfieldlists')}?searchstr="+$('.searchstr').val()+"&parent_id="+parent_id
+                });
+            });
+      });  
+ </script>
+ <script>    
+      /*FQA-删除*/
+      function fqa_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+							$.ajax({
+							   type: "POST",
+							   url: "{:url('games/doDelField')}",
+							   data: {"id":id},
+							   success: function(msg){
+								   if(msg == 'success'){									   
+									   $(obj).parents("tr").remove();
+									   layer.msg('已删除!',{icon:1,time:1000});									   
+								   }else{
+										layer.msg(msg);
+								   }
+							   }
+							});
+          });
+      }
+
+
+    </script>
+
+  </body>
+
+</html>

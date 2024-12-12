@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    <style>
+      .label-note {
+        width: 100px;
+        padding: 9px 10px;
+      }
+      .layui-input-block {
+        margin-left: 130px !important;
+      }
+      .layui-form-select dl dd.layui-this {
+          background-color: #393D49;
+          color: #fff;
+      }
+    </style>
+    <style>
+        .imageBox {width: 120px; height: auto; padding: 0 10px; float: left;}
+        .imageBox-top {width: 100%; height: 155px;}
+        .imageBox-bottom {width: 100%;}
+        .image {width: 100%; height: 120px; float: left; border: 1px dashed #ddd; position: relative;}
+        .button {color: #ccc; position: relative; cursor: pointer; text-align: center; position: absolute; top: 0; width: 120px; height: 120px; line-height: 120px;}
+        .uploadFile {opacity: 0; position: absolute; left: 0; width: 100%; height: 120px; cursor: pointer;}
+    </style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label  class="label-note layui-form-label">
+                    充值获得VIP点数百分比
+                </label>
+              <div class="layui-input-block">
+                  <input type="text" id="recharge_vip_socre_percentage" name="recharge_vip_socre_percentage" lay-verify="required" autocomplete="off" class="layui-input" value={$config["recharge_vip_socre_percentage"]}>
+              </div> 
+            </div>
+            <div class="layui-form-item">
+                <label  class="label-note layui-form-label">
+                   游戏有效投注获得VIP点数百分比
+                </label>
+              <div class="layui-input-block">
+                  <input type="text" id="flow_vip_socre_percentage" name="flow_vip_socre_percentage" lay-verify="required" autocomplete="off" class="layui-input" value={$config["flow_vip_socre_percentage"]}>
+              </div> 
+            </div>
+            <div class="layui-form-item">
+              <table id="list" class="layui-table">
+                 <thead>
+                   <tr>
+                    <th>VIP等级</th>
+                    <th>金币</th>
+                    <th>每日获取金币</th>
+                    <th>每月获取金币</th>
+                    <th>转盘加成</th>
+                    <th>幸运金币加成</th>
+                    <th>每日签到加成</th> 
+                    <th>商场购物加成</th>
+                    <th>是否全局广播</th>
+                    <th>VIP专属图片</th>
+                    <th>VIP相框编号</th>
+                    <th>VIP转账额度</th>
+                    <th>VIP提现额度</th>
+                 </thead>
+                 <tbody>
+                  {foreach $config["levelConfig"] as $k=>$val}
+                     <tr> 
+                       <td>{$val["level"]}</td>
+                       <td><input type="text" style="width:50px" name="vipScore" value='{$val["vipScore"]}'></td>
+                       <td><input type="text" style="width:50px" name="dailyGetGold" value='{$val["dailyGetGold"]}'></td>
+                       <td><input type="text" style="width:50px" name="monthlyGetGold" value='{$val["monthlyGetGold"]}'></td>
+                       <td><input type="text" style="width:50px" name="turntableGameAddRate" value='{$val["turntableGameAddRate"]}'></td>
+                       <td><input type="text" style="width:50px" name="luckyGoldAddRate" value='{$val["luckyGoldAddRate"]}'></td>
+                       <td><input type="text" style="width:50px" name="dailySignScoreAddRate" value='{$val["dailySignScoreAddRate"]}'></td>
+                       <td><input type="text" style="width:50px" name="shopScoreAddRate" value='{$val["shopScoreAddRate"]}'></td>
+                       <td><input type="text" style="width:50px" name="globalBroadcast" value='{$val["globalBroadcast"]}'></td>
+                       <td><input type="text" style="width:50px" name="vipProfilePhoto" value='{$val["vipProfilePhoto"]}'></td>
+                       <td><input type="text" style="width:50px" name="vipProfilePhotoFrame" value='{$val["vipProfilePhotoFrame"]}'></td>
+                       <td><input type="text" style="width:50px" name="bankTransfer" value='{$val["bankTransfer"]}'></td>
+                       <td><input type="text" style="with:50px" name="withdraw" value='{$val["withdraw"]}'></td>
+                     </tr>
+                  {/foreach}
+                 </tbody>
+              </table>
+            </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                 保存
+              </button>
+              <button  class="layui-btn" lay-filter="cancel" onClick="cancel()">
+                  取消
+              </button>
+          </div>
+      </form>
+    </div>
+
+    <script>
+          function cancel(){
+
+	   parent.location.reload();
+          }
+    </script>
+
+  </body>
+
+</html>

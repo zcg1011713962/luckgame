@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" /> 
+ <body>
+    <style>
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin="primary"] {
+            padding-left: 0px;
+            width: 200px;
+        }
+        .layui-btn {
+            background-color: #222d32;
+        }
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {
+            background-color: #222d32;
+        }
+        .alertBox {width: 50%; margin: 0 auto; padding: 40px 0; text-align: center;}
+        .alertSelect {height:40px;}
+        .layui-input { margin-top: 20px;}
+        .layui-btn {margin-top: 20px;}
+    </style>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏管理</a>
+        <a>
+          <cite>街机ATT</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+      <table id="list">
+      </table>
+    </div>
+    <script type="text/html" id="tools">
+        <a class="operate_btn" onclick="edit_game(this,'1')" href="javascript:;" title="编辑" style="margin-top:1px;">
+            <i class="fa fa-edit" style="color:#1E9FFF; font-size: 16px;"></i>
+        </a>
+    </script>
+    <script>
+        var data = {};
+        var attParams = {};
+        layui.use('table', function(){
+            var table = layui.table;
+            //第一个实例
+            table.render({
+                elem: '#list'
+                ,height: 500
+                ,width: '100%'
+                ,url: "{:url('Game/ApiAtt')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                 {field: 'id', title: 'ID', fixed: 'left', width:80}
+                ,{field: 'gameport', title: '端口号', width:80, fixed: 'left'}
+                ,{field: 'roomid', title: '房间号', width:80, fixed: 'left'}
+                ,{field: 'nickName', title: '玩家昵称', width:120, fixed: 'left'}
+                ,{field: 'nGamblingWaterLevelGold', sort:true, title: '水位', width:80}
+                ,{field: 'nGamblingBalanceGold', sort:true,  title: '库存金币', width:120}
+                ,{field: 'nGamblingWinPool', sort:true,  title: '奖池金币', width:120}
+                ,{field: 'wroomStateFormat', sort:true,  title: '房间状态', width:120}
+                ,{field: 'userScore', sort:true,  title: '当前剩余分数', width:140}
+                ,{field: 'stayTime', sort:true,  title: '当前保留时间', width:140}
+                ,{field: 'score_play', sort:true,  title: '下注总分', width:120}
+                ,{field: 'score_win', sort:true,  title: '赢走总分', width:120}
+                ,{field: 'times_play', sort:true,  title: '下注次数', width:120}
+                ,{field: 'times_win', sort:true,  title: '赢走次数', width:120}
+                ,{field: 'score_in', sort:true,  title: '上分', width:80}
+                ,{field: 'score_out', sort:true,  title: '下分', width:80}
+                ,{field: 'score_balance', sort:true,  title: '剩余分数', width:120}
+                ,{field: 'score_binWin', sort:true,  title: '中奖总分', width:120}
+                ,{field: 'coin_in', sort:true,  title: '上分金币', width:120}
+                ,{field: 'coin_out', sort:true,  title: '下分金币', width:120}
+                ,{field: 'times_binWin', sort:true,  title: '中奖次数', width:120}
+                ,{field: 'score_guess', sort:true,  title: '大小累积分数', width:160}
+                ,{field: 'score_guessWin', sort:true,  title: '大小赢得分数', width:160}
+                ,{field: 'times_guessWin', sort:true,  title: '大小获胜次数', width:160}
+                ,{field: 'times_guessLose', sort:true,  title: '大小失败次数', width:160}
+                ,{field: 'wutiao_1_19', sort:true,  title: '5张相同次数', width:180}
+                ,{field: 'huangjia_1_19', sort:true,  title: '皇家同花顺次数(1-19)', width:180}
+                ,{field: 'tonghuashun_1_19', sort:true,  title: '同花顺次数(1-19)', width:160}
+                ,{field: 'sitiao_1_19', sort:true,  title: '4张相同次数(1-19)', width:160}
+                ,{field: 'hulu_1_19', sort:true,  title: '葫芦次数(1-19)', width:140}
+                ,{field: 'tonghua_1_19', sort:true,  title: '同花次数(1-19)', width:140}
+                ,{field: 'shunzi_1_19', sort:true,  title: '顺子次数(1-19)', width:160}
+                ,{field: 'santiao_1_19', sort:true,  title: '3张相同次数(1-19)', width:160}
+                ,{field: 'liangdui_1_19', sort:true,  title: '两对次数(1-19)', width:140}
+                ,{field: 'gaopzhang_1_19', sort:true,  title: '两张高张相同次数(1-19)', width:200}
+                ,{field: 'none_1_19', sort:true,  title: '没中次数(1-19)', width:140}
+                ,{field: 'wutiao_20_80', sort:true,  title: '5张相同次数(20-80)', width:160}
+                ,{field: 'huangjia_20_80', sort:true,  title: '皇家同花顺次数(20-80)', width:180}
+                ,{field: 'tonghuashun_20_80', sort:true,  title: '同花顺次数(20-80)', width:160}
+                ,{field: 'sitiao_20_80', sort:true,  title: '4张相同次数(20-80)', width:160}
+                ,{field: 'hulu_20_80', sort:true,  title: '葫芦次数(20-80)', width:140}
+                ,{field: 'tonghua_20_80', sort:true,  title: '同花次数(20-80)', width:140}
+                ,{field: 'shunzi_20_80', sort:true,  title: '顺子次数(20-80)', width:140}
+                ,{field: 'santiao_20_80', sort:true,  title: '3张相同次数(20-80)', width:160}
+                ,{field: 'liangdui_20_80', sort:true,  title: '2对次数(20-80)', width:140}
+                ,{field: 'gaopzhang_20_80', sort:true,  title: '两张高张相同次数(20-80)', width:200}
+                ,{field: 'none_20_80', sort:true,  title: '没中次数(20-80)', width:140}
+                ,{title: '操作', width:80, fixed: 'right', templet: function(d){return '<div><a class="operate_btn" onclick="edit_game(this, '+d.id+')" href="javascript:;" title="编辑" style="margin-top:1px;"><i class="fa fa-edit" style="color:#1E9FFF; font-size: 16px;"></i></a></div>'}}
+                ]]
+                ,done: function(res, curr, count){
+                   for(var i = 0; i < res.data.length; i++) {
+                    data[res.data[i].id] = res.data[i];
+                   }
+                }
+            });
+        });
+
+        function edit_game(_this, id) {
+            var selectedData = data[id];
+            var result = {};
+            var notObjKeys = ['id','gameport','roomid','nickName','wroomStateFormat','userScore','stayTime'];
+
+            // 记录修改参数
+            attParams['id'] = selectedData.id;
+            attParams['roomid'] = selectedData.roomid;
+            attParams['gameport'] = selectedData.gameport;
+
+            console.log(selectedData);
+            // 匹配table 描述与数据 
+            $('.layui-table').find('tr:eq(0)').find('th').each(function(){
+                var field = $(this).attr('data-field');
+                if (selectedData[field] !== undefined && notObjKeys.indexOf(field) == -1) {
+                    result[field] = {
+                        'describe': $.trim($(this).find('span').text()),
+                        'value' : selectedData[field]
+                    };
+                }
+                // console.log($(this).attr('data-field'));
+            });
+            var title = 'ID：'+selectedData.id+'，房间号：'+selectedData.roomid+'，端口号：'+selectedData.gameport;
+            var html = '<div class="alertBox">';
+                html += '<select class="alertSelect" name="city" lay-verify="">';
+                html += '<option value="">请选择要修改的数据</option>';
+                for (item in result) {
+                    html += '<option data-field="'+item+'" value="'+result[item].value+'">'+result[item].describe+'</option>';
+                }
+                html += '</select>';
+                html += '<input type="text" name="title" required  autocomplete="off" class="layui-input att_value">';
+                html += '<div class="layui-btn layui-btn-normal att_save">保存</div>';
+                html += '</div>';
+            // 弹出层
+            layer.open({
+                type: 1,
+                title: title,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['600px', '300px'], //宽高
+                content: html
+            });
+            console.log(result);
+        }
+
+        $(document).on('change','.alertSelect',function(){
+            // 记录修改参数
+            attParams['key'] = $(this).find(':selected').attr('data-field');
+            attParams['value'] = $(this).val();
+            $('.att_value').val($(this).val());
+        });
+
+        $(document).on('click','.att_save',function(){
+            if (!attParams['key']) {
+                layer.msg('请先选择要修改的数据');
+            }
+            if (isNaN($('.att_value').val()*1)) {
+                layer.msg('只能输入数字');
+            }
+            attParams['value'] = $('.att_value').val();
+            $.post("{:url('editAtt')}",attParams,function(data){
+                layer.msg(data.message,function(){
+                    if (data.status == 0) {
+                        location.reload();
+                    }
+                });
+            },'Json');
+        });
+	</script>
+  </body>
+
+</html>

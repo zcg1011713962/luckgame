@@ -1,0 +1,18 @@
+安装autoTools
+yum install autoconf
+yum install automake
+
+数据库启动
+systemctl restart  mysql
+sudo systemctl status mysql
+
+启动redis
+redis-server /www/server/redis/redis.conf
+
+启动swoole
+cd /www/wwwroot/api_swoole
+./start.sh
+
+cd /home/ubuntu/Gold/indiarummy/
+./start.sh
+

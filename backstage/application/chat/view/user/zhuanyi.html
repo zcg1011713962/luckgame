@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+  
+  <body>
+	<div class="x-nav">
+	    <span class="layui-breadcrumb">
+	      <a href="javascript:;">金币转移</a>
+	    </span>
+	    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+	      <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+	</div>
+    <div class="x-body layui-anim layui-anim-up">
+		
+		<div class="layui-tab">
+		  <ul class="layui-tab-title">
+			<li class="layui-this">充值</li>
+			
+		  </ul>
+		  <div class="layui-tab-content">
+			  
+			<div class="layui-tab-item layui-show">
+				<form class="layui-form" action="" method="post" >
+					<div class="layui-form-item">
+						<label for="account" class="layui-form-label">
+							我的金币
+						</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" value="{$info.score/100}" disabled style="border: none;color:red;"/>
+						</div>              
+					</div>
+				    <div class="layui-form-item">
+				        <label for="account" class="layui-form-label">
+				            <span class="x-red">*</span>充值ID
+				        </label>
+				        <div class="layui-input-inline">
+				            <input type="text" id="account" name="account" required="" autocomplete="off" class="layui-input" style="width: 400px;">
+				        </div>              
+				    </div>
+				    <div class="layui-form-item">
+				        <label for="fee" class="layui-form-label">
+				            <span class="x-red">*</span>充值金额
+				        </label>
+				        <div class="layui-input-inline">
+				            <input type="text" id="fee" name="fee" required="" autocomplete="off" class="layui-input">
+				        </div>
+							  <div class="layui-form-mid layui-word-aux">
+							      <span class="x-red">*</span> 单位：元
+							  </div>
+				    </div>
+					
+						<input type="hidden" name="type" value="金币" />
+						
+				    <div class="layui-form-item">
+				        <label for="L_repass" class="layui-form-label">
+				        </label>
+				        <button  class="layui-btn" lay-filter="add" lay-submit="">
+				            增加
+				        </button>
+				    </div>
+				</form>
+			</div>
+			
+		  </div>
+		</div>
+		
+        
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //监听提交
+          form.on('submit(add)', function(data){
+            console.log(data.field);
+            $.ajax({
+               type: "POST",
+               url: "{:url('doRecharge')}",
+               data: data.field,
+               success: function(res){
+				   console.log(res);
+            	   if(res == 'success'){
+            		   layer.msg('充值成功!',function(){
+            			   window.location.reload();
+            		   });					   
+            	   }else{
+            			layer.msg(res);
+            	   }
+               }
+            });
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

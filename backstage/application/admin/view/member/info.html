@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .info {
+            text-decoration: underline;
+            color: blue;
+        }
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员记录</a>
+        <a><cite>会员详情</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <fieldset class="layui-elem-field" style="width:45%; float:left;">
+            <legend>个人信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="user_info">
+                    <tr>
+                        <th>子運營商</th>
+                        <td class="username">代理</td>
+                    </tr>
+                    <tr>
+                        <th>用戶ID</th>
+                        <td class="Id">{$data.info.Id}</td>
+                    </tr>
+                    <tr>
+                        <th>暱稱</th>
+                        <td class="nickname">{$data.info.nickname}</td>
+                    </tr>
+                    <tr>
+                        <th>状态</th>
+                        <td class="ChannelType">{$data.info.status}</td>
+                    </tr>
+                    <tr>
+                        <th>登录账号</th>
+                        <td class="phoneNo">{$data.info.Account}</td>
+                    </tr>
+                    <tr>
+                        <th>角色</th>
+                        <td class="email">{$data.info.role}</td>
+                    </tr>
+                    <tr>
+                        <th>手机号</th>
+                        <td class="history_commission">{$data.info.phoneNo}</td>
+                    </tr>
+                    <tr>
+                        <th>邮箱</th>
+                        <td class="draw_commission">{$data.info.email}</td>
+                    </tr>
+                    <tr>
+                        <th>层级</th>
+                        <td class="surplus_commission">{$data.info.level}</td>
+                    </tr>
+                    <tr>
+                        <th>首充日期</th>
+                        <td class="surplus_commission">{$data.info.payment_onec}</td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:right;">
+            <legend>金币信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="today_info">
+                    <tr>
+                        <th>钱包余额</th>
+                        <td class="team_performance">{$data.gold.score}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史充值</th>
+                        <td class="team_commission">{$data.gold.day_payment}/{$data.gold.count_payment}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史彩金</th>
+                        <td class="agent_performance">{$data.gold.day_color}/{$data.gold.count_color}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史提款</th>
+                        <td class="agent_commission">{$data.gold.day_outcash}/{$data.gold.count_outcash}</td>
+                    </tr>
+                    <tr>
+                        <th>今日提款次数</th>
+                        <td class="sub_running_account">{$data.gold.day_outcash_number}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史输赢</th>
+                        <td class="sub_performance">{$data.gold.day_wincoin}/{$data.gold.count_wincoin}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史税收</th>
+                        <td class="my_commission">{$data.gold.day_performance}/{$data.gold.count_performance}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史流水</th>
+                        <td class="my_commission">{$data.gold.day_water}/{$data.gold.count_water}</td>
+                    </tr>
+                    <tr>
+                        <th>今日/历史充提</th>
+                        <td class="my_commission">{$data.gold.day_paydiff}/{$data.gold.count_paydiff}</td>
+                    </tr>
+                    <tr>
+                        <th>今日首充</th>
+                        <td class="sub_running_account">{$data.gold.day_payment_once}</td>
+                    </tr>
+                    <tr>
+                        <th>注册当日首充</th>
+                        <td class="sub_running_account">{$data.gold.reg_day_payment_once}</td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:left;">
+            <legend>注册信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="performance_info">
+                    <tr>
+                        <th>上次登录时间</th>
+                        <td class="week_performance">{$data.register.prev_login_time}</td>
+                    </tr>
+                    <tr>
+                        <th>注册日期</th>
+                        <td class="week_commission">{$data.register.register_time}</td>
+                    </tr>
+                    <tr>
+                        <th>设备型号</th>
+                        <td class="lask_week_performance">{$data.register.device}</td>
+                    </tr>
+                    <tr>
+                        <th>渠道名称</th>
+                        <td class="lask_week_commission">{$data.register.channelName}</td>
+                    </tr>
+                    <tr>
+                        <th>上级ID</th>
+                        <td class="month_performance">{$data.register.pid}</td>
+                    </tr>
+                    <tr>
+                        <th>顶级代理ID</th>
+                        <td class="month_commission">{$data.register.topid}</td>
+                    </tr>
+                    <tr>
+                        <th>备注</th>
+                        <td class="team_size">{$data.register.note}</td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+        <fieldset class="layui-elem-field" style="width:45%; float:right;">
+            <legend>代理信息</legend>
+            <div class="layui-field-box">
+                <table class="layui-table" id="yesterday_info">
+                    <tr>
+                        <th>今日团队新增/团队人数</th>
+                        <td class="team_performance">{$data.agent.day_team_add}/{$data.agent.team_size}</td>
+                    </tr>
+                    <tr>
+                        <th>今日直属新增/直属人数</th>
+                        <td class="team_commission">{$data.agent.day_team_direct_add}/{$data.agent.team_size_direct}</td>
+                    </tr>
+                    <tr>
+                        <th>今日团队业绩</th>
+                        <td class="agent_performance">{$data.agent.day_team_performance}</td>
+                    </tr>
+                    <tr>
+                        <th>今日团队有效业绩</th>
+                        <td class="agent_performance">{$data.agent.day_team_performance_true}</td>
+                    </tr>
+                    <tr>
+                        <th>今日直营业绩</th>
+                        <td class="agent_performance">{$data.agent.day_direct_performance}</td>
+                    </tr>
+                    <tr>
+                        <th>今日直营有效业绩</th>
+                        <td class="agent_performance">{$data.agent.day_direct_performance_true}</td>
+                    </tr>
+                    <tr>
+                        <th>今日佣金/历史佣金</th>
+                        <td class="my_commission">{$data.agent.day_commission}/{$data.agent.count_commission}</td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+      <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+        });
+	</script>
+    <script>
+    </script>
+  </body>
+</html>

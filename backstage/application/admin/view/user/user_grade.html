@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+{include file="public/head" /}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js"
+        integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css"
+      integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<style>
+    .layui-btn {
+        background-color: #222d32;
+    }
+
+    .layui-laypage .layui-laypage-curr .layui-laypage-em {
+        background-color: #222d32;
+    }
+
+    .other-btn {
+        /*margin-top: 20px;*/
+    }
+
+    .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+        width: auto;
+    }
+    .unset-clear {
+        clear: unset;
+        float: left;
+    }
+</style>
+<body class="layui-anim layui-anim-up">
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员管理</a>
+        <a><cite>会员等级设置</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right"
+       href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+
+<div class="x-body">
+    <div class="layui-row">
+
+        <form class="layui-form layui-col-md12 x-so">
+            <button class="layui-btn other-btn" type="button" onclick="x_admin_show('创建等级','{:url('User/addUserGrade')}',800,500)"><i class="layui-icon"></i>添加</button>
+        </form>
+        <span class="x-left" id="count" style="line-height:40px"></span>
+    </div>
+    <table id="list" lay-filter="test">
+    </table>
+</div>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script>
+    layui.use(['table', 'laydate'], function () {
+        var table = layui.table;
+        var laydate = layui.laydate;
+
+        // 渲染时间选择器
+        laydate.render({
+            elem: '#begin_time',
+            type: 'datetime',
+            trigger: 'click'
+        });
+        laydate.render({
+            elem: '#end_time',
+            type: 'datetime',
+            trigger: 'click'
+        });
+
+        //第一个实例
+        var tableId = table.render({
+            elem: '#list'
+            , height: 500
+            , url: "{:url('user/getUserGrade')}" //数据接口
+            , page: {
+                limits: [20, 50, 100, 300, 500, 1000],
+                limit: 20
+            }
+            , toolbar: true
+            , defaultToolbar: ['filter', 'print', 'exports']
+            , cols: [[ //表头
+                {field: 'name', title: '等级名称', minWidth:150}
+                , {field: 'week_recharge_money', title: '周累计充值金额', minWidth:150}
+                , {field: 'month_recharge_money', title: '月累计充值金额', minWidth:150}
+                , {field: 'cash_out_money', title: '日提现金额上限', minWidth:150}
+                , {field: 'cash_out_num', title: '日提现次数上限', minWidth:150}
+                , {field: 'create_at', title: '创建时间', minWidth:150}
+                , {fixed: 'right', width:150, align:'center', toolbar: '#barDemo', minWidth:150}
+            ]]
+            , done: function (res, curr, count) {
+                $('#count').html('共有数据：' + res.count + ' 条');
+            }
+        });
+
+        //工具条事件
+        table.on('tool(test)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+
+            if(layEvent === 'detail'){ //查看
+                //do somehing
+            } else if(layEvent === 'del'){ //删除
+                layer.confirm('确定删除吗', function(index){
+                    //向服务端发送删除指令
+                    $.ajax({
+                        type: "POST",
+                        url: "{:url('delUserGrade')}",
+                        data: {"id": data.id},
+                        success: function(msg){
+                            if(msg.status == 1){
+                                layer.msg(msg.message);
+
+                            }else{
+                                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                                layer.close(index);
+                                // $(obj).parents("tr").remove();
+                                layer.msg('已删除!',{icon:1,time:1000});
+                            }
+                        }
+                    });
+
+
+
+                });
+            } else if(layEvent === 'edit'){ //编辑
+                //do something
+                x_admin_show('编辑等级','{:url('User/updateUserGrade')}?id=' + data.id,800,500)
+
+                //同步更新缓存对应的值
+                // obj.update({
+                //     username: '123'
+                //     ,title: 'xxx'
+                // });
+            } else if(layEvent === 'LAYTABLE_TIPS'){
+                layer.alert('Hi，头部工具栏扩展的右侧图标。');
+            }
+        });
+
+        $('#search').on('click', function () {
+
+            var data = {};
+            data.user_id = $('#userId').val();
+            data.begin_time = $('input[name=begin_time]').val();
+            data.end_time = $('input[name=end_time]').val();
+
+            var url_str = '';
+            for (i in data) {
+                url_str += i + '=' + data[i] + '&';
+            }
+            url_str = url_str.substring(0, url_str.length - 1);
+            tableId.reload({
+                url: "{:url('user/getUserGrade')}?" + url_str
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

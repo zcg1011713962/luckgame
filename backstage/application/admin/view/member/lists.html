@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/layui.min.js" integrity="sha512-jVlfkkRyCyrICx3iFs80jgim5Vmg2xVjAdBRCw/E/ZukJPYpjXfTyyiB1Y1gRsBeAC8CJ+jYIk0teYL4qV85gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/layui/2.7.6/css/layui.min.css" integrity="sha512-omRxviAbZbsRLmYjGYaOjLuafC5Jw17PYyg1eH4XaT5vWx+cOng6t+bq9VyjZBWrUuduYgYuIuD2d3MOz7S2dA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.layui-btn {background-color: #222d32;}
+        .layui-laypage .layui-laypage-curr .layui-laypage-em {background-color: #222d32;}
+        .other-btn {
+            font-size: 13px;
+            width: 70px;
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            line-height: 30px;
+        }
+        .layui-table-tool-panel li .layui-form-checkbox[lay-skin=primary] {
+			width: auto;
+		}
+	</style>
+	<body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">会员记录</a>
+        <a><cite>会员列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row">
+        <div>
+            子运营商：
+            <select id="agent_id" style="width: 150px; height:40px;">
+                <option value="0">代理</option>
+            </select>
+            &nbsp;&nbsp;
+            条件：
+            <select id="where_column" style="width: 120px; height:40px;">
+                <option value="Id">Id</option>
+                <option value="nickname">昵称</option>
+                <option value="Account">登入账号</option>
+                <option value="nickname">真实姓名</option>
+                <option value="phoneNo">手机号</option>
+                <option value="email">邮箱</option>
+                <option value="ChannelType">推广ID</option>
+            </select>
+            &nbsp;
+            <input type="text" id="column_value" name="column_value" autocomplete="off" class="layui-input" style="width: 150px; display: inline-block;">
+            &nbsp;&nbsp;
+            角色：
+            <select id="role" style="width: 100px; height:40px;">
+                <option value="0">全部</option>
+                <option value="1">正式</option>
+                <option value="2">游客</option>
+            </select>
+            &nbsp;&nbsp;
+            状态：
+            <select id="status" style="width: 100px; height:40px;">
+                <option value="0">全部</option>
+                <option value="1">启用</option>
+                <option value="2">禁用</option>
+            </select>
+            &nbsp;&nbsp;
+            渠道名
+            <select id="channel_id" style="width: 100px; height:40px;">
+                <option value="0">全部</option>
+                <option value="1">google pay</option>
+                <option value="2">etc</option>
+            </select>
+            <br /><br />
+            登入时间：
+            <input type="text" id="begin_time" name="login_begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="login_end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            注册时间：
+            <input type="text" id="begin_time" name="reg_begin_time" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            &nbsp;&nbsp;
+            <input type="text" id="end_time" name="reg_end_time" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 200px; display: inline-block;">
+            <br /><br />
+            金币条件
+            <select id="gold_where_id" style="width: 120px; height:40px;">
+                <option value="0">全部</option>
+                <option value="count_payment">历史充值</option>
+                <option value="count_wincoin">历史输赢</option>
+                <option value="count_outcash">历史提款</option>
+                <option value="count_commission">历史佣金</option>
+                <option value="count_wincoin">历史流水</option>
+                <option value="score">金币余额</option>
+            </select>
+            &nbsp;
+            <input type="text" id="gold_begin_value" name="gold_begin_value" autocomplete="off" placeholder="from" class="layui-input" style="width: 150px; display: inline-block;">
+            ~
+            <input type="text" id="gold_end_value" name="gold_end_value" autocomplete="off" placeholder="to" class="layui-input" style="width: 150px; display: inline-block;">
+            &nbsp;&nbsp;
+            <button class="layui-btn" id="search">搜索</button>
+        </div>
+        <form class="layui-form layui-col-md12 x-so" style="margin-top: 30px;">
+			<!-- <button class="layui-btn" type="button" onclick="x_admin_show('添加活动','{:url('NewActivitys/add')}',800,500)"><i class="layui-icon"></i>添加活动</button> -->
+		</form>
+		<span class="x-left" id="count" style="line-height:40px"></span>
+      </div>
+	  <table id="list">
+	  </table>
+    </div>
+	<script>
+		 layui.use(['table','laydate'], function(){
+            var table = layui.table;
+            var laydate = layui.laydate;
+
+             // 渲染时间选择器
+             laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+
+            //第一个实例
+            var tableId = table.render({
+                elem: '#list'
+                ,height: 500
+                ,width: '100%'
+                ,url: "{:url('member/getList')}" //数据接口
+                ,page: {
+                    limits: [30,50,100,300,500,1000],
+                    limit:30
+                }
+                ,toolbar: true
+                ,defaultToolbar: ['filter', 'print', 'exports']
+                ,cols: [[ //表头
+                {field: 'id', title: '运营商', fixed: 'left', width:'130', templet: function(d){
+                    return '代理';
+                }}
+                ,{field: 'Id', title: '用户ID', fixed: 'left', width:'100', templet: function(d) {
+                    var info = '{:url("member/info")}?id='+d.Id;
+                    return '<a style="text-decoration: underline; color: #0000FF;" href="#" onclick="x_admin_show(\'详情\',\''+info+'\',800,500)" class="info">'+d.Id+'</a>';
+                }}
+                ,{field: 'Account',  title: '会员昵称', width:'130', fixed: 'left'}
+                ,{field: 'Account', title: '登入账号', width: '130', fixed: 'left'}
+                ,{field: 'role', title: '角色', width: '100'}
+                ,{field: 'level', title: '层级', width: '100'}
+                ,{field: 'Id', title: '推广ID', width: '100'}
+                ,{field: 'loginDate', title: '上次登入时间', width: '100'}
+                ,{field: 'phoneNo', title: '手机号码', width: '100'}
+                ,{field: 'email', title: '邮箱', width: '100'}
+                ,{field: 'score', title: '钱包余额', width: '100'}
+                ,{field: 'color_gold', title: '累积赠送彩金', width: '100'}
+                ,{field: 'count_payment', title: '历史充值', width: '100'}
+                ,{field: 'count_outcash', title: '历史提款', width: '100'}
+                ,{field: 'count_paydiff', title: '历史充提', width: '100'}
+                ,{field: 'count_wincoin', title: '历史流水', width: '100'}
+                ,{field: 'count_commission', title: '历史佣金', width: '100'}
+                ,{field: 'AddDate', title: '注册日期', width: '100'}
+                ,{field: 'account_status', title: '状态', width: '100'}
+                ]]
+                ,done: function(res, curr, count){
+                    $('#count').html('共有数据：'+res.count+' 条');
+                }
+            });
+
+            $('#search').on('click',function() {
+
+                var data = {};
+                    data.agent_id = $('#agent_id').val();
+                    data.where_column = $('#where_column').val();
+                    data.column_value = $('#column_value').val();
+                    data.role = $('#role').val();
+                    data.status = $('#status').val();
+                    data.channel_id = $('#channel_id').val();
+                    data.login_begin_time = $('input[name=login_begin_time]').val();
+                    data.login_end_time = $('input[name=login_end_time]').val();
+                    data.reg_begin_time = $('input[name=reg_begin_time]').val();
+                    data.reg_end_time = $('input[name=reg_end_time]').val();
+                    data.gold_where_id = $('#gold_where_id').val();
+                    data.gold_begin_value = $('#gold_begin_value').val();
+                    data.gold_end_value = $('#gold_end_value').val();
+                    
+                var url_str = '';
+                for (i in data) {
+                    url_str += i +'='+ data[i] + '&';
+                }
+                url_str = url_str.substring(0, url_str.length - 1);
+                tableId.reload({
+                    url: "{:url('member/getList')}?"+ url_str
+                });
+				return false;
+            });
+        });
+	</script>
+    <script>
+    </script>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">道具充值</a>
+        <a>
+          <cite>充值列表</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">   
+		<div style="padding-bottom: 1em;">
+			<form class="layui-form" action="">
+				<div class="layui-inline">
+					<input type="text" name="starttime" class="layui-input" id="starttime" placeholder="开始时间" />
+				</div>
+				<div class="layui-inline">
+					<input type="text" name="endtime" class="layui-input" id="endtime" placeholder="结束时间" />
+				</div>
+				<div class="layui-inline">
+					<input type="text" name="userid" class="layui-input" placeholder="玩家ID" />
+				</div>
+				<div class="layui-inline">
+					<select name="city" lay-verify="required">
+										<option value="">全部类型</option>
+										<option value="1">金币</option>
+										<option value="2">房卡</option>
+					</select>
+				</div>
+				<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+				<div class="layui-inline" style="color: red;">当前房卡:0 当前钻石:0</div>
+			</form>
+		</div>
+		
+		<table class="layui-table">
+		  <thead>
+		    <tr>            
+		      <th>玩家ID(代理ID)</th>
+		      <th>道具类型</th>
+		      <th>充值数量</th>
+		      <th>操作前数量</th>
+		      <th>操作后数量</th>
+		      <th>操作时间</th>
+		  </thead>
+		  <tbody>
+				
+		    <tr>            
+		      <td>164848</td>
+		      <td>房卡</td>            
+		      <td>60</td>
+		      <td>200</td>
+		      <td>260</td>
+					<td>2019-04-23 05:01:12</td>
+		    </tr>
+									
+		  </tbody>
+		</table>
+		<div class="page">
+		  {$page}
+		</div>
+      
+    </div>
+    <script>
+		layui.use(['form','laydate','jquery'], function(){
+		  var $ = layui.$;
+		  var laydate = layui.laydate;
+		  
+		  laydate.render({
+			elem: '#starttime'
+		  });
+		  
+		  laydate.render({
+		  	elem: '#endtime'
+		  });
+		  
+		  var form = layui.form;
+			
+		  form.on('submit(formDemo)', function(data){
+			//console.log(JSON.stringify(data.field));
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doSearchCZfee')}",
+			   data: data.field,
+			   success: function(msg){
+				   //console.log(JSON.stringify(msg));
+				   var msg = JSON.parse(msg);				   
+				   if(msg.status){
+					   layer.msg('查询成功');
+					   $('#searchfeeres').html(msg.msg);
+				   }else{
+						layer.msg(msg.msg);
+				   }
+			   }
+			});
+			return false;
+		  });
+		  
+		});
+    </script>
+
+  </body>
+
+</html>

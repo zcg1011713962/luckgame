@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Line Test</title>
+  <script src="/assets/js/jquery.js"></script>
+</head>
+<body>
+app token: <input type="text" name="app_token" id="app_token" value="73b99ec289817b1223df64be42e9ec1d"><br>
+amount: <input type="text" name="amount" id="amount"><br>
+type: <select name="type" id="type"><br>
+  <option value="web">web</option>
+  <option value="app">app</option>
+</select>
+<button id="submit_now">提交</button>
+<script>
+  $('#submit_now').click(function () {
+    var type = $('#type').val();
+    $.ajax({
+      url: "/index/testLine",
+      type: 'POST',
+      data: {
+        app_token: $('#app_token').val(),
+        amount: $('#amount').val(),
+      },
+      success: function (data) {
+        if (type === 'web') {
+          window.location.href = data.web_url;
+        } else {
+          window.location.href = data.app_url;
+        }
+      }
+    });
+  });
+
+
+  // document.getElementById('openApp').onclick = function() {
+  //   window.location.href = 'line://pay/payment/SFNuVncraElxUjZZUmV2TEVQczNocGUrSlY5d0RQNmc4RFIzK0pEWVB2U21FZW9aV1FNWXgyMVpEWVRrakNlWA';
+  // };
+</script>
+</body>
+</html>

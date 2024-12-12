@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+	{include file="public/head" /}
+	<body>
+		<style>
+			.header { width: 100%; height: 80px; } 
+			.header .left { width: 50%; height: 80px; float: left; } 
+			.header .right { width: 50%; height: 80px; float: left; } 
+			.header .right .search { width: 100%; height: 40px; float: right;} 
+			.header .right .tabs { width: 100%; height: 40px; float: right; } 
+			.layui-tab-brief>.layui-tab-title .layui-this { color: rgb(34, 45, 50); } 
+			.layui-tab-brief>.layui-tab-title .layui-this::after { border: none; border-radius: 0; border-bottom: 2px solid rgb(34, 45, 50); } 
+			.search { width: 100%; height: 40px; float: right; } 
+			.searchbox { width: 250px; height: 35px; background-color: rgb(34, 45,50); font-size: 12px; float: right; margin-right: 65px; border-radius:3px; } 
+			.searchInput { height: 29px; width: 210px; margin-top: 3px; margin-left:3px; border: none; text-indent: 5px; float: left; } 
+			.searchBtn { border:0; background-color: rgb(34, 45, 50); font-size: 27px; width: 37px; height:35px; text-align: center; color: #fff; cursor: pointer; float: left; }
+			.operate_btn {display: block; float: left; padding: 5px;}
+		</style>
+		<div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					游戏管理
+				</a>
+				<a>
+					<cite>
+						游戏列表
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+		<div class="x-body">
+			<div class="header">
+				<div class="left">
+					<button class="layui-btn" onclick="x_admin_show('添加游戏','{:url('Game/addGame')}')">
+						<i class="layui-icon">
+							
+						</i>
+						添加游戏
+					</button>
+					<br />
+					<span class="x-left" style="line-height:40px">
+						共有数据：{$count} 条
+					</span>
+				</div>
+				<div class="right">
+					<div class="search">
+						<div class="searchbox">
+							<input type="text" value="{$keyWord}" placeholder="请输入要搜索的游戏名称" class="searchInput"
+							id="searchInput" />
+							<div class="searchBtn">
+								<i class="layui-icon">
+									&#xe615;
+								</i>
+							</div>
+						</div>
+					</div>
+					<div class="tabs">
+						<div class="layui-tab layui-tab-brief" lay-filter="gameTab">
+							<ul class="layui-tab-title" style="float:right;">
+								<li lay-id="0" {eq name="$gameCategoryId" value="0" } class="layui-this"
+								{/eq}>
+									全部
+								</li>
+								<li lay-id="1" {eq name="$gameCategoryId" value="1" } class="layui-this"
+								{/eq}>
+									棋牌类
+								</li>
+								<li lay-id="2" {eq name="$gameCategoryId" value="2" } class="layui-this"
+								{/eq}>
+									SLOT类
+								</li>
+								<li lay-id="3" {eq name="$gameCategoryId" value="3" } class="layui-this"
+								{/eq}>
+									其他类
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--<blockquote class="layui-elem-quote layui-quote-nm">
+			关闭游戏后，请手动开启  
+			<a href="javascript:;" onclick="closeAllGame()" class="layui-btn">关闭所有</a>
+			</blockquote>-->
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<th>
+							GameID
+						</th>
+						<th>
+							名称
+						</th>
+						<th>
+							端口
+						</th>
+						<th>
+							版本
+						</th>
+						<th>
+							类型
+						</th>
+						<th>
+							游戏难度调节
+						</th>
+						<th>
+							状态
+						</th>
+						<th>
+							操作
+						</th>
+						<th>
+							其他
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $list as $key=>$vo }
+					<tr>
+						<td>
+							{$vo.gameid}
+						</td>
+						<td>
+							{$vo.name}
+						</td>
+						<td>
+							{$vo.port}
+						</td>
+						<td>
+							{$vo.version}
+						</td>
+						<td>
+							{switch $vo.type|intval } {case 1}
+							<span style="color: #EE3333;">
+								棋牌类
+							</span>
+							{/case} {case 2}
+							<span style="color: #007DDB;">
+								SLOT类
+							</span>
+							{/case} {case 3}
+							<span style="color: #00AA00;">
+								其他类
+							</span>
+							{/case} {default /}
+							<span style="color: #C0C0C0;">
+								未设置
+							</span>
+							{/switch}
+						</td>
+						<td>
+							{if $vo.isshuigame }
+							<a onclick="x_admin_show('修改抽水率','{:url('Game/editchoushuilv',[ 'id' => $vo['id'] ])}',600,600)"
+							title="修改抽水率" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							游戏抽水：{$vo.shuiwei|default=''}%
+							<br/>
+							{if $vo.gameid != 99999 }
+							<a onclick="x_admin_show('修改难度','{:url('Game/editnandu',[ 'id' => $vo['id'] ])}',600,600)"
+							title="修改难度" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							大奖难度：{$vo.nandu|default=''}
+							<br/>
+							{/if}
+							<!--<a onclick="x_admin_show('修改库存','{:url('Game/editkucun',[ 'id' => $vo['id'] ])}',600,600)"
+							title="修改库存" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							系统盈利：{//$vo.kucun}
+							<br/>-->
+							<a onclick="x_admin_show('修改奖池','{:url('Game/editpool',[ 'id' => $vo['id'], 'game_id' => $vo['gameId'], 'server_id' => $vo['server'] ])}',600,600)"
+							title="修改奖池" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							玩家奖池：{$vo.jiangchi|default=''}
+							<br/>
+							<a href="{:url('PlayerGameLog/lists',['type' => 2 , 'game_id' => $vo['gameid']])}"
+							style="color:red;">
+								<i class="layui-icon">
+									&#xe615;
+								</i>
+							</a>
+							当前RTP：{$vo.newCurrentRTP}%
+							<br/>
+							<!--<a onclick="x_admin_show('修改库存','{:url('Game/editkucun',[ 'id' => $vo['id'] ])}',600,600)"
+							title="修改库存" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>-->
+							系统盈利：{$vo.kucun|default=''}
+							<br/>
+							<!--<a onclick="x_admin_show('期望RTP','{:url('Game/expectrtp',[ 'id' => $vo['id'] , 'port' => $vo['port']])}',600,600)"
+							title="修改期望RTP" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							期望RTP：{//$vo.expectRTP}%
+							<br/>-->
+							{/if}
+							{if $vo['isFish'] == 1}
+							<a onclick="x_admin_show('修改水位','{:url('Game/editbuyuline',[ 'port' => $vo['port'], 'name' => $vo['fish'] ])}',600,300)"title="修改水位" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							水位：{$vo.line}
+							<br/>
+							<a onclick="x_admin_show('修改奖池','{:url('Game/editbuyupool',[ 'port' => $vo['port'], 'name' => $vo['fish'] ])}',600,300)"title="修改奖池" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							奖池：{$vo.pool}
+							<br/>
+							<a onclick="x_admin_show('修改爆鱼概率','{:url('Game/editbuyuchance',[ 'port' => $vo['port'], 'name' => $vo['fish'] ])}',600,300)"title="修改爆鱼概率" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							爆鱼：{$vo.chance}%
+							<br />
+							{/if}
+							{if in_array($vo.port,[13401,13402,13403,13404])}
+							<a onclick="x_admin_show('修改难度','{:url('Game/editnandu_qiangcow',[ 'id' => $vo['id'] ])}',600,600)"
+							title="修改难度" href="javascript:;" style="color:red;">
+								<i class="layui-icon">
+									&#xe631;
+								</i>
+							</a>
+							难度：{$vo.nandulv} 
+							<br/>
+							{/if}
+							总投注：{$vo.useCoinTotal|default=0}
+						</td>
+						<td style="text-align: center;">
+							{if $vo.isstart}
+							<a onclick="game_start(this,'{$vo.id}','0')" href="javascript:;" title="已开启">
+								<i class="fa fa-power-off" style="color:#1E9FFF; font-size: 16px;"></i>
+							</a>
+							{else /}
+							<a onclick="game_start(this,'{$vo.id}','1')" href="javascript:;" title="已关闭">
+								<i class="fa fa-power-off" style="color:#393D49; font-size: 16px;"></i>
+							</a>
+							{/if}
+						</td>
+						<td class="td-edit">
+							<a class="operate_btn" onclick="edit_game(this,'{$vo.id}')" href="javascript:;" title="编辑" style="margin-top:1px;">
+								<i class="fa fa-edit" style="color:#1E9FFF; font-size: 16px;"></i>
+							</a>
+							<a class="operate_btn" onclick="delete_game(this,'{$vo.id}')" href="javascript:;" title="删除">
+								<i class="fa fa-trash-o" style="color:#393D49; font-size: 16px;"></i>
+							</a>
+						</td>
+						<td class="td-manage">
+							<a title="在线人数" onclick="x_admin_show('在线人数','{:url('Game/onlinenum',[ 'id' => $vo['id'] ])}')"
+							href="javascript:;">
+								<i class="layui-icon">
+									&#xe770;
+								</i>
+							</a>
+						</td>
+					</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
+		<script>
+			layui.use('element',
+			function() {
+				var element = layui.element;
+				element.on('tab(gameTab)',
+				function(el) {
+					location.href = "{:url('lists')}?gameCategoryId=" + $(this).attr('lay-id');
+				});
+			});
+
+			$('.searchBtn').on('click',
+			function() {
+				var keyWord = $('.searchInput').val();
+				location.href = "{:url('lists')}?gameCategoryId={$gameCategoryId}&keyWord=" + keyWord;
+			});
+
+			function delete_game(obj, id) {
+				layer.confirm('确认要删除当前游戏吗？',function(index){
+					$.post("{:url('deleteGame')}",{gameId:id},function(data){
+						if (data.status == 0) {
+							layer.msg(data.message,function() {
+								window.location.reload();
+							});
+						} else {
+							layer.msg(data.message);
+						}
+					},'Json');
+				});
+			}
+
+			function edit_game(obj, id) {
+				x_admin_show('编辑游戏',"{:url('Game/editGame')}?gameId="+id);
+			}
+
+			function game_start(obj, id, type) {
+				if (type == '0') {
+					//原先是1开启状态 改为 0关闭
+					var msg = '关闭';
+				} else if (type == '1') {
+					var msg = '开启';
+				} else {
+					return false;
+				}
+				layer.confirm('确认要' + msg + '吗？',
+				function(index) {
+					$.ajax({
+						type: "POST",
+						url: "{:url('doStart')}",
+						data: {
+							'i': id,
+							't': type
+						},
+						success: function(res) {
+							if (res == 'success') {
+								layer.msg('已' + msg + '!',
+								function() {
+									window.location.reload();
+								});
+							} else {
+								layer.msg(res);
+							}
+						}
+					});
+				});
+			}
+
+			function closeAllGame() {
+				$.ajax({
+					type: "POST",
+					url: "{:url('closeAllGame')}",
+					data: {},
+					success: function(res) {
+						layer.msg(res);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

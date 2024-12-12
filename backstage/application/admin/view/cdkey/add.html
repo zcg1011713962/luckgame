@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="username" class="layui-form-label">
+                  <span class="x-red">*</span>账号
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="username" name="username" required="" lay-verify="username"
+                  autocomplete="off" class="layui-input">
+              </div>              
+          </div>
+         
+          <div class="layui-form-item">
+              <label for="L_pass" class="layui-form-label">
+                  <span class="x-red">*</span>密码
+              </label>
+              <div class="layui-input-inline">
+                  <input type="password" id="L_pass" name="pass" required="" lay-verify="pass"
+                  autocomplete="off" class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">
+                  6到16个字符
+              </div>
+          </div>
+		  
+		  <div class="layui-form-item">
+			<label class="layui-form-label"><span class="x-red">*</span>是否关闭</label>
+			<div class="layui-input-block" style="padding-top: 9px;">
+			  <input type="checkbox" name="isdaili" lay-skin="switch">
+			</div>
+		  </div>
+          
+		  
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>昵称
+		      </label>
+		      <div class="layui-input-inline">
+		          <input type="text" name="uid" required="" autocomplete="off" class="layui-input">
+		      </div>		      
+		  </div>
+		  
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //自定义验证规则
+          form.verify({
+            username: function(value){
+              if(value.length < 1){
+                return '账号不能为空';
+              }
+            }
+            ,pass: [/(.+){6,12}$/, '密码必须6到12位']
+            
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+			//return false;
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doAdd')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+							// 获得frame索引
+							var index = parent.layer.getFrameIndex(window.name);
+							//关闭当前frame
+							parent.layer.close(index);
+							parent.location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

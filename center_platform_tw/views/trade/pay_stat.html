@@ -1,0 +1,151 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/view.css"/>
+<style>
+
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-page-header">
+        <div class="pagewrap">
+            <h2 class="title">代收统计</h2>
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="form-box">
+                    <div class="layui-form layui-form-item">
+                        <div class="layui-inline">
+                            <div class="layui-form-mid">渠道:</div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="channel" class="query_channel">
+                                    <option value="">全部</option>
+                                    {{each channelList item}}
+                                    <option value="{{item.type}}">{{item.type}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="layui-form-mid">应用:</div>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="app_id" class="query_app_id">
+                                    <option value="">全部</option>
+                                    {{each appList item}}
+                                    <option value="{{item.id}}">{{item.name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                            <div class="layui-form-mid">日期:</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" name="start_time" readonly placeholder="开始时间"
+                                       class="layui-input query_start_date query_start_time">
+                            </div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" name="end_time" readonly placeholder="结束时间"
+                                       class="layui-input query_end_date query_end_time">
+                            </div>
+                            <button class="layui-btn layui-btn-primary item-query-info">查询</button>
+                        </div>
+                    </div>
+
+                    <table class="layui-table" lay-filter="itemList" id="itemList">
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var table = layui.table;
+    var form = layui.form;
+    // 获取当前日期和时间
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = (now.getMonth() + 1).toString().padStart(2, '0'); // 月份从0开始，需要加1
+    var day = now.getDate().toString().padStart(2, '0');
+    var nowDate = year + '-' + month + '-' + day + ' 00:00:00'
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.query_start_date', //指定元素
+            format: 'yyyy-MM-dd HH:mm:ss',
+            type: 'datetime',
+            value: nowDate
+        });
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.query_end_date', //指定元素
+            format: 'yyyy-MM-dd HH:mm:ss',
+            type: 'datetime',
+        });
+    });
+    $('.item-query-info').click(function () {
+        var app_id = $('.query_app_id').val();
+        var channel = $('.query_channel').val();
+        var start_time = $('.query_start_time').val();
+        var end_time = $('.query_end_time').val();
+        showList({app_id, channel, start_time, end_time});
+    });
+
+    function showList(param) {
+        table.render({
+            elem: '#itemList'
+            , url: '/backend/trade/payStat'
+            , method: 'POST'
+            , totalRow: true
+            , cols: [[ //标题栏
+                {field: 'channel', title: '支付渠道', minWidth: 60}
+                , {field: 'method', title: '支付通道', minWidth: 60}
+                , {field: 'total', title: '订单总数', minWidth: 50}
+                , {field: 'in_pay', title: '支付中', minWidth: 50}
+                , {field: 'in_pay_rate', title: '未支付比率', minWidth: 50}
+                , {
+                    field: 'success', title: '支付成功', minWidth: 50, templet: function (d) {
+                        return '<span style="color: green">' + d.success + '</span>';
+                    }
+                }
+                , {
+                    field: 'success_rate', title: '成功比率', minWidth: 50, templet: function (d) {
+                        return '<span style="color: green">' + d.success_rate + '</span>';
+                    }
+                }
+                , {
+                    field: 'failed', title: '支付失败', minWidth: 50, templet: function (d) {
+                        return '<span style="color: red">' + d.failed + '</span>';
+                    }
+                }
+                , {
+                    field: 'failed_rate', title: '失败比率', minWidth: 50, templet: function (d) {
+                        return '<span style="color: red">' + d.failed_rate + '</span>';
+                    }
+                }
+            ]]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: false
+            , limit: 20
+            , limits: [10, 20, 50, 100]
+            , where: param
+            , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "count": res.count, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            }
+        });
+    }
+
+    $(function () {
+        showList({start_time: nowDate});
+    });
+</script>
+{{/block}}

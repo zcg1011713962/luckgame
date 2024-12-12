@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    <style>
+      .label-note {
+        width: 100px;
+        padding: 9px 10px;
+      }
+      .layui-input-block {
+        margin-left: 130px !important;
+      }
+      .layui-form-select dl dd.layui-this {
+          background-color: #393D49;
+          color: #fff;
+      }
+      .userlist {
+        padding: 5px 10px;
+        float: left;
+        background-color: #393D49;
+        color: #fff;
+        font-size: 12px;
+        margin: 5px;
+        border-radius: 5px;
+        position: relative;
+      }
+      .userlist .remove {
+        position: absolute;
+        top: -2px;
+        cursor: pointer;
+        right: 1px;
+      }
+      .icon-other {
+        font-weight: inherit;
+      }
+      .searchUserId {
+        height: 30px;
+        text-indent: 5px;
+        box-shadow: none;
+        border: 1px solid #eee;
+        margin-top: 10px;
+      }
+    </style>
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+            <label for="title" class="label-note  layui-form-label">
+               邮件标题
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="title" name="title" lay-verify="required" placeholder="请输入邮件标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+          <div class="layui-form-item">
+              <label for="content" class="label-note layui-form-label">
+                 邮件内容
+              </label>
+              <div class="layui-input-block">
+                <textarea name="content" maxlength="200" rows="5" required lay-verify="required" placeholder="请输入邮件内容" class="layui-textarea"></textarea>
+              </div>
+          </div>
+		  <div class="layui-form-item">
+              <label  class="label-note layui-form-label">
+                邮件类型
+              </label>
+              <div class="layui-input-block">
+                <select name="emailType" id="emailType" lay-verify="emailType" lay-filter="emailType">
+                  <option value="0">请选择</option>
+                  <option value="1">群发</option>
+                  <option value="2">私信</option>
+                </select>
+              </div>		      
+          </div>
+          <div class="layui-form-item">
+            <label  class="label-note layui-form-label">
+              发送列表
+            </label>
+            <div class="layui-input-block">
+                <ul class="userListBox">
+                </ul>
+            </div>		      
+        </div>
+          <div class="layui-form-item" style="position:absolute; bottom:0;">
+            <label for="L_repass" class="layui-form-label">
+            </label>
+            <button  class="layui-btn" lay-filter="add" lay-submit="" style="margin-left: 20px;">
+                发送
+            </button>
+            <button type="button" class="layui-btn layui-btn-disabled" id="searchUserName" style="margin-left: 20px;">
+                选择玩家
+            </button>
+        </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer;
+            // <i class="fa fa-close"></i>
+            var userListView = '<li class="userlist"><span>所有玩家</span><span class="remove"><i class="fa fa-times icon-other"></i></span></li>';
+            var userListData = [];
+            var isSearchUser = 0;
+
+            var userViewRender = function() {
+              var userListViewOne = '';
+              $.each(userListData, function(i,v) {
+                userListViewOne += '<li class="userlist"><span>'+v.name+'</span><span data-uid='+v.uid+' class="remove"><i class="fa fa-times icon-other"></i></span></li>';
+              });
+              $('.userListBox').html(userListViewOne);
+            };
+
+            // 私信 删除某一个玩家
+            $('.userListBox').on('click','.remove',function() {
+              var uid = $(this).attr('data-uid');
+              $.each(userListData, function(i,v) {
+                if (v.uid && uid == v.uid) {
+                    userListData.splice(i,1);
+                    return false;
+                }
+              });
+              userViewRender();
+            });
+
+            function isChecked(id) {
+              var flag = '';
+              $.each(userListData,function(i,v) {
+                if (v.uid == id) {
+                  flag = 'checked';
+                  return false;
+                }
+              })
+              return flag;
+            }
+
+            var searchUserList = function(value) {
+              // 获取参数
+              var value = value || '';
+              // 搜索玩家模板
+              var searchUserTempData = '<thead><tr><th>选择</th><th>用户ID</th><th>用户昵称</th></tr></thead>';
+              var privateUserListData = [];
+              $.get("{:url('User/searchUserList')}?value="+value,function(data){
+                $.each(data.result.data,function(i,v){
+                  searchUserTempData  += '<tr>';
+                  searchUserTempData  += '<td><input class="selectId" data-uid="'+v.Id+'" data-name="'+v.nickname+'" type="checkbox" '+isChecked(v.Id)+' /></td>';
+                  searchUserTempData  += '<td>'+v.Id+'</td>';
+                  searchUserTempData  += '<td>'+v.nickname+'</td>';
+                  searchUserTempData  += '</tr>';
+                });
+                var searchUserTemp = '<div class="layui-input-block"><input type="text" placeholder="请输入用户ID" autocomplete="off" class="searchUserId"></div><table class="layui-table userList">'+searchUserTempData+'</table>';
+                if (isSearchUser === 0) {
+                  layer.open({
+                    type: 1,
+                    title: '选择玩家',
+                    btn: ['确认', '取消'],
+                    area: ['450px', '300px'], //宽高
+                    content: searchUserTemp,
+                    yes: function(index, layero) {
+                      var _this;
+                      $('.userList').find('.selectId').each(function(i,v){
+                        _this = this;
+                        if ($(this).prop('checked')) {
+                          if (userListData.length > 0) {
+                            var newData = true;
+                            $.each(userListData, function(key, item){
+                              if ($(_this).attr('data-uid') === item.uid) {
+                                newData = false;
+                              }
+                            });
+                            if (newData) {
+                              userListData.push({
+                                'uid':$(this).attr('data-uid'),
+                                'name': $(this).attr('data-name')
+                              });
+                            }
+                          } else {
+                            userListData.push({
+                              'uid':$(this).attr('data-uid'),
+                              'name': $(this).attr('data-name')
+                            });
+                          }
+                          privateUserListData.push({
+                            'uid':$(this).attr('data-uid'),
+                            'name': $(this).attr('data-name')
+                          });
+                        }
+                      });
+                      if (privateUserListData.length == 0) {
+                        layer.msg('请选择玩家');
+                        return false;
+                      }
+                      // 渲染数据
+                      userViewRender();
+                      isSearchUser = 0;
+                      layer.close(index);
+                    },
+                    btn2: function(index, layero){
+                      isSearchUser = 0;
+                      layer.close(index);
+                    },
+                    cancel: function(index, layero) {
+                      isSearchUser = 0;
+                      layer.close(index);
+                    }
+                  });
+                } else {
+                  $('.userList').html(searchUserTempData);
+                }
+                isSearchUser = 1;
+              },'Json');
+            }
+
+            // 防抖
+            function debounce(func,wait) {
+              var timeIndex;
+              return function() {
+                if (timeIndex) {
+                  clearTimeout(timeIndex);
+                }
+                var _that = this;
+                timeIndex = setTimeout(function(){
+                  func.call(_that);
+                },wait);
+              }
+            }
+
+            // 根据用户ID搜索用户
+            $(document).on('input','.searchUserId',debounce(function(){
+              searchUserList($(this).val());
+            },1000));
+
+            form.on('select(emailType)',function(data){
+                var userListBox = $('.userListBox');
+                switch(data.value) {
+                    case '1':
+                        $('#searchUserName').addClass('layui-btn-disabled');
+                        userListBox.html(userListView);
+                        break;
+                    case '2':
+                        $('#searchUserName').removeClass('layui-btn-disabled');
+                        userListBox.html('');
+                        userListData = [];
+                        break;
+                    default:
+                        $('#searchUserName').addClass('layui-btn-disabled');
+                        userListBox.html('');
+                        break;
+                }
+            });
+
+            form.on('submit(add)', function(data){
+              data.field['userList'] = userListData;
+                $.post("{:url('EmailManage/addEmail')}",data.field,function(data){
+                    if (data.status == 0) {
+                        layer.alert(data.message, {icon: 6},function (index) {
+                          var index = parent.layer.getFrameIndex(window.name);
+                          parent.layer.close(index);
+                          parent.location.reload();
+                        });
+                    }
+                },'Json');
+                return false;
+            });
+
+
+            form.verify({
+              emailType: function(value){
+                  if (value == 0) {
+                    return '请选择邮件类型';
+                  }
+                  if (value == 2 && userListData.length == 0) {
+                    return '请选择玩家';
+                  }
+              },
+            });
+
+            // 选择玩家
+            $('#searchUserName').on('click',function(){
+              if ($('#searchUserName').hasClass('layui-btn-disabled')) {
+                return;
+              }
+              searchUserList();
+            });
+
+
+        });
+    </script>
+
+  </body>
+
+</html>

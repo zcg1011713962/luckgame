@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi"/>
+    <link rel="shortcut icon" href="__STATIC__/favicon.ico" type="image/x-icon"/>
+    <link rel="stylesheet" href="__CSS__/font.css">
+    <link rel="stylesheet" href="__CSS__/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="__JS__/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-body layui-anim layui-anim-up">
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label for="L_type" class="layui-form-label">
+                <span class="x-red">*</span>菜单类型
+            </label>
+            <div class="layui-input-inline">
+                <input type="radio" name="type" required title="菜单"
+                       autocomplete="off" class="layui-input" value="1" {if isset($info.type) and $info.type eq 1} checked {/if}>
+                <input type="radio" name="type" required title="按钮"
+                       autocomplete="off" class="layui-input" value="0" {if isset($info.type) and $info.type eq 0} checked {/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_name" class="layui-form-label">
+                <span class="x-red">*</span>上级菜单
+            </label>
+            <div class="layui-input-inline">
+                <select name="pid" lay-search>
+                    <option value="0">顶级菜单</option>
+                    {foreach name="parentMenu" item="v"}
+                    <option value="{$v.id}"  {if isset($info.pid) and $info.pid eq $v.id} selected {/if}>{$v.title}</option>
+                    {/foreach}
+                </select>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_name" class="layui-form-label">
+                <span class="x-red">*</span>菜单名称
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_name" name="title" required value="{$info.title|default=''}"
+                       autocomplete="off" class="layui-input" placeholder="请输入名称">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_week_recharge_money" class="layui-form-label">
+                <span class="x-red">*</span>菜单链接
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_week_recharge_money" name="url" required
+                       lay-verify=""
+                       autocomplete="off" class="layui-input" min="0"  value="{$info.url|default=''}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>必选，请填写链接地址或选择系统节点 ( 如：admin/user/index )
+                当填写链接地址时，以下面的 “权限节点” 来判断菜单自动隐藏或显示，注意未填写 “权限节点” 时将不会隐藏该菜单哦
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_month_recharge_money" class="layui-form-label">
+                <span class="x-red"></span>链接参数
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_month_recharge_money" name="params"
+                       lay-verify=""
+                       autocomplete="off" class="layui-input" min="0" value="{$info.params|default=''}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red"></span>可选，设置菜单链接的 GET 访问参数 ( 如：name=1&age=3 )
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_cash_out_money" class="layui-form-label">
+                <span class="x-red">*</span>权限节点
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_cash_out_money" name="node"
+                       lay-verify=""
+                       autocomplete="off" class="layui-input" value="{$info.node|default=''}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>可选，请填写系统权限节点 ( 如：admin/user/index )，未填写时默认解释"菜单链接"判断是否拥有访问权限；
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_cash_out_num" class="layui-form-label">
+                <span class="x-red"></span>菜单图标
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="L_cash_out_num" name="icon" required
+                       autocomplete="off" class="layui-input" value="{$info.icon|default=''}">
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red"></span>可选，设置菜单选项前置图标，目前支持 layui 字体图标及 iconfont 定制字体图标。
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="L_status" class="layui-form-label">
+                <span class="x-red">*</span>状态
+            </label>
+            <div class="layui-input-inline">
+                <input type="radio" name="status" required title="启用" checked
+                       autocomplete="off" class="layui-input" value="1" {if isset($info.status) and $info.status eq 1} checked {/if}>
+                <input type="radio" name="status" required title="禁用"
+                       autocomplete="off" class="layui-input" value="0" {if isset($info.status) and $info.status eq 0} checked {/if}>
+            </div>
+            <div class="layui-form-mid layui-word-aux">
+                <span class="x-red">*</span>
+            </div>
+        </div>
+        {notempty name='info.id'}<input name='id' type='hidden' value='{$info.id}'>{/notempty}
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">
+            </label>
+            <button class="layui-btn" lay-filter="add" lay-submit="">
+                保存
+            </button>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layer'], function () {
+        $ = layui.jquery;
+        var form = layui.form
+            , layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            money: function (value) {
+                if (!value) {
+                    return '请填写金额'
+                }
+                if (value <= 0) {
+                    return '金额不能小于等于0';
+                }
+            }
+            , pass: function (value) {
+                if (value.length > 16) {
+                    return '16字符以下';
+                }
+                if (!value.match(/[0-9]+[a-zA-Z]+/) && !value.match(/[a-zA-Z]+[0-9]+/)) {
+                    return '必须字母+数字组合';
+                }
+            }
+            , num: function (value) {
+                if (value <= 0) {
+                    return '次数不能小于等于0';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)', function (data) {
+
+            if (data.field.type == '' || data.field.type == undefined) {
+                layer.msg('菜单类型不能为空');
+                return false;
+            }
+
+            $.post("{:url('addMenu')}", data.field, function (res) {
+                console.log(res);
+                if (res.status == 1) {
+                    layer.alert(res.message);
+                } else {
+                    layer.alert("编辑成功", {icon: 6}, function () {
+                        // 获得frame索引
+                        var index = parent.layer.getFrameIndex(window.name);
+                        //关闭当前frame
+                        parent.layer.close(index);
+                        window.parent.location.reload();
+                    });
+                }
+            })
+            return false;
+        });
+
+
+    });
+</script>
+
+</body>
+
+</html>

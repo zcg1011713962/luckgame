@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>{$ht_name}管理后台</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="shortcut icon" href="__STATIC__/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__CSS__/font.css">
+	<link rel="stylesheet" href="__CSS__/xadmin.css">
+    <script type="text/javascript" src="__JS__/jquery-3.2.1.min.js"></script>
+    <script src="__STATIC__/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="__JS__/xadmin.js"></script>
+
+</head>
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a href="./index.html">{$ht_name}管理后台</a></div>
+        <div class="left_open">
+            <i title="展开左侧栏" class="iconfont">&#xe699;</i>
+        </div>
+        <ul class="layui-nav left fast-add" lay-filter="" style="display: none;">
+          <li class="layui-nav-item">
+            <a href="javascript:;">+新增</a>
+            <dl class="layui-nav-child"> 
+              <dd><a onclick="x_admin_show('资讯','http://www.baidu.com')"><i class="iconfont">&#xe6a2;</i>资讯</a></dd>
+              <dd><a onclick="x_admin_show('图片','http://www.baidu.com')"><i class="iconfont">&#xe6a8;</i>图片</a></dd>
+               <dd><a onclick="x_admin_show('用户','http://www.baidu.com')"><i class="iconfont">&#xe6b8;</i>用户</a></dd>
+            </dl>
+          </li>
+        </ul>
+        <ul class="layui-nav right" lay-filter="">
+          <li class="layui-nav-item">
+		  
+            <a href="javascript:;">{$username}</a>
+            <dl class="layui-nav-child"> <!-- 二级菜单 -->
+              <!--<dd><a onclick="x_admin_show('个人信息','http://www.youmegame.com')">源码购买微信:jacksun1983</a></dd>-->
+              <dd><a href="{:url('admin/parents/logout')}">退出</a></dd>
+            </dl>
+          </li>
+		 <!-- <li class="layui-nav-item to-index"><a href="http://www.youmegame.cn"  target="_blank">游米游戏官网</a> </li>-->
+        </ul>
+        
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+     <!-- 左侧菜单开始 -->
+    <div class="left-nav">
+      <div id="side-nav">
+        <ul id="nav">
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>用户管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('User/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>玩家列表</cite>
+                            
+                        </a>
+                       <!--
+                        <ul class="sub-menu">
+                            <a _href="javascript:;">
+                               <i class="iconfont">&#xe6b8;</i>
+                               <cite>用户信息中心</cite>
+                               <i class="iconfont nav_right">&#xe697;</i>
+                            </a>
+                            <li>
+                               <a _href="{:url('Member/lists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>用户信息</cite>
+                               </a>
+                                 
+                            </li>
+                            <li>
+		               <a _href="{:url('PlayerGameLog/lists' , ['type' => 2])}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>游戏记录</cite>
+                               </a>
+                            </li>
+                            <li>
+                                <a _href="{:url('User/recharge')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                   <cite>充值记录</cite>
+                                </a>
+                            </li>
+                            <li>
+                                <a _href="{:url('Pay/CashSuccessList' , ['status' => 0, 'type' => 99])}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                   <cite>提现记录</cite>
+                                </a>
+                            </li>
+                            <li>
+                                <a _href="{:url('Pay/CashSuccessList' , ['status' => 0, 'type' => 99])}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                   <cite></cite>
+                                </a>
+                            </li>
+                        </ul>
+       -->
+                    </li >
+                    <li>
+                        <a _href="{:url('User/gameLineList')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>在线人玩家</cite>
+                        </a>
+                    </li>
+                    <li>   
+                        <a _href="javascript:;">
+                          <i class="iconfont">&#xe6a7;</i>
+                          <cite>推广管理</cite>
+                        </a>
+                        <ul class="sub-menu">
+                           <li>
+                              <a _href="{:url('Promotion/codelists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>推广码管理</cite>
+                              </a>
+                           </li>
+                           <li>
+                              <a _href="{:url('Promotion/userlists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>推广员列表</cite>
+                              </a>
+                           </li>
+                        </ul>
+                    </li>
+                    <li>
+                       <a _href="{:url('FeedBack/lists')}">
+                          <i class="iconfont">&#xe6a7;</i>
+                          <cite>玩家意见反馈</cite>
+                       </a>
+                    </li> 
+ <!--
+                    <li>
+                        <a _href="{:url('User/recharge')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员充值</cite>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('User/lists' , ['robot' => 1])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>机器人列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('User/userSalary')}">
+                        </ul>
+                    </li >
+                    <li>
+                        <a _href="{:url('User/gameLineList')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>在线人玩家</cite>
+                        </a>
+                    </li>
+                    <li>   
+                        <a _href="javascript:;">
+                          <i class="iconfont">&#xe6a7;</i>
+                          <cite>推广管理</cite>
+                        </a>
+                        <ul class="sub-menu">
+                           <li>
+                              <a _href="{:url('Promotion/codelists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>推广码管理</cite>
+                              </a>
+                           </li>
+                           <li>
+                              <a _href="{:url('Promotion/userlists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>推广员列表</cite>
+                              </a>
+                           </li>
+                        </ul>
+                    </li>
+                    <li>
+                       <a _href="javascript:;">
+                          <i class="iconfont">&#xe6a7;</i>
+                          <cite>玩家意见反馈</cite>
+                       </a>
+                    </li> 
+ <!--
+                    <li>
+                        <a _href="{:url('User/recharge')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员充值</cite>
+
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('User/lists' , ['robot' => 1])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>机器人列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('User/userSalary')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>工资发放记录</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('User/userGrade')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员等级设置</cite>
+                        </a>
+                    </li>
+-->
+                </ul>
+            </li>
+            <li>
+                <a _href="{:url('Issue/lists')}">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>FQA管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+            </li>
+            <li>
+               <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>游戏配置管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+               </a>
+               <ul class="sub-menu">
+                   <li>
+                        <a _href="javascript:;">
+                          <i class="iconfont">&#xe6a7;</i>
+                          <cite>游戏配置</cite>
+                        </a>
+                        <ul class="sub-menu">
+                           <li>
+                              <a _href="{:url('Games/fieldlists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>配置元数据</cite>
+                              </a>
+                           </li>
+                           <li>
+                              <a _href="{:url('Games/gamelists')}">
+                                 <i class="iconfont">&#xe6a7;</i>
+                                 <cite>配置游戏</cite>
+                              </a>
+                           </li>
+                        </ul>
+                   </li>
+                   <li>
+                      <a _href="javascript:;">
+                         <cite>活动配置</cite>
+                      </a>
+                      <ul class="sub-menu">
+                         <li>
+                           <a _href="{:url('games/activitylists')}">
+                               <cite>活动页配置</cite>
+                           </a>
+                         </li>
+                      </ul> 
+                   </li>
+                   <li>
+                      <a _href="{:url('gameconfig/vipconfig')}">
+                        <cite>VIP配置</cite>
+                      </a>
+                   </li>
+                   <li>
+                      <a _href="{:url('gameconfig/newuserconfig')}">
+                        <cite>新手保护配置</cite>
+                      </a>
+                   </li>
+                   <li>
+                      <a _href="">
+                        <cite>自动黑白配置</cite>
+                      </a>
+                   </li>
+                   <li>
+                      <a>
+                        <cite>奖池配置</cite>
+                      </a>
+                   </li>
+                   <li>
+                      <a _href="{:url('awsstorage/index')}">
+                        <cite>游戏资源上传</cite>
+                      </a>
+                   </li>
+                   <li>
+                      <a _href="{:url('awsstorage/redis')}">
+                        <cite>redis资源同步</cite>
+                      </a>
+                   </li>
+               </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                   <i class="iconfont">&#xe6ae;</i>
+                   <cite>充提管理</cite>
+                   <i class="iconfont nav_right">&#xe697;</i>
+               </a>
+               <ul class="sub-menu">
+                  <li>
+                     <a _href="{:url('Wallet/rechargelist')}">
+                        <cite>充值记录</cite>
+                     </a>
+                  </li>
+                  <li> 
+                     <a _href="{:url('Wallet/withdrawlist')}">
+                        <cite>提现记录</cite>
+                     </a>
+                  </li>
+               </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>会员记录</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Member/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Member/pay_list')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>点数记录</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Member/betting_list')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>投注记录</cite>
+                        </a>
+                    </li>
+                    <!-- <li>
+                        <a _href="{:url('EmailManage/ip')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>会员IP记录</cite>
+                        </a>
+                    </li> -->
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>运营统计</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('OperateCount/agent_count_table')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>无限代报表</cite>
+                        </a>
+                    </li >
+					<li>
+						<a _href="{:url('OperateCount/platform_integration_count_table')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>平台综合报表</cite>
+						</a>
+					</li>
+                    <li>
+						<a _href="{:url('OperateCount/platform_operate_total')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>平台营运总览(平台)</cite>
+						</a>
+					</li>
+                    <!--<li>
+						<a _href="{:url('OperateCount/platform_data_total')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>平台数据总览(行销)</cite>
+						</a>
+					</li>-->
+                    <li>
+						<a _href="{:url('OperateCount/game_total')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>游戏总表</cite>
+						</a>
+					</li>
+                    <li>
+						<a _href="{:url('OperateCount/color_total')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>彩金报表</cite>
+						</a>
+					</li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>运营设置</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('OperateSetting/black_list')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>黑名单设置</cite>
+                        </a>
+                    </li >
+					<li>
+						<a _href="{:url('OperateSetting/led_banner')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>跑马灯管理</cite>
+						</a>
+					</li>
+                    <li>
+						<a _href="{:url('EmailManage/lists')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>信件管理</cite>
+						</a>
+					</li>
+                    <li>
+						<a _href="{:url('OperateSetting/banner')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>Banner管理</cite>
+						</a>
+					</li>
+                </ul>
+            </li>
+			<li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>游戏记录</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('PlayerGameLog/lists' , ['type' => 1])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>玩家投注记录</cite>
+                        </a>
+                    </li >
+					<li>
+						<a _href="{:url('PlayerGameLog/lists' , ['type' => 2])}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>游戏投注记录</cite>
+						</a>
+					</li>
+                    <li>
+						<a _href="{:url('PlayerGameLog/gametransfermoneyloglist')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>游戏转账记录</cite>
+						</a>
+					</li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b8;</i>
+                    <cite>兑换管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('SystemConfig/payScaleSetup')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>比例设置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Pay/CashSuccessList' , ['status' => 0, 'type' => 99])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>提现成功列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('UserExchange/config')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>兑换设置</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="{:url('UserExchange/lists' , ['status' => 0])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>兑换申请列表</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="{:url('UserExchange/lists' , ['status' => 1])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>兑换成功列表</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="{:url('UserExchange/lists' , ['status' => 2])}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>兑换拒绝列表</cite>
+                        </a>
+                    </li >
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe723;</i>
+                    <cite>游戏管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Game/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>游戏列表</cite>
+                        </a>
+                    </li>
+					<!--<li>
+                        <a _href="{:url('Game/att')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>街机ATT</cite>
+                        </a>
+                    </li>-->
+					<li>
+						<a _href="{:url('Game/gonggao')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>跑马灯</cite>
+						</a>
+                    </li>
+                    <li>
+						<a _href="{:url('Game/txts')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>游戏文字</cite>
+						</a>
+                    </li>
+                    <!--<li>
+						<a _href="{:url('Game/buyuuser')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>捕鱼玩家限制</cite>
+						</a>
+                    </li>
+                    <li>
+						<a _href="{:url('Ddzbsc/index')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>斗地主比赛场</cite>
+						</a>
+                    </li>
+					
+					<li>
+						<a _href="{:url('Logs/yxx')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>鱼虾蟹记录</cite>
+						</a>
+					</li >
+					
+					<li>
+						<a _href="{:url('Config/yxxfkc')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>测试</cite>
+						</a>
+					</li >
+					<li>
+						<a _href="{:url('Config1/yxxfkc')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>测试俱乐部</cite>
+						</a>
+					</li >-->
+                    
+                    <li>
+						<a _href="{:url('Dtimg/index')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>大厅图片</cite>
+						</a>
+                    </li>
+                    <!--<li>
+                        <a _href="{:url('Game/playerControl')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>玩家控制</cite>
+                        </a>
+                    </li>-->
+                    
+					<!--<li>
+						<a _href="{:url('Logs/yxx')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>鱼虾蟹记录</cite>
+						</a>
+					</li >
+					<li>
+						<a _href="{:url('Config/yxxfkc')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>测试</cite>
+						</a>
+					</li >
+					<li>
+						<a _href="{:url('Config1/yxxfkc')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>测试俱乐部</cite>
+						</a>
+					</li >-->
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe702;</i>
+                    <cite>财务管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Statistics/recharge')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>充值统计</cite>
+                        </a>
+                    </li >
+					<li>
+						<a _href="{:url('Statistics/kucun')}">
+							<i class="iconfont">&#xe6a7;</i>
+							<cite>库存统计</cite>
+						</a>
+					</li >
+                </ul>
+            </li>
+            
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe726;</i>
+                    <cite>管理员管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Admin/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>管理员列表</cite>
+                        </a>
+                    </li>   
+					 <!-- <li>
+						 <a _href="{:url('Admin/lists1')}">
+							 <i class="iconfont">&#xe6a7;</i>
+							 <cite>代理商列表</cite>
+						 </a>
+					 </li>   -->
+                </ul>
+            </li>
+			
+			<li>
+			    <a href="javascript:;">
+			        <i class="iconfont">&#xe726;</i>
+			        <cite>客服管理</cite>
+			        <i class="iconfont nav_right">&#xe697;</i>
+			    </a>
+			    <ul class="sub-menu">
+			        <li>
+			            <a _href="{:url('Kefu/lists')}">
+			                <i class="iconfont">&#xe6a7;</i>
+			                <cite>客服列表</cite>
+			            </a>
+			        </li>
+					<li>
+			            <a _href="{:url('Kefu/wlists')}">
+			                <i class="iconfont">&#xe6a7;</i>
+			                <cite>外链客服</cite>
+			            </a>
+			        </li>
+			    </ul>
+			</li>
+
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe726;</i>
+                    <cite>点卡管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Cdkey/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>点卡列表</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>代理管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('agents/toplists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>顶级代理</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('agents/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>代理列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('agents/daylists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>每日查询</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('agents/addAgent')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>新增代理</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>活动管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Activitys/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>活动列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>文案设置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/typeList')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>活动设置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/setDayReward')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>每日领奖</cite>
+                        </a>
+                    </li>
+                    <!--
+                    <li>
+                        <a _href="{:url('NewActivitys/setInvite')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>邀请奖金</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/setFirstCharge')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>首充设置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/setDayCharge')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>每日充值</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('NewActivitys/setAuthReward')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>认证奖励</cite>
+                        </a>
+                    </li>
+                  --> 
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>邮件管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('EmailManage/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>邮件列表</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>系统配置</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('SystemConfig/base')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>基本配置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('SystemConfig/icon')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>Icon配置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('SystemConfig/rechargeGift')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>充值赠送配置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('SystemConfig/rechargeBox')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>宝箱配置</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('SystemConfig/withdrawalLimit')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>提现流水限制</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+			<li style="display: none !important;">
+			    <a href="javascript:;">
+			        <i class="iconfont">&#xe6ae;</i>
+			        <cite>配置管理</cite>
+			        <i class="iconfont nav_right">&#xe697;</i>
+			    </a>
+			    <ul class="sub-menu">
+			        <li>
+			            <a _href="{:url('Config/lists')}">
+			                <i class="iconfont">&#xe6a7;</i>
+			                <cite>配置列表</cite>
+			            </a>
+			        </li>                    
+			    </ul>
+			</li>
+            <li style="display:none !important;">
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ce;</i>
+                    <cite>系统统计</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Echarts/echarts1')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>拆线图</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="{:url('Echarts/echarts2')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>柱状图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts3')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>地图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts4')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>饼图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts5')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>雷达图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts6')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>k线图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts7')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>热力图</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Echarts/echarts8')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>仪表图</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li style="display:none !important;">
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b4;</i>
+                    <cite>图标字体</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Index/unicode')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>图标对应字体</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <!--<li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6b4;</i>
+                    <cite>菜单管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('Menu/index')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>菜单列表</cite>
+                        </a>
+                    </li>
+                    <li>
+                        <a _href="{:url('Menu/authList')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>访问权限管理</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>-->
+            <li>
+                <a href="javascript:;">
+                    <i class="iconfont">&#xe6ae;</i>
+                    <cite>版本管理</cite>
+                    <i class="iconfont nav_right">&#xe697;</i>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a _href="{:url('AppVersion/lists')}">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>APP版本列表</cite>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <!-- <div class="x-slide_left"></div> -->
+    <!-- 左侧菜单结束 -->
+    <!-- 右侧主体开始 -->
+    <div class="page-content">
+        <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+          <ul class="layui-tab-title">
+            <li class="home"><i class="layui-icon">&#xe68e;</i>我的桌面</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <iframe src='{:url("welcome")}' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="page-content-bg"></div>
+    <!-- 右侧主体结束 -->
+    <!-- 中部结束 -->
+    <!-- 底部开始 -->
+   <!-- <div class="footer">
+        <div class="copyright">Copyright ©2019-2022 www.youmegame.cn 源码购买，商务合作唯一联系方式WeChat:jacksun1983</div>
+    </div>-->
+    <!-- 底部结束 -->
+
+</body>
+</html>

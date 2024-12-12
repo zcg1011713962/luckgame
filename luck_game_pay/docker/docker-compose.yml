@@ -1,0 +1,20 @@
+version: '3.5'
+networks:
+  gamenet:
+    external:
+      name: gamenet
+services:
+  pay-server:
+    restart: always
+    container_name: payservice
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - 8857:8857
+    networks:
+      gamenet:
+        ipv4_address: 172.24.0.103
+    volumes:
+      - ../:/app/server
+      - /app/server/node_modules

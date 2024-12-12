@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+  
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">财务管理</a>
+        <a>
+          <cite>充值统计</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">   
+		<div style="padding-bottom: 1em;">
+			<form class="layui-form" action="" method="post">
+				<div class="layui-inline">
+					<input type="text" name="starttime" class="layui-input" id="starttime" value="{$starttime}" placeholder="开始时间" />
+				</div>
+				<div class="layui-inline">
+					<input type="text" name="endtime" class="layui-input" id="endtime" value="{$endtime}" placeholder="结束时间" />
+				</div>
+				<button class="layui-btn" lay-submit lay-filter="formDemo">查询</button>
+			</form>
+		</div>
+		
+		<table class="layui-table">
+		  <thead>
+		    <tr>            
+		      <th>玩家ID(代理ID)</th>
+		      <th>昵称</th>
+		      <th>房卡充值总额</th>
+		      <th>金币充值总额</th>
+		      <th>充值总额</th>
+		      <th style="display: none;">充值返利</th>
+		  </thead>
+		  <tbody>
+				{foreach $list as $key=>$vo }
+		    <tr>            
+		      <td>{$vo.uid}</td>
+		      <td>{$vo.nickname}</td>
+		      <td>{$vo.diamond}</td>
+		      <td>{$vo.score|showGold}</td>
+		      <td>{$vo.diamond + $vo.score|showGold}</td>
+		    </tr>
+				{/foreach}
+			<tr>            
+			  <td>总合计</td>
+			  <td></td>            
+			  <td>{$diamondtotal}</td>
+			  <td>{$scoretotal|showGold}</td>
+			  <td>{$diamondtotal+$scoretotal|showGold}</td>
+			</tr>
+		  </tbody>
+		</table>
+		<div class="page">
+			{$page|raw}
+		</div>
+      
+    </div>
+    <script>
+		layui.use(['form','laydate','jquery'], function(){
+		  var $ = layui.$;
+		  var laydate = layui.laydate;
+		  
+		  laydate.render({
+			elem: '#starttime',
+						type: 'datetime'
+		  });
+		  
+		  laydate.render({
+		  	elem: '#endtime',
+						type: 'datetime'
+		  });
+		  
+		  var form = layui.form;
+			
+		});
+    </script>
+
+  </body>
+
+</html>

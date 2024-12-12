@@ -1,0 +1,2 @@
+2019-09-06 18:05:24 pid:1 Worker process terminated with ERROR: E_ERROR "Call to undefined method app\api\controller\Socket::_request() in D:\niuxp\www\ym_pro11\application\api\controller\Socket.php on line 87"
+2019-09-06 18:09:28 pid:1 Worker process terminated with ERROR: E_ERROR "Call to undefined method app\api\controller\Socket::_request() in D:\niuxp\www\ym_pro11\application\api\controller\Socket.php on line 87"

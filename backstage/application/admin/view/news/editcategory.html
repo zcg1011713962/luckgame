@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="gonggao" class="layui-form-label">
+                 分类名称
+              </label>
+              <div class="layui-input-block">
+                  <input type="text" id="gonggao" name="gonggao" value="{$info.name}" required="" lay-verify="gonggao"
+                  autocomplete="off" class="layui-input">
+				  <input type="hidden" name="ggid" value="{$info.id}" />
+              </div>
+          </div>
+		          
+                 
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  修改
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+        layui.use(['form','layer'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer;
+        
+          //自定义验证规则
+          form.verify({
+            gonggao: function(value){
+              if(value.length < 0){
+                return '分类名称不能为空';
+              }			  
+            }
+            
+          });
+
+          //监听提交
+          form.on('submit(add)', function(data){
+            //console.log(data.field);
+			//return false;
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doEditcategory')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("修改成功", {icon: 6},function () {
+							// 获得frame索引
+							var index = parent.layer.getFrameIndex(window.name);
+							//关闭当前frame
+							parent.layer.close(index);
+							parent.location.reload();
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

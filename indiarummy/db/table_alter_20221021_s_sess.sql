@@ -1,0 +1,89 @@
+DROP TABLE IF EXISTS `s_sess`;
+
+CREATE TABLE `s_sess` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `gameid` int(11) NOT NULL DEFAULT '0' COMMENT '游戏id',
+  `title` varchar(128) DEFAULT '' COMMENT '场次名称',
+  `basecoin` decimal(10,2) DEFAULT '0.00' COMMENT '底分',
+  `mincoin` decimal(20,2) DEFAULT '0.00' COMMENT '最低入场',
+  `maxcoin` decimal(20,2) DEFAULT '0.00' COMMENT '最大入场',
+  `status` tinyint(1) DEFAULT '1' COMMENT '1正常开放 0关闭',
+  `ord` int(11) DEFAULT '1' COMMENT '排序',
+  `param1` decimal(10,2) DEFAULT NULL COMMENT '小盲/teenpatti最小下注/21点最小下注',
+  `param2` decimal(10,2) DEFAULT NULL COMMENT '大盲/teenpatti最大下注/21点最大下注',
+  `param3` decimal(10,2) DEFAULT NULL COMMENT '扩充字段3',
+  `param4` decimal(10,2) DEFAULT NULL COMMENT '扩充字段4',
+  PRIMARY KEY (`id`,`gameid`),
+  KEY `idx_game` (`gameid`)
+) ENGINE=InnoDB AUTO_INCREMENT=676 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='游戏场次信息表';
+
+INSERT INTO `s_sess` VALUES (1, 293, 'TexasHoldem', 0.10, 1.00, -1.00, 0, 1, 0.10, 0.20, NULL, NULL);
+INSERT INTO `s_sess` VALUES (2, 293, 'TexasHoldem', 0.25, 10.00, -1.00, 0, 2, 0.25, 0.50, NULL, NULL);
+INSERT INTO `s_sess` VALUES (3, 293, 'TexasHoldem', 1.00, 50.00, -1.00, 1, 3, 1.00, 2.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (4, 293, 'TexasHoldem', 10.00, 200.00, -1.00, 0, 4, 10.00, 20.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (5, 293, 'TexasHoldem', 25.00, 1000.00, -1.00, 1, 5, 25.00, 50.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (6, 293, 'TexasHoldem', 50.00, 2000.00, -1.00, 0, 6, 50.00, 100.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (7, 293, 'TexasHoldem', 100.00, 3000.00, -1.00, 1, 7, 100.00, 200.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (8, 293, 'TexasHoldem', 250.00, 10000.00, -1.00, 0, 8, 250.00, 500.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (9, 293, 'TexasHoldem', 500.00, 20000.00, -1.00, 1, 9, 500.00, 1000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (10, 293, 'TexasHoldem', 1000.00, 40000.00, -1.00, 0, 10, 1000.00, 2000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (11, 265, 'dominuo', 0.10, 1.00, -1.00, 0, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (12, 265, 'dominuo', 5.00, 30.00, -1.00, 0, 2, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (13, 265, 'dominuo', 10.00, 60.00, -1.00, 1, 3, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (14, 265, 'dominuo', 25.00, 150.00, -1.00, 0, 4, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (15, 265, 'dominuo', 50.00, 300.00, -1.00, 1, 5, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (16, 265, 'dominuo', 100.00, 600.00, -1.00, 0, 6, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (17, 265, 'dominuo', 250.00, 1500.00, -1.00, 1, 7, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (18, 265, 'dominuo', 500.00, 3000.00, -1.00, 0, 8, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (19, 265, 'dominuo', 1000.00, 6000.00, -1.00, 1, 9, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (20, 265, 'dominuo', 5000.00, 30000.00, -1.00, 0, 10, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (21, 292, 'Rummy', 0.01, 0.80, -1.00, 0, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (22, 292, 'Rummy', 0.10, 8.00, -1.00, 0, 2, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (23, 292, 'Rummy', 1.00, 80.00, -1.00, 1, 3, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (24, 292, 'Rummy', 2.00, 160.00, -1.00, 0, 4, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (25, 292, 'Rummy', 3.00, 240.00, -1.00, 1, 5, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (26, 292, 'Rummy', 5.00, 400.00, -1.00, 0, 6, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (27, 292, 'Rummy', 10.00, 800.00, -1.00, 1, 7, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (28, 292, 'Rummy', 20.00, 1600.00, -1.00, 0, 8, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (29, 292, 'Rummy', 40.00, 3200.00, -1.00, 1, 9, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (30, 292, 'Rummy', 125.00, 10000.00, -1.00, 0, 10, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (31, 291, 'Teenpatti', 0.10, 1.00, -1.00, 0, 1, 12.80, 102.40, NULL, NULL);
+INSERT INTO `s_sess` VALUES (32, 291, 'Teenpatti', 1.00, 50.00, -1.00, 0, 2, 128.00, 1024.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (33, 291, 'Teenpatti', 3.00, 150.00, -1.00, 1, 3, 384.00, 3072.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (34, 291, 'Teenpatti', 5.00, 250.00, -1.00, 0, 4, 640.00, 5120.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (35, 291, 'Teenpatti', 10.00, 500.00, -1.00, 1, 5, 1280.00, 10240.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (36, 291, 'Teenpatti', 50.00, 2500.00, -1.00, 0, 6, 6400.00, 51200.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (37, 291, 'Teenpatti', 100.00, 5000.00, -1.00, 1, 7, 12800.00, 102400.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (38, 291, 'Teenpatti', 300.00, 15000.00, -1.00, 0, 8, 38400.00, 307200.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (39, 291, 'Teenpatti', 500.00, 25000.00, -1.00, 1, 9, 64000.00, 512000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (40, 291, 'Teenpatti', 1000.00, 50000.00, -1.00, 0, 10, 128000.00, 1024000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (41, 269, 'ludo', 0.10, 1.00, -1.00, 0, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (42, 269, 'ludo', 1.00, 5.00, -1.00, 0, 2, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (43, 269, 'ludo', 5.00, 25.00, -1.00, 1, 3, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (44, 269, 'ludo', 10.00, 50.00, -1.00, 0, 4, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (45, 269, 'ludo', 50.00, 250.00, -1.00, 1, 5, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (46, 269, 'ludo', 100.00, 500.00, -1.00, 0, 6, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (47, 269, 'ludo', 200.00, 1000.00, -1.00, 1, 7, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (48, 269, 'ludo', 300.00, 1500.00, -1.00, 0, 8, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (49, 269, 'ludo', 500.00, 2500.00, -1.00, 1, 9, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (50, 269, 'ludo', 1000.00, 5000.00, -1.00, 0, 10, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (51, 287, 'uno', 0.10, 1.00, -1.00, 0, 1, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (52, 287, 'uno', 1.00, 5.00, -1.00, 0, 2, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (53, 287, 'uno', 5.00, 25.00, -1.00, 1, 3, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (54, 287, 'uno', 10.00, 50.00, -1.00, 0, 4, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (55, 287, 'uno', 50.00, 250.00, -1.00, 1, 5, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (56, 287, 'uno', 100.00, 500.00, -1.00, 0, 6, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (57, 287, 'uno', 200.00, 1000.00, -1.00, 1, 7, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (58, 287, 'uno', 300.00, 1500.00, -1.00, 0, 8, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (59, 287, 'uno', 500.00, 2500.00, -1.00, 1, 9, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (60, 287, 'uno', 1000.00, 5000.00, -1.00, 0, 10, NULL, NULL, NULL, NULL);
+INSERT INTO `s_sess` VALUES (61, 255, 'BlackJack', 0.10, 1.00, -1.00, 0, 1, 0.10, 10.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (62, 255, 'BlackJack', 1.00, 10.00, -1.00, 0, 2, 1.00, 10.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (63, 255, 'BlackJack', 5.00, 50.00, -1.00, 1, 3, 5.00, 50.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (64, 255, 'BlackJack', 10.00, 100.00, -1.00, 0, 4, 10.00, 100.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (65, 255, 'BlackJack', 50.00, 500.00, -1.00, 1, 5, 50.00, 500.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (66, 255, 'BlackJack', 100.00, 1000.00, -1.00, 0, 6, 100.00, 1000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (67, 255, 'BlackJack', 500.00, 5000.00, -1.00, 1, 7, 500.00, 5000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (68, 255, 'BlackJack', 1000.00, 10000.00, -1.00, 0, 8, 1000.00, 10000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (69, 255, 'BlackJack', 2000.00, 20000.00, -1.00, 1, 9, 2000.00, 20000.00, NULL, NULL);
+INSERT INTO `s_sess` VALUES (70, 255, 'BlackJack', 5000.00, 50000.00, -1.00, 0, 10, 5000.00, 50000.00, NULL, NULL);

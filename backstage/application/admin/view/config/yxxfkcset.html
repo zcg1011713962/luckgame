@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    <div class="x-body">
+			
+			<div>
+				ID: <span id="tableid">{$tableid}</span> &nbsp;&nbsp;&nbsp;&nbsp; KEY: <span id="tablekey">{$tablekey}</span>
+				<br/>
+				
+				修改状态：<span id="changetype">{if $list['is_table_type'] === 1}允许{else /}禁止{/if}</span>
+				<br/>
+				倒计时：<span id="daojishi">{$list['bet_time']}</span>
+				
+				<link rel="stylesheet" type="text/css" href="//layui.hcwl520.com.cn/layui/css/layui.css" />
+				<script src="https://layui.hcwl520.com.cn/layui/layui.js"></script>
+				
+				<form class="layui-form" method="post" action="">
+				    <div class="layui-form-item">
+				        <label for="L_username" class="layui-form-label">
+				            中奖设置
+				        </label>
+				        <div class="layui-input-inline" style="width: 300px;">
+									<select name="city" lay-verify="required">
+				           <option value="11">11</option>
+				           <option value="12">12</option>
+				           <option value="13">13</option>
+				           <option value="14">14</option>
+				           <option value="15">15</option>
+				           <option value="16">16</option>
+				           
+				           <option value="22">22</option>
+				           <option value="23">23</option>
+				           <option value="24">24</option>
+				           <option value="25">25</option>
+				           <option value="26">26</option>
+				           
+				           <option value="33">33</option>
+				           <option value="34">34</option>
+				           <option value="35">35</option>
+				           <option value="36">36</option>
+				           
+				           <option value="44">44</option>
+				           <option value="45">45</option>
+				           <option value="46">46</option>
+				           
+				           <option value="55">55</option>
+				           <option value="56">56</option>
+				           
+				           <option value="66">66</option>
+									 </select>
+								   <input type="hidden" name="tid" value="{$tableid}" />
+								</div>
+								<div class="layui-input-inline" style="width: 300px; "> 
+									 <button  class="layui-btn" lay-filter="save" lay-submit="">
+									     修改
+									 </button>
+				        </div>
+				    </div>   						  
+				    
+				</form>
+				
+			</div>
+			
+			<hr/>
+			
+			<div>
+				<b>记录: </b><br/>
+				<!--格式 [座位号]用户ID ：类型 - 押位置 - 金币数 <br/>-->
+				
+				<div id="betdata">
+					
+					<table class="layui-table">					  
+					  <thead>
+						<tr>
+						  <th>座位号</th>
+						  <th>用户ID</th>
+						  <th>类型</th>
+						  <th>押位置</th>
+						  <th>金币数</th>
+						</tr> 
+					  </thead>
+					  <tbody>
+						{foreach $list['bet_data'] as $key=>$vo } 
+						<tr>
+						  <td>{$vo.seatId}</td>
+						  <td>{$vo.userId}</td>
+						 
+						  {switch $vo.bet_type }
+						  		{case 1}<td>单压</td><td>{$vo.bet_res}</td>{/case}
+						  		{case 2}<td>连串</td><td>{:implode(',',$vo['bet_res'])}</td>{/case}
+						  		{case 3}<td>豹子</td><td>{$vo.bet_res}</td>{/case}
+						  		{default /} <td>{$vo.bet_type}</td><td>{$vo.bet_res}</td>
+						  {/switch}
+						  
+						  <td>{$vo.bet_gold}</td>
+						</tr>
+						{/foreach}						
+					  </tbody>
+					</table>
+				
+				<!--	
+				{foreach $list['bet_data'] as $key=>$vo } 
+					
+					[{$vo.seatId}]{$vo.userId} ：
+					{switch $vo.bet_type }
+							{case 1}单压 - {$vo.bet_res}{/case}
+							{case 2}连串 - {:implode(',',$vo['bet_res'])}{/case}
+							{case 3}豹子 - {$vo.bet_res}{/case}
+							{default /} {$vo.bet_type}
+					{/switch}
+						  - {$vo.bet_gold} <br/>
+				{/foreach}
+				-->
+				</div>
+				
+				<hr/><!--格式 [座位号]用户ID ：开始位置 - 结束位置 - 金币数 </b><br/>-->
+				
+				<div id="nuobetdata">
+					
+					<table class="layui-table">					  
+					  <thead>
+						<tr>
+						  <th>座位号</th>
+						  <th>用户ID</th>
+						  <th>类型</th>
+						  <th>开始位置</th>
+						  <th>结束位置</th>
+						  <th>金币数</th>
+						</tr> 
+					  </thead>
+					  <tbody>
+						{foreach $list['nuo_bet_data'] as $key=>$vo } 
+						<tr>
+						  <td>{$vo.seatId}</td>
+						  <td>{$vo.userId}</td>
+						  <td>挪</td>
+						  <td>{$vo['bet_res'][0]}</td>
+						  <td>{$vo['bet_res'][1]}</td>	
+						  <td>{$vo.bet_gold}</td>
+						</tr>
+						{/foreach}						
+					  </tbody>
+					</table>
+				<!--
+				{foreach $list['nuo_bet_data'] as $key=>$vo } 
+						[{$vo.seatId}]{$vo.userId} ：{$vo['bet_res'][0]} - {$vo['bet_res'][1]} - {$vo.bet_gold}<br/>
+				{/foreach}
+				-->
+				</div>
+				
+			</div>
+      
+    </div>
+    <script>
+			function ajaxgetinfo(){
+				var tid = $('#tableid').html();
+				$.ajax({
+				   type: "POST",
+				   url: "{:url('ajaxYxxfkcSet')}",
+				   data: {'tid':tid},
+				   success: function(res){
+							console.log(res);
+							if(res == 'error'){
+								layer.msg('查询失败！');
+							}else{
+								var res = JSON.parse(res);
+								$('#changetype').html(res.changetype);
+								$('#daojishi').html(res.daojishi);
+								$('#betdata').html(res.betdata);
+								$('#nuobetdata').html(res.nuobetdata);
+							}
+				   }
+				});
+			}
+			
+			setInterval("ajaxgetinfo()",1000);
+			
+			
+			layui.use(['form','layer'], function(){
+			    $ = layui.jquery;
+					var form = layui.form,layer = layui.layer;
+			
+			  //监听提交
+			  form.on('submit(save)', function(data){
+						console.log(data.field);
+						if(data.field.city == ''){
+							layer.msg('设置有误');
+							return false;
+						}
+						
+						var changetype = $('#changetype').html();
+						if(changetype == '禁止'){
+							layer.msg('当前状态禁止设置');
+							return false;
+						}
+			    
+						$.ajax({
+							 type: "POST",
+							 url: "{:url('ajaxyxxfkcsetzjl')}",
+							 data: data.field,
+							 success: function(msg){
+									layer.msg(msg);
+							 }
+						});
+				
+				return false;				
+			  });
+			  
+			  
+			});
+    </script>
+
+  </body>
+
+</html>

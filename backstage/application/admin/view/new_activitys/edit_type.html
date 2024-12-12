@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    <style>
+      .label-note {
+        width: 100px;
+        padding: 9px 10px;
+      }
+      .layui-input-block {
+        margin-left: 130px !important;
+      }
+      .layui-form-select dl dd.layui-this {
+          background-color: #393D49;
+          color: #fff;
+      }
+    </style>
+  <body>
+    <!-- 每日领奖 -->
+    {if $params['tem'] == 'activity_infomation_dayreward'}
+    <style>
+      .value {border: none;}
+    </style>
+    <div class="x-body" id="{$params['tem']}">
+        <form class="layui-form">
+          <div class="layui-form-item">
+            <label for="activity_name" class="label-note layui-form-label">
+               活动名称
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="activity_name" name="activity_name" value="{$activityTypeList['name']}" disabled autocomplete="off" class="layui-input">
+            </div>
+        </div>
+          <div class="layui-form-item">
+            <label class="label-note  layui-form-label">
+               活动时间
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="begin_time" name="begin_time" value="{$activityTypeList['begin_time']}" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required">
+                &nbsp;&nbsp;
+                <input type="text" id="end_time" name="end_time" value="{$activityTypeList['end_time']}" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required">
+            </div>
+          </div>
+        <div class="layui-form-item">
+            <label for="minimum_recharge_amount" class="label-note layui-form-label">
+               最低充值金额
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="minimum_recharge_amount" lay-verify="required|number" name="minimum_recharge_amount" value="{$activityTypeList['minimum_recharge_amount']}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             彩金提现流水
+          </label>
+          <div class="layui-input-block">
+              <input type="text" id="win_statement_amount" lay-verify="required|number" name="win_statement_amount" value="{$activityTypeList['win_statement_amount']}" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             奖励设置
+          </label>
+          <div class="layui-input-block">
+              <table class="layui-table" id="data-table">
+                <thead>
+                  <tr>
+                    <th>时间</th>
+                    <th>奖励(点数)</th>
+                  </tr> 
+                </thead>
+                <tbody>
+                  {foreach $activityTypeInfo as $k => $v}
+                    <tr data-id="{$v['id']}">
+                      <td>{$v['title']}</td>
+                      <td><input type="text" value="{$v['value']}" class="value" /></td>
+                    </tr>
+                  {/foreach}
+                </tbody>
+              </table>
+          </div>
+        </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  保存
+              </button>
+          </div>
+      </form>
+    </div>
+    {/if}
+    <!-- 邀请奖金 -->
+    {if $params['tem'] == 'activity_infomation_invite'}
+    <style>
+      .value {border: none;}
+    </style>
+    <div class="x-body" id="{$params['tem']}">
+        <form class="layui-form" onsubmit="return false">
+          <div class="layui-form-item">
+            <label for="activity_name" class="label-note layui-form-label">
+               活动名称
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="activity_name" name="activity_name" value="{$activityTypeList['name']}" disabled autocomplete="off" class="layui-input">
+            </div>
+        </div>
+          <div class="layui-form-item">
+            <label class="label-note  layui-form-label">
+               活动时间
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="begin_time" name="begin_time" value="{$activityTypeList['begin_time']}" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required">
+                &nbsp;&nbsp;
+                <input type="text" id="end_time" name="end_time" value="{$activityTypeList['end_time']}" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required">
+            </div>
+          </div>
+        <div class="layui-form-item">
+            <label for="minimum_recharge_amount" class="label-note layui-form-label">
+               最低充值金额
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="minimum_recharge_amount" lay-verify="required|number" name="minimum_recharge_amount" value="{$activityTypeList['minimum_recharge_amount']}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             彩金提现流水
+          </label>
+          <div class="layui-input-block">
+              <input type="text" id="win_statement_amount" lay-verify="required|number" name="win_statement_amount" value="{$activityTypeList['win_statement_amount']}" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             奖励设置
+          </label>
+          <div class="layui-input-block">
+            <button  class="layui-btn" id="insert">新增</button>
+              <table class="layui-table" id="data-table">
+                <thead>
+                  <tr>
+                    <th>最低人数</th>
+                    <th>最高人数</th>
+                    <th>奖励/人(点数)</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {foreach $activityTypeInfo as $k => $v}
+                  <tr>
+                    <td><input type="text" class="min value" value="{$v['min']}" style="width:100px;" /></td>
+                    <td><input type="text" class="max value" value="{$v['max']}" style="width:100px;" /></td>
+                    <td><input type="text" class="val value" value="{$v['value']}" style="width:100px;" /></td>
+                    <td><button class="layui-btn" id="delete_row">删除</button></td>
+                  </tr>
+                {/foreach}
+                </tbody>
+              </table>
+          </div>
+        </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  保存
+              </button>
+          </div>
+      </form>
+    </div>
+    <script>
+      $("#insert").on('click',function(){
+          var html = '<tr>';
+              html += '<td><input type="text" class="min value" value="" style="width:100px;" /></td>';
+              html += '<td><input type="text" class="max value" value="" style="width:100px;" /></td>';
+              html += '<td><input type="text" class="val value" value="" style="width:100px;" /></td>';
+              html += '<td><button class="layui-btn" id="delete_row">删除</button></td>';
+              html += '</tr>';
+          $('#data-table').find('tbody').append(html);
+          $('#data-table').find('tbody').find('tr:last-child').find('input:eq(0)').focus();
+          return false;
+      });
+      $('#data-table').on('click','#delete_row',function(){
+        $(this).parent().parent().remove();
+        return false;
+      });
+    </script>
+    {/if}
+     <!-- 首充设置 -->
+     {if $params['tem'] == 'activity_infomation_firstcharge'}
+     <style>
+       .value {border: none;}
+     </style>
+     <div class="x-body" id="{$params['tem']}">
+         <form class="layui-form" onsubmit="return false">
+           <div class="layui-form-item">
+             <label for="activity_name" class="label-note layui-form-label">
+                活动名称
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="activity_name" name="activity_name" value="{$activityTypeList['name']}" disabled autocomplete="off" class="layui-input">
+             </div>
+         </div>
+           <div class="layui-form-item">
+             <label class="label-note  layui-form-label">
+                活动时间
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="begin_time" name="begin_time" value="{$activityTypeList['begin_time']}" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required">
+                 &nbsp;&nbsp;
+                 <input type="text" id="end_time" name="end_time" value="{$activityTypeList['end_time']}" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required">
+             </div>
+           </div>
+         <!-- <div class="layui-form-item">
+             <label for="minimum_recharge_amount" class="label-note layui-form-label">
+                最低充值金额
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="minimum_recharge_amount" lay-verify="required|number" name="minimum_recharge_amount" value="{$activityTypeList['minimum_recharge_amount']}" autocomplete="off" class="layui-input">
+             </div>
+         </div> -->
+         <div class="layui-form-item">
+           <label for="win_statement_amount" class="label-note layui-form-label">
+              彩金提现流水
+           </label>
+           <div class="layui-input-block">
+               <input type="text" id="win_statement_amount" lay-verify="required|number" name="win_statement_amount" value="{$activityTypeList['win_statement_amount']}" autocomplete="off" class="layui-input">
+           </div>
+         </div>
+         <div class="layui-form-item">
+           <label for="win_statement_amount" class="label-note layui-form-label">
+              奖励设置
+           </label>
+           <div class="layui-input-block">
+             <button  class="layui-btn" id="insert">新增</button>
+               <table class="layui-table" id="data-table">
+                 <thead>
+                   <tr>
+                     <th colspan="2">充值金额范围</th>
+                     <th>奖励(点数)</th>
+                     <th>操作</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {foreach $activityTypeInfo as $k => $v}
+                   <tr>
+                     <td><input type="text" class="min value" value="{$v['min']}" style="width:100px;" /></td>
+                     <td><input type="text" class="max value" value="{$v['max']}" style="width:100px;" /></td>
+                     <td><input type="text" class="val value" value="{$v['value']}" style="width:100px;" /></td>
+                     <td><button class="layui-btn" id="delete_row">删除</button></td>
+                   </tr>
+                 {/foreach}
+                 </tbody>
+               </table>
+           </div>
+         </div>
+           <div class="layui-form-item">
+               <label for="L_repass" class="layui-form-label">
+               </label>
+               <button  class="layui-btn" lay-filter="add" lay-submit="">
+                   保存
+               </button>
+           </div>
+       </form>
+     </div>
+     <script>
+       $("#insert").on('click',function(){
+           var html = '<tr>';
+               html += '<td><input type="text" class="min value" value="" style="width:100px;" /></td>';
+               html += '<td><input type="text" class="max value" value="" style="width:100px;" /></td>';
+               html += '<td><input type="text" class="val value" value="" style="width:100px;" /></td>';
+               html += '<td><button class="layui-btn" id="delete_row">删除</button></td>';
+               html += '</tr>';
+           $('#data-table').find('tbody').append(html);
+           $('#data-table').find('tbody').find('tr:last-child').find('input:eq(0)').focus();
+           return false;
+       });
+       $('#data-table').on('click','#delete_row',function(){
+         $(this).parent().parent().remove();
+         return false;
+       });
+     </script>
+     {/if}
+     <!-- 每日首充 -->
+     {if $params['tem'] == 'activity_infomation_daycharge'}
+     <style>
+       .value {border: none;}
+     </style>
+     <div class="x-body" id="{$params['tem']}">
+         <form class="layui-form" onsubmit="return false">
+           <div class="layui-form-item">
+             <label for="activity_name" class="label-note layui-form-label">
+                活动名称
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="activity_name" name="activity_name" value="{$activityTypeList['name']}" disabled autocomplete="off" class="layui-input">
+             </div>
+         </div>
+           <div class="layui-form-item">
+             <label class="label-note  layui-form-label">
+                活动时间
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="begin_time" name="begin_time" value="{$activityTypeList['begin_time']}" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required">
+                 &nbsp;&nbsp;
+                 <input type="text" id="end_time" name="end_time" value="{$activityTypeList['end_time']}" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required">
+             </div>
+           </div>
+         <!-- <div class="layui-form-item">
+             <label for="minimum_recharge_amount" class="label-note layui-form-label">
+                最低充值金额
+             </label>
+             <div class="layui-input-block">
+                 <input type="text" id="minimum_recharge_amount" lay-verify="required|number" name="minimum_recharge_amount" value="{$activityTypeList['minimum_recharge_amount']}" autocomplete="off" class="layui-input">
+             </div>
+         </div> -->
+         <div class="layui-form-item">
+           <label for="win_statement_amount" class="label-note layui-form-label">
+              彩金提现流水
+           </label>
+           <div class="layui-input-block">
+               <input type="text" id="win_statement_amount" lay-verify="required|number" name="win_statement_amount" value="{$activityTypeList['win_statement_amount']}" autocomplete="off" class="layui-input">
+           </div>
+         </div>
+         <div class="layui-form-item">
+           <label for="win_statement_amount" class="label-note layui-form-label">
+              奖励设置
+           </label>
+           <div class="layui-input-block">
+             <button  class="layui-btn" id="insert">新增</button>
+               <table class="layui-table" id="data-table">
+                 <thead>
+                   <tr>
+                     <th colspan="2">充值金额范围</th>
+                     <th>奖励(%)</th>
+                     <th>操作</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {foreach $activityTypeInfo as $k => $v}
+                   <tr>
+                     <td><input type="text" class="min value" value="{$v['min']}" style="width:100px;" /></td>
+                     <td><input type="text" class="max value" value="{$v['max']}" style="width:100px;" /></td>
+                     <td><input type="text" class="val value" value="{$v['value']}" style="width:100px;" /></td>
+                     <td><button class="layui-btn" id="delete_row">删除</button></td>
+                   </tr>
+                 {/foreach}
+                 </tbody>
+               </table>
+           </div>
+         </div>
+           <div class="layui-form-item">
+               <label for="L_repass" class="layui-form-label">
+               </label>
+               <button  class="layui-btn" lay-filter="add" lay-submit="">
+                   保存
+               </button>
+           </div>
+       </form>
+     </div>
+     <script>
+       $("#insert").on('click',function(){
+           var html = '<tr>';
+               html += '<td><input type="text" class="min value" value="" style="width:100px;" /></td>';
+               html += '<td><input type="text" class="max value" value="" style="width:100px;" /></td>';
+               html += '<td><input type="text" class="val value" value="" style="width:100px;" /></td>';
+               html += '<td><button class="layui-btn" id="delete_row">删除</button></td>';
+               html += '</tr>';
+           $('#data-table').find('tbody').append(html);
+           $('#data-table').find('tbody').find('tr:last-child').find('input:eq(0)').focus();
+           return false;
+       });
+       $('#data-table').on('click','#delete_row',function(){
+         $(this).parent().parent().remove();
+         return false;
+       });
+     </script>
+     {/if}
+         <!-- 认证奖励 -->
+    {if $params['tem'] == 'activity_infomation_authreward'}
+    <style>
+      .value {border: none;}
+      .layui-form-checked span, .layui-form-checked:hover span  {
+        background-color: #222d32;
+      }
+      .layui-form-checked i, .layui-form-checked:hover i {
+        color: #222d32;
+      }
+      .layui-form-checked, .layui-form-checked:hover {
+        border-color: #222d32;
+      }
+    </style>
+    <div class="x-body" id="{$params['tem']}">
+        <form class="layui-form">
+          <div class="layui-form-item">
+            <label for="activity_name" class="label-note layui-form-label">
+               活动名称
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="activity_name" name="activity_name" value="{$activityTypeList['name']}" disabled autocomplete="off" class="layui-input">
+            </div>
+        </div>
+          <div class="layui-form-item">
+            <label class="label-note  layui-form-label">
+               活动时间
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="begin_time" name="begin_time" value="{$activityTypeList['begin_time']}" placeholder="开始时间" autocomplete="off" class="layui-input" style="width: 250px; float:left;" lay-verify="required">
+                &nbsp;&nbsp;
+                <input type="text" id="end_time" name="end_time" value="{$activityTypeList['end_time']}" placeholder="结束时间" autocomplete="off" class="layui-input" style="width: 250px; float:left; margin-left: 10px;" lay-verify="required">
+            </div>
+          </div>
+        <div class="layui-form-item">
+            <label for="minimum_recharge_amount" class="label-note layui-form-label">
+               奖励设置
+            </label>
+            <div class="layui-input-block">
+                <input type="text" id="minimum_recharge_amount" lay-verify="required|number" name="minimum_recharge_amount" value="{$activityTypeList['minimum_recharge_amount']}" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             彩金提现流水
+          </label>
+          <div class="layui-input-block">
+              <input type="text" id="win_statement_amount" lay-verify="required|number" name="win_statement_amount" value="{$activityTypeList['win_statement_amount']}" autocomplete="off" class="layui-input">
+          </div>
+        </div>
+        <div class="layui-form-item">
+          <label for="win_statement_amount" class="label-note layui-form-label">
+             实名方式
+          </label>
+          <div class="layui-input-block">
+            {foreach $activityTypeInfo as $k => $v}
+            <input class="checkbox" type="checkbox" title="{$v['title']}" value="{$v['status']}" data-id="{$v['id']}" {if $v['status'] == 0} checked {/if}  />
+            {/foreach}
+          </div>
+        </div>
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button  class="layui-btn" lay-filter="add" lay-submit="">
+                  保存
+              </button>
+          </div>
+      </form>
+    </div>
+    {/if}
+    <script>
+        layui.use(['form','layer','laydate'], function(){
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer,
+                laydate = layui.laydate;
+            
+            // 渲染时间选择器
+            laydate.render({
+                elem: '#begin_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+            laydate.render({
+                elem: '#end_time',
+                type: 'datetime',
+                trigger: 'click'
+            });
+        
+
+          //监听提交
+          form.on('submit(add)', function(data){
+
+            var tem = '{$params[\'tem\']}';
+            var id = '{$params[\'id\']}';
+
+            // 提交数据  -- 公共数据
+            var data = {};
+            data['id'] = id;
+            data['tem'] = tem;
+            data['begin_time'] = $('#begin_time').val();
+            data['end_time'] = $('#end_time').val();
+            data['win_statement_amount'] = $('#win_statement_amount').val();
+            data['map_data'] = [];
+
+            // 提交数据 -- 私有数据
+            if (tem == 'activity_infomation_dayreward') {
+
+                // 最低充值金额
+                data['minimum_recharge_amount'] = $('#minimum_recharge_amount').val();
+
+                // 获取映射数据
+                $('#data-table').find('tbody tr').each(function(){
+                  data['map_data'].push({
+                    'id': $(this).attr('data-id'),
+                    'value': $(this).find('input').val()
+                  })
+                });
+            }
+
+            // 提交数据 -- 私有数据
+            if (tem == 'activity_infomation_invite') {
+
+                // 最低充值金额
+                data['minimum_recharge_amount'] = $('#minimum_recharge_amount').val();
+
+                // 获取映射数据
+                $('#data-table').find('tbody tr').each(function(){
+                  data['map_data'].push({
+                    'min': $(this).find('.min').val(),
+                    'max': $(this).find('.max').val(),
+                    'value': $(this).find('.val').val()
+                  })
+                });
+            }
+
+            // 提交数据 -- 私有数据
+            if (tem == 'activity_infomation_firstcharge') {
+
+                // 获取映射数据
+                $('#data-table').find('tbody tr').each(function(){
+                  data['map_data'].push({
+                    'min': $(this).find('.min').val(),
+                    'max': $(this).find('.max').val(),
+                    'value': $(this).find('.val').val()
+                  })
+                });
+            }
+
+            // 提交数据 -- 私有数据
+            if (tem == 'activity_infomation_daycharge') {
+
+                // 获取映射数据
+                $('#data-table').find('tbody tr').each(function(){
+                  data['map_data'].push({
+                    'min': $(this).find('.min').val(),
+                    'max': $(this).find('.max').val(),
+                    'value': $(this).find('.val').val()
+                  })
+                });
+            }
+
+            // 提交数据 -- 私有数据
+            if (tem == 'activity_infomation_authreward') {
+
+                // 奖励设置
+                data['minimum_recharge_amount'] = $('#minimum_recharge_amount').val();
+
+                // 获取映射数据
+                $('.checkbox').each(function(){
+                  data['map_data'].push({
+                    'id': $(this).attr('data-id'),
+                    'title': $(this).attr('title'),
+                    'status': $(this).prop('checked') ? 0 : 1
+                  })
+                });
+            }
+
+            $.post("{:url('saveActivityType')}",data,function(data){
+                if (data.status == 0) {
+                    layer.alert(data.message, {icon: 6},function () {
+                        var index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+                        parent.location.reload();
+						        });
+                  } else {
+                    layer.msg(data.message);
+                  }
+            },'Json');
+
+            return false;
+
+          });
+        });
+    </script>
+
+  </body>
+
+</html>

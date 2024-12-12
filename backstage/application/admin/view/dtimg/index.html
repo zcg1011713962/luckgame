@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  
+ {include file="public/head" /}
+
+  <body>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">大厅图片</a>        
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">     
+		
+      <table class="layui-table">
+       
+        <tbody>
+						<form class="layui-form" action="{:url('nandu_save')}" method="post">
+						
+						
+						{foreach $list as $key=>$vo }   
+						<tr>  
+							<td>		
+								
+								{if empty($vo)}
+								<img src="/uploads/timg.jpg"  id="img{$key}"/>		
+								<input value="" name="txt{$key}" id="txt{$key}" type="hidden"/>
+								{else}
+								<img src="{$vo}"  id="img{$key}"/>		
+								<input value="{$vo}" name="txt{$key}" id="txt{$key}" type="hidden"/>
+								{/if}				
+							</td> 
+							<td>
+						
+								<!-- <button type="button" class="layui-btn" id="test{$key}">
+									上传
+								</button>
+
+								<button type="button" class="layui-btn" onclick="delimg({$key})">
+									删除
+								</button>-->
+							</td> 
+						</tr>	
+						{/foreach}		
+
+						<tr>
+							<td colspan="2" class="layui-bg-green" >								
+								<button class="layui-btn layui-bg-gray" lay-submit lay-filter="formNandu">修改</button> 								
+							</td>
+						</tr>
+										
+			</form>
+					
+					
+        </tbody>
+      </table>
+      
+    </div>
+    
+  </body>
+
+</html>
+
+<script>
+layui.use(['form','jquery','upload'], function(){
+  var form = layui.form;
+  var $ = layui.$;
+
+  var upload = layui.upload;
+
+  {foreach $list as $key=>$vo }   
+  var uploadInst{$key} = upload.render({
+    elem: '#test{$key}' 
+    ,url: "{:url('upload')}"
+	,acceptMime: 'image/png'
+	,exts: 'png'
+    ,done: function(res){
+      //上传完毕回调
+	  console.log(res);
+	  $('#img{$key}').attr('src',res.msg);
+	  $('#txt{$key}').val(res.msg);
+    }
+    ,error: function(){
+      //请求异常回调
+	  console.log('err');
+    }
+  });
+  {/foreach}		
+  
+});
+
+function delimg(n){
+	$('#img'+n).attr('src','/uploads/timg.jpg');
+	$('#txt'+n).val('');
+}
+
+</script>

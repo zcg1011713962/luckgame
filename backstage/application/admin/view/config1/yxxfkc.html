@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  
+	{include file="public/head" /}
+  
+  <body class="layui-anim layui-anim-up">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="javascript:;">游戏设置</a>
+        <a><cite>测试</cite></a>
+      </span>
+      <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th style="display: none;">
+              <div class="layui-unselect header layui-form-checkbox" lay-skin="primary"><i class="layui-icon">&#xe605;</i></div>
+            </th>
+            <th>ID</th>
+            <th>KEY</th>
+            <th>总局数</th>
+            <th>当前局数</th>
+            <th>操作</th>
+					</tr>
+        </thead>
+        <tbody>
+					{foreach $list as $key=>$vo } 							
+							<tr>							 
+							  <td>{$vo.table_id}</td>
+							  <td>{$vo.tableKey}</td>
+							  <td>{$vo.ju_shu}</td>
+							  <td>{php}echo $vo['ju_shu'] - $vo['round_num'] + 1;{/php}</td>
+							 
+							  <td class="td-manage">
+							    <a title="编辑"  onclick="x_admin_show('详情','{:url('Config1/yxxfkcSet',array('tid'=>$vo['table_id'],'tkey'=>$vo['tableKey']))}',1400,600)" href="javascript:;">
+							      <i class="layui-icon">&#xe642;</i>
+							    </a>
+							  </td>
+							</tr>
+					{/foreach}
+          
+        </tbody>
+      </table>
+      
+    </div>
+    <script>
+      
+       /*用户-封禁|解封*/
+      function member_feng(obj,id,type){
+		  if(type == '0'){
+			  //原先是1开启状态 改为 0封禁 限制登录  
+			  var msg = '封禁';
+		  }else if(type == '1'){
+			  var msg = '解封';
+		  }else{
+			  return false;
+		  }
+          layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doCanLogin')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+          });
+      }
+			
+			function member_vip(obj,id,type){
+			if(type == '0'){
+			  var msg = '关闭VIP状态';
+			}else if(type == '1'){
+			  var msg = '开启VIP状态';
+			}else{
+			  return false;
+			}
+			    layer.confirm('确认要'+msg+'吗？',function(index){
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doVip')}",
+			   data: {'i':id,'t':type},
+			   success: function(res){
+				   if(res == 'success'){
+					   layer.msg('已'+msg+'!',function(){
+						   window.location.reload();
+					   });					   
+				   }else{
+						layer.msg(res);
+				   }
+			   }
+			});
+			    });
+			}
+	  
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
+
+      function delAll (argument) {
+
+        var data = tableCheck.getData();
+  
+        layer.confirm('确认要删除吗？'+data,function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+
+  </body>
+
+</html>

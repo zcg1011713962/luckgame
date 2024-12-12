@@ -1,0 +1,84 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+    <link rel="stylesheet" href="/assets/css/channel.css">
+    <style>
+        .display-none {
+            display: none;
+        }
+    </style>
+{{/block}}
+{{block 'content'}}
+<body>
+<div class="container">
+    <header class="header">
+        <a href="#" class=""></a>
+        <h1 class="biaoti">{{L('Deposits')}}</h1>
+        <a href="#" class="close-btn"></a>
+    </header>
+    <div class="bizhong">
+        <div class="vnd-text jianbianse">{{L('Deposit Money')}}</div>
+        <div class="vnd-div">
+            <span class="jianbianse">VND</span>
+            <img src="/assets/images/vnd.png" alt="">
+        </div>
+    </div>
+    <div class="channel-text">
+        <span class="jianbianse">{{L('Select Payment Method')}}</span>
+    </div>
+    <div class="channel-kuang">
+        <div style="height: 137vw;overflow: auto;">
+            {{each thirdPay item}}
+            <div class="channel">
+                <div class="channel-title" style="margin-left: 5vw">
+                    <span class="jianbianse">{{item.title}}</span>
+                </div>
+                <ul>
+                    {{each item.channel item1}}
+                    <li onclick="depositAmount('{{item1.id}}')" style="cursor: pointer;">
+                        <img src="/assets/images/channel/channel_{{item1.id}}.png" alt="">
+                        <span class="bank-name">{{item1.title}}</span>
+                        <span class="bank-limit">{{item1.mincoin}}~{{item1.maxcoin}}VND</span>
+                        <img src="/assets/images/fanhui.png" alt="">
+                    </li>
+                    {{/each}}
+                </ul>
+                <div class="hide-or-show click-show">
+                    {{L('Show More')}}
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var uid = "{{uid}}";
+    var token = "{{token}}";
+    var rbid = "{{rbid}}";
+    function depositAmount(id) {
+        window.location.href = '/deposit/amount?uid='+uid+'&token='+token+'&id='+id+'&rbid='+rbid;
+    }
+    $(function () {
+        $('.hide-or-show').siblings('ul').find('li:gt(3)').hide();
+
+        function toggleItems() {
+            var li = $(this).parents('.channel').find('li');
+            console.log(li.length);
+            if (li.length > 4) {
+                $(this).siblings('ul').find('li:gt(3)').toggle();
+            }
+            $(this).toggleClass('click-hide click-show');
+            if ($(this).hasClass('click-hide')) {
+                $(this).text("{{L('Hide')}}");
+            } else {
+                $(this).text("{{L('Show More')}}");
+            }
+        }
+
+        $(document).on('click', '.click-hide, .click-show', toggleItems);
+    });
+
+</script>
+{{/block}}

@@ -1,0 +1,171 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+    <link rel="stylesheet" href="/assets/css/deposit.css">
+{{/block}}
+{{block 'content'}}
+<body>
+<div class="container">
+    <header class="header">
+        <a href="#" class=""></a>
+        <h1 class="biaoti">{{L('Deposits')}}</h1>
+        <a href="#" class="close-btn"></a>
+    </header>
+    <div class="balance" style="display: none;">
+        <span class="balance-label">{{L('Total Balance')}}</span>
+        <div class="jine">
+            <span class="balance-amount">₫ {{userInfo.coin}}</span>
+        </div>
+    </div>
+    <div class="bizhong">
+        <div class="vnd-text jianbianse">{{L('Deposit Money')}}</div>
+        <div class="vnd-div">
+            <span class="jianbianse">VND</span>
+            <img src="/assets/images/vnd.png" alt="">
+            <img class="xiangxia" src="/assets/images/fanhui.png" alt="" style="margin-right: 5vw">
+        </div>
+    </div>
+    <div class="bizhong">
+        <div class="vnd-text jianbianse">{{L('Payment Method')}}</div>
+        <div class="vnd-div" onclick="backToChannel()">
+            <span class="jianbianse">{{channelTitle}}</span>
+            <img src="/assets/images/channel/channel_{{id}}.png" alt="">
+            <img class="xiangxia" src="/assets/images/fanhui.png" alt="" style="margin-right: 5vw">
+        </div>
+    </div>
+    <div class="deposit-input">
+        <input type="number" name="amount" readonly class="deposit_amount" id="deposit_amount" value="{{minDeposit}}">
+        <input type="hidden" name="uid" class="curr_uid" value="{{userInfo.uid}}">
+        <input type="hidden" name="rbid" class="curr_rbid" value="">
+        <input type="hidden" name="encrypt_uid" class="encrypt_uid" value="{{encrypt_uid}}">
+<!--        <img class="clear-btn" src="/assets/images/guanbi2.png" alt="">-->
+    </div>
+    <div class="button-grid">
+        {{each betCoinList item}}
+            <button class="bet-coin-item-{{item.amount}} un_selected {{if item.selected == 1}}selected{{/if}}" data-bonus="{{item.bonus}}" data-id="{{item.id}}">{{item.amount}}</button>
+        {{/each}}
+    </div>
+    <div class="info-cash">
+        <div class="info">
+            <p>{{minDeposit}}-{{maxDeposit}}VND</p>
+        </div>
+        <div class="balances">
+            <div class="balance-type">
+                <span>{{L('Withdrawal Balance')}}</span>
+                <span class="cash-balance-value">₫ {{userInfo.dcoin}}</span>
+            </div>
+            <div class="balance-type">
+                <span>{{L('Cash Balance')}}</span>
+                <span class="cash-bonus-value">₫ {{userInfo.bonus}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="deposit-button">
+        <button class="deposit-submit-button">{{L('Deposit Now')}}</button>
+    </div>
+    <div class="fengexian"></div>
+    <div class="safety-tips">
+        <img src="/assets/images/anquan.png" alt="">
+        <span>
+            {{L('You will be redirected to a third-party site that is authenticated by bc.game for the purpose of ensuring a safe and reliable web surfing experience')}}
+        </span>
+    </div>
+    <div class="notice-div">
+        <div>
+            <span>1. </span>
+            <span> {{L('Your transfer amount has to MATCH the submission amount')}}</span>
+        </div>
+        <div>
+            <span>2. </span>
+            <span> {{L('Each Order ID can ONLY be used once to avoid duplicates')}}</span>
+        </div>
+        <div>
+            <span>3. </span>
+            <span> {{L('DO NOT save and deposit to previous bank account Please follow the deposit guideline to make deposit otherwise your deposit will be missing')}}</span>
+        </div>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    var discoin = "{{discoin}}";
+    var disrate = "{{disrate}}";
+    var uid = "{{uid}}";
+    var token = "{{token}}";
+    var id = "{{id}}";
+    var rbid = "{{rbid}}";
+    var maxDeposit = "{{maxDeposit}}";
+    $('.deposit-submit-button').click(function () {
+        var index = layer.load();
+        var uid = $('.curr_uid').val();
+        var amount = $('.deposit_amount').val();
+        var rbid = $('.curr_rbid').val();
+        var encrypt_uid = $('.encrypt_uid').val();
+        $.ajax({
+            url: "/deposit/post",
+            type: 'POST',
+            data: {
+                uid, amount, encrypt_uid, id, token, rbid
+            },
+            success: function (data) {
+                if (data.code < 0) {
+                    layer.close(index);
+                    return alert_msg(data.msg);
+                }
+                window.location.href = data.data.url;
+            }
+        });
+    });
+    $('.button-grid button').click(function () {
+        $('.deposit_amount').val($(this).text());
+        $('.curr_rbid').val($(this).attr('data-id'));
+        $('.button-grid').find('button').removeClass('selected');
+        $(this).addClass('selected');
+        updateCashValue($(this).text(), $(this).attr('data-bonus'));
+    });
+    document.getElementById('deposit_amount').addEventListener('input', function() {
+        var inputValue = this.value;
+        if (!/^\d*$/.test(inputValue)) {
+            // 如果不是整数，清除输入框内容
+            this.value = inputValue.replace(/[^\d]/g, '');
+        } else if (inputValue < 0) {
+            this.value = Math.abs(inputValue);
+        }
+        this.value = parseInt(inputValue);
+        if (this.value > parseInt(maxDeposit)) {
+            this.value = parseInt(maxDeposit);
+        }
+        inputValue = this.value;
+        $('.curr_rbid').val(0);
+        $('.button-grid').find('button').removeClass('selected');
+        updateCashValue(inputValue, 0)
+        $('.button-grid button.bet-coin-item-' + parseInt(inputValue)).click();
+    });
+    function updateCashValue(amount, addBonus) {
+        if (!amount || parseInt(amount) === 0) {
+            $('.cash-balance-value').text('₫ 0');
+            $('.cash-bonus-value').text('₫ 0');
+            return;
+        }
+        $('.cash-balance-value').text('₫ ' + amount);
+        var bonus = amount * disrate;
+        if (bonus < discoin) {
+            bonus = discoin;
+        }
+        console.log('discoin', discoin);
+        console.log('disrate', disrate);
+        console.log('bonus', bonus);
+        $('.cash-bonus-value').text('₫ ' + (parseInt(bonus) + parseInt(addBonus)));
+    }
+    $(function () {
+        $('.button-grid').find('button.selected').click();
+    });
+    // $('.clear-btn').click(function () {
+    //     $('.deposit_amount').val('0');
+    //     updateCashValue(0, 0);
+    // });
+    function backToChannel() {
+        window.location.href = '/deposit?uid='+uid+'&token='+token+'&rbid='+rbid;
+    }
+</script>
+{{/block}}

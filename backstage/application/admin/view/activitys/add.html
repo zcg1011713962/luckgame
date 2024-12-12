@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  
+  {include file="public/head" /}
+    
+  <body>
+    <div class="x-body">
+        <form class="layui-form">
+          <div class="layui-form-item">
+              <label for="title" class="layui-form-label">
+                  <span class="x-red">*</span>标题
+              </label>
+              <div class="layui-input-inline">
+                  <input type="text" id="title" name="title" required=""
+                  autocomplete="off" class="layui-input" value="{$find.title|default=''}">
+              </div>              
+          </div>
+         
+          <div class="layui-form-item">
+              <label for="L_pass" class="layui-form-label">
+                  <span class="x-red">*</span>图片
+              </label>
+              <div class="layui-input-inline">
+                  <div class="layui-upload">
+                      <button type="button" class="layui-btn" name="img" id="test1">上传图片</button>
+                      <div class="layui-upload-list">
+                          <img class="layui-upload-img" {if isset($find.image) && $find.image}src="{$find.image}"{/if} id="demo1">
+                          <p id="demoText"></p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+		  <div class="layui-form-item">
+		      <label class="layui-form-label">
+		          <span class="x-red">*</span>内容
+		      </label>
+		      <div class="layui-input-inline">
+                  <div style="margin-bottom: 20px; width: 600px;">
+                      <textarea class="layui-textarea" name="content" id="LAY_demo2" style="display: block">{$find.content|default=''}</textarea>
+                  </div>
+              </div>
+		  </div>
+		  
+          <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">
+              </label>
+              <button type="button"  class="layui-btn" lay-filter="add" lay-submit="">
+                  增加
+              </button>
+          </div>
+      </form>
+    </div>
+    <script charset="utf-8" src="__STATIC__/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="__STATIC__/kindeditor/lang/zh-CN.js"></script>
+    <script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#LAY_demo2',{
+                uploadJson : '__STATIC__/kindeditor/php/upload_json.php',
+                fileManagerJson : '__STATIC__/kindeditor/php/file_manager_json.php',
+                allowFileManager : true,
+            });
+        });
+    </script>
+    <script>
+        layui.use(['form','layer' , 'upload' , 'layedit'], function(){
+            $ = layui.jquery;
+          var form = layui.form
+          ,layer = layui.layer,upload = layui.upload,layedit = layui.layedit;
+            var uploadImg = '{$find.image|default=''}';
+            upload.render({
+                elem: '#test1'
+                ,url: "{:url('upload')}" //此处用的是第三方的 http 请求演示，实际使用时改成您自己的上传接口即可。
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result){
+                        $('#demo1').attr('src', result); //图片链接（base64）
+                    });
+                    layer.msg('上传中', {icon: 16, time: 0});
+                }
+                ,done: function(res){
+                    //如果上传失败
+                    if(res.code > 0){
+                        return layer.msg('上传失败');
+                    }
+                    //上传成功的一些操作
+                    //……
+                    $('#demoText').html(''); //置空上传失败的状态
+                    uploadImg = res.data.src;
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            });
+          //监听提交
+          form.on('submit(add)', function(data){
+              // 取得HTML内容
+              var html = window.editor.html();
+
+              // 同步数据后可以直接取得textarea的value
+              window.editor.sync();
+              html = document.getElementById('LAY_demo2').value;
+            data.field.content = html; // 原生API;
+            data.field.image = uploadImg;
+            data.field.id = '{:input('id')}';
+			$.ajax({
+			   type: "POST",
+			   url: "{:url('doAdd')}",
+			   data: data.field,
+			   success: function(msg){
+				   if(msg == 'success'){
+					   layer.alert("增加成功", {icon: 6},function () {
+							window.location.href = "{:url('lists')}";
+					   });
+				   }else{
+						layer.msg(msg);
+				   }
+			   }
+			});
+			
+            return false;
+          });
+          
+          
+        });
+    </script>
+
+  </body>
+
+</html>

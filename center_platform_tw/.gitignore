@@ -1,0 +1,9 @@
+node_modules/
+.history/
+*.log
+package-lock.json
+.DS_Store
+.idea/
+runtime/log/*.txt
+sessions/
+config/global_config.js

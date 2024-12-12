@@ -1,0 +1,175 @@
+{{extend '../base/layout'}}
+{{block 'css'}}
+<link rel="stylesheet" href="/assets/css/admin.css">
+<style>
+
+</style>
+{{/block}}
+{{block 'content'}}
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header custom-header">
+
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item slide-sidebar" lay-unselect>
+                <a href="javascript:;" class="icon-font"><i class="ai ai-menufold"></i></a>
+            </li>
+            <li class="layui-nav-item" lay-unselect>
+                <a href="javascript:;" id="current-refresh" title="刷新">
+                    <i class="layui-icon layui-icon-refresh-3"></i>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">{{userInfo.username}}</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:;" class="edit-pwd">修改密码</a></dd>
+                    <dd><a href="/backend/admin/logout">Logout</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side custom-admin">
+        <div class="layui-side-scroll">
+            <div class="custom-logo">
+                <img src="/assets/images/logo.png" alt=""/>
+                <h1>{{meta_title}}</h1>
+            </div>
+            <ul id="Nav" class="layui-nav layui-nav-tree">
+                {{each menuList item}}
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <i class="layui-icon">&#{{item.icon}}</i>
+                        <em>{{item.title}}</em>
+                    </a>
+                    <dl class="layui-nav-child">
+                        {{each item.children item1}}
+                        <dd>
+                            <a href="{{item1.url}}">
+                                <span class="apiname">{{item1.title}}</span>
+                            </a>
+                        </dd>
+                        {{/each}}
+                    </dl>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-tab app-container" lay-allowClose="true" lay-filter="tabs">
+            <ul id="appTabs" class="layui-tab-title custom-tab"></ul>
+            <div id="appTabPage" class="layui-tab-content"></div>
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <p>© 2024 文档中心：<a href="https://doc.stablewinner.net/index?proj=3" target="_blank">接入文档</a></p>
+    </div>
+
+    <div class="mobile-mask"></div>
+</div>
+<div style="margin-top: -5000px;">
+    <div id="model" class="layui-tab-item" style="display: none;">
+        <form class="layui-form layui-card-body edit-item-info" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">原密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="origin_pwd" value="" placeholder="原密码" autocomplete="off" class="layui-input item_origin_pwd">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">新密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="new_pwd" value="" placeholder="新密码" autocomplete="off" class="layui-input item_new_pwd">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">确认密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="new_pwd_sure" value="" placeholder="确认密码" autocomplete="off" class="layui-input item_new_pwd_sure">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{{/block}}
+{{block 'script'}}
+<script>
+    $(function () {
+        var app = {
+            home: '{/}home',
+        };
+        layui.config({
+            base: '/assets/lay/modules/'
+        }).extend(app).use('home');
+    });
+    $('.edit-pwd').click(function () {
+        $('.item_origin_pwd').val('');
+        $('.item_new_pwd').val('');
+        $('.item_new_pwd_sure').val('');
+        var type = 'offset222';
+        layer.open({
+            type: 1
+            , offset: '10px'
+            , id: 'layerDemo' + type //防止重复弹出
+            , title: '修改密码'
+            , content: $('#model')
+            , btn: ['保存']
+            , area: ['500px', '300px']//定义宽和高
+            , btnAlign: 'c' //按钮居中
+            , shade: 0 //不显示遮罩
+            , btn1: function () {
+                console.log(123);
+            }
+            , yes: function () {
+                var index = layer.load();
+                var originPwd = $('.item_origin_pwd').val();
+                var newPwd = $('.item_new_pwd').val();
+                var newPwdSure = $('.item_new_pwd_sure').val();
+                if (!originPwd) {
+                    return layer.msg('原密码不能为空');
+                }
+                if (!newPwd) {
+                    return layer.msg('新密码不能为空');
+                }
+                if (!newPwdSure) {
+                    return layer.msg('确认密码不能为空');
+                }
+                if (newPwd !== newPwdSure) {
+                    return layer.msg('两次密码输入不一致');
+                }
+                if (originPwd === newPwd) {
+                    return layer.msg('原密码与新密码相同');
+                }
+                $.ajax({
+                    url: "/backend/admin/editPwd",
+                    type: 'POST',
+                    data: {
+                        originPwd, newPwd
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data.code < 0) {
+                            return layer.msg(data.msg);
+                        }
+                        layer.msg(data.msg);
+                        layer.closeAll();
+                        window.location.href = '/backend/admin/logout';
+                    }
+                });
+            }
+        });
+    });
+    $('#current-refresh').click(function () {
+        var iframe = $('#appTabPage .layui-show').find('iframe');
+        console.log(iframe);
+        iframe[0].contentWindow.location.reload(true);
+    });
+</script>
+{{/block}}

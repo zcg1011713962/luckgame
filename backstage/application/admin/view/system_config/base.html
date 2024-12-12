@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    {include file="public/head" /}
+    <body>
+        <style>
+            .other {
+                width: 115px;
+            }
+            .other-input {
+                margin-left: 150px;
+            }
+        </style>
+        <div class="x-nav">
+			<span class="layui-breadcrumb">
+				<a href="javascript:;">
+					系统配置
+				</a>
+				<a>
+					<cite>
+                        基本配置
+					</cite>
+				</a>
+			</span>
+			<a class="layui-btn layui-btn-small" style="color:#222d32; background-color: #fff; float:right"
+			href="javascript:location.replace(location.href);" title="刷新">
+				<i class="layui-icon" style="line-height: 30px; font-size: 25px; font-weight: bold;">
+					ဂ
+				</i>
+			</a>
+		</div>
+        <div class="x-body">
+            <form class="layui-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label other">后台标题</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="SystemTitle" value="{$config['SystemTitle']}" lay-verify="required" placeholder="请输入系统标题" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">后台地址</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="SystemUrl" value="{$config['SystemUrl']}" lay-verify="required|url" autocomplete="off" placeholder="请输入地址，如:http://a.b.com" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏服务端</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="GameServiceApi" value="{$config['GameServiceApi']}" lay-verify="required|url" autocomplete="off" placeholder="请输入地址，如:http://a.b.com" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏登录</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="GameLoginUrl" value="{$config['GameLoginUrl']}" lay-verify="required|url" autocomplete="off" placeholder="请输入地址，如:http://a.b.com" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏登录key</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="SignKey" value="{$config['SignKey']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏登录认证key</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="SignKey_nongfu" value="{$config['SignKey_nongfu']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏接口key(旧)</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="PrivateKey" disabled value="{$config['PrivateKey']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">游戏接口key(新)</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="GameServiceKey" value="{$config['GameServiceKey']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+				   <div class="layui-form-item">
+                    <label class="layui-form-label other">商户ID(mch_id)</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="MchId" value="{$config['MchId']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">代收密钥</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="PaymentKey" value="{$config['PaymentKey']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label other">代付密钥</label>
+                    <div class="layui-input-block other-input">
+                      <input type="text" name="PaymentAnother" value="{$config['PaymentAnother']}" lay-verify="required" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label other">提现支付通道</label>
+                    <div class="layui-input-block other-input">
+                        <input type="radio" name="WithdrawalChannel" value="fastpay"  autocomplete="off" title="fastpay" {if !empty($config['WithdrawalChannel']) and $config['WithdrawalChannel'] eq 'fastpay'} checked {/if} >
+                        <input type="radio" name="WithdrawalChannel" value="kppay" autocomplete="off" title="kppay" {if !empty($config['WithdrawalChannel']) and $config['WithdrawalChannel'] eq 'kppay'} checked {/if}>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="L_repass" class="layui-form-label">
+                    </label>
+                    <button  class="layui-btn" lay-filter="save" lay-submit >
+                        保存
+                    </button>
+                </div>
+              </form>
+        </div>
+        <script>
+            layui.use(['form','layer'], function(){
+                $ = layui.jquery;
+                var form = layui.form,
+                layer = layui.layer;
+
+            //监听提交
+            form.on('submit(save)', function(data){
+                $.post("{:url('SystemConfig/saveConfig')}",data.field,function(data){
+                    if (data.status == 0) {
+                        layer.alert(data.message, {icon: 6},function (index) {
+                            layer.close(index);
+                            location.reload();
+                        });
+                    }
+                },'Json');
+                return false;
+            });
+        });
+        </script>
+    </body>
+</html>
